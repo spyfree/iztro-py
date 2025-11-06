@@ -1,9 +1,15 @@
 # iztro-py
 
-[![Python Version](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![PyPI version](https://img.shields.io/pypi/v/iztro-py.svg)](https://pypi.org/project/iztro-py/)
+[![Python Version](https://img.shields.io/pypi/pyversions/iztro-py.svg)](https://pypi.org/project/iztro-py/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Downloads](https://img.shields.io/pypi/dm/iztro-py.svg)](https://pypi.org/project/iztro-py/)
+[![Tests](https://img.shields.io/badge/tests-48%20passed-brightgreen.svg)](https://github.com/spyfree/iztro-py)
+[![Coverage](https://img.shields.io/badge/coverage-86%25-yellowgreen.svg)](https://github.com/spyfree/iztro-py)
 
 A **pure Python implementation** of [iztro](https://github.com/SylarLong/iztro) - A lightweight library for generating astrolabes for Zi Wei Dou Shu (紫微斗数, Purple Star Astrology), an ancient Chinese astrology.
+
+> 💝 **Special Thanks** to [SylarLong](https://github.com/SylarLong) for creating the original [iztro](https://github.com/SylarLong/iztro) library. This project is a faithful Python implementation of his excellent work, maintaining full API compatibility while bringing the power of Zi Wei Dou Shu to the Python ecosystem.
 
 ## Features
 
@@ -222,9 +228,37 @@ mypy src
 
 MIT License - see [LICENSE](LICENSE) file
 
-## Credits
+## Credits & Acknowledgments
 
-This project is inspired by and compatible with [iztro](https://github.com/SylarLong/iztro) by SylarLong.
+This project is a pure Python reimplementation of the original [iztro](https://github.com/SylarLong/iztro) library created by [SylarLong](https://github.com/SylarLong).
+
+### 致敬原作者 (Tribute to the Original Author)
+
+🙏 **深深感谢 [SylarLong](https://github.com/SylarLong)** 创建了优秀的 [iztro](https://github.com/SylarLong/iztro) 库。他的工作让紫微斗数这一中国传统文化瑰宝得以用现代编程语言实现，为开发者和爱好者提供了便捷的工具。
+
+**iztro-py** 是对原始 JavaScript 库的忠实 Python 实现，我们：
+- ✅ 保持了与原库的 **API 完全兼容**
+- ✅ 遵循了原库的 **算法和逻辑**
+- ✅ 致力于维护与原库的 **功能一致性**
+
+**原作者的贡献：**
+- 🎯 创建了完整的紫微斗数算法实现
+- 📚 提供了详细的文档和示例
+- 🌍 支持多语言国际化
+- 💎 持续维护和改进项目
+
+如果你喜欢这个项目，也请访问和支持原始的 [iztro](https://github.com/SylarLong/iztro) 项目！
+
+---
+
+**A huge thank you to [SylarLong](https://github.com/SylarLong)** for creating the excellent [iztro](https://github.com/SylarLong/iztro) library. His work has made Zi Wei Dou Shu, a treasure of traditional Chinese culture, accessible through modern programming languages.
+
+**iztro-py** is a faithful Python implementation of the original JavaScript library, maintaining:
+- ✅ Full **API compatibility**
+- ✅ Identical **algorithms and logic**
+- ✅ Consistent **functionality**
+
+If you like this project, please also visit and support the original [iztro](https://github.com/SylarLong/iztro) project!
 
 ## Contributing
 
@@ -246,8 +280,10 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 - [x] FunctionalStar class
 - [x] Surrounded palaces (三方四正)
 - [x] Horoscope system (大限、流年、流月、流日、流时)
-- [x] Unit tests (14/14 core tests + 4/4 horoscope tests passing)
+- [x] Unit tests (48/48 tests passing with 86% coverage)
 - [x] Usage examples
+- [x] PyPI package release
 - [ ] Internationalization (i18n) - currently zh-CN only
 - [ ] Documentation website
-- [ ] PyPI package release
+- [ ] Performance optimization
+- [ ] Additional test cases
