@@ -8,13 +8,12 @@ version = "0.1.0"
 description = "A pure Python implementation of iztro - A lightweight Zi Wei Dou Shu (Purple Star Astrology) library"
 readme = "README.md"
 requires-python = ">=3.8"
-license = {text = "MIT"}
 authors = [
     {name = "iztro-py Contributors"}
 ]
 keywords = ["astrology", "ziwei", "ziweidoushu", "purple-star", "chinese-astrology"]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
