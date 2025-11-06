@@ -239,7 +239,9 @@ def get_palace_index_by_name(palace_name: str) -> Optional[int]:
 def get_decadal_range(
     five_elements_class: FiveElementsClass,
     palace_index: int,
-    gender: str
+    gender: str,
+    soul_palace_index: int = 0,
+    year_branch_yin_yang: str = '阳'
 ) -> tuple[int, int]:
     """
     计算大限年龄范围
@@ -252,6 +254,8 @@ def get_decadal_range(
         five_elements_class: 五行局
         palace_index: 宫位索引 (0-11)
         gender: 性别 ('男' 或 '女')
+        soul_palace_index: 命宫索引（默认0）
+        year_branch_yin_yang: 年支阴阳（默认'阳'）
 
     Returns:
         (起始年龄, 截止年龄) 元组
@@ -259,11 +263,18 @@ def get_decadal_range(
     # 五行局决定起始年龄
     start_age = five_elements_class.value
 
-    # 计算此宫位是第几个大限
-    # 命宫(index=0)是第一个大限，管 start_age ~ start_age+9 岁
+    # 判断顺逆行
+    # 男阳女阴顺行，男阴女阳逆行
+    is_forward = (gender == '男' and year_branch_yin_yang == '阳') or \
+                 (gender == '女' and year_branch_yin_yang == '阴')
 
-    # 大限序号（从0开始）
-    decadal_order = palace_index
+    # 计算此宫位是第几个大限（从0开始）
+    if is_forward:
+        # 顺行：从命宫开始往后数
+        decadal_order = (palace_index - soul_palace_index) % 12
+    else:
+        # 逆行：从命宫开始往前数
+        decadal_order = (soul_palace_index - palace_index) % 12
 
     # 起始年龄
     range_start = start_age + decadal_order * 10

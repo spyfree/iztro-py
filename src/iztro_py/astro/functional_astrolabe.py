@@ -186,6 +186,71 @@ class FunctionalAstrolabe(Astrolabe):
                 return palace
         return None
 
+    def horoscope(
+        self,
+        solar_date: str,
+        time_index: int = 0
+    ):
+        """
+        获取指定日期的运势信息（大限、流年、流月、流日、流时）
+
+        Args:
+            solar_date: 查询的阳历日期 (YYYY-M-D or YYYY-MM-DD)
+            time_index: 时辰索引 (0-12)，默认为0（子时）
+
+        Returns:
+            Horoscope对象，包含大限、流年、流月、流日、流时信息
+
+        Example:
+            >>> chart = astro.by_solar('2000-8-16', 6, '男')
+            >>> horoscope = chart.horoscope('2024-1-1', 6)
+            >>> print(f"大限: {horoscope.decadal.name}")
+            >>> print(f"流年: {horoscope.yearly.name}")
+        """
+        from iztro_py.astro.horoscope import get_horoscope
+        from iztro_py.data.types import FiveElementsClass
+
+        # 获取出生年份
+        birth_year = int(self.solar_date.split('-')[0])
+
+        # 获取命宫索引
+        soul_palace = self.get_soul_palace()
+        soul_palace_index = soul_palace.index if soul_palace else 0
+
+        # 获取五行局
+        five_elements_class_map = {
+            '水二局': FiveElementsClass.WATER_2,
+            '木三局': FiveElementsClass.WOOD_3,
+            '金四局': FiveElementsClass.METAL_4,
+            '土五局': FiveElementsClass.EARTH_5,
+            '火六局': FiveElementsClass.FIRE_6
+        }
+        five_elements = five_elements_class_map.get(
+            self.five_elements_class,
+            FiveElementsClass.WATER_2
+        )
+
+        # 获取出生年支阴阳
+        if self.raw_chinese_date:
+            year_branch = self.raw_chinese_date.year_branch
+            # 从地支获取阴阳
+            from iztro_py.data.earthly_branches import EARTHLY_BRANCHES_CONFIG
+            branch_config = EARTHLY_BRANCHES_CONFIG.get(year_branch)
+            year_branch_yin_yang = branch_config.yin_yang if branch_config else '阳'
+        else:
+            year_branch_yin_yang = '阳'
+
+        return get_horoscope(
+            solar_date_str=solar_date,
+            time_index=time_index,
+            palaces=self.palaces,
+            soul_palace_index=soul_palace_index,
+            five_elements_class=five_elements,
+            gender=self.gender,
+            year_branch_yin_yang=year_branch_yin_yang,
+            birth_year=birth_year
+        )
+
     def __str__(self) -> str:
         """字符串表示"""
         lines = [
