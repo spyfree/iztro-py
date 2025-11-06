@@ -15,4 +15,15 @@ __license__ = "MIT"
 # Re-export main modules for convenient imports
 from iztro_py import astro, data, star, utils
 
-__all__ = ["astro", "data", "star", "utils", "__version__"]
+# Re-export main API functions for easier access
+from iztro_py.astro import by_solar, by_lunar
+
+__all__ = [
+    "astro",
+    "data",
+    "star",
+    "utils",
+    "by_solar",
+    "by_lunar",
+    "__version__"
+]

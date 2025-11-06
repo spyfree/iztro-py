@@ -178,7 +178,22 @@ def get_palace_index_by_name(palace_name: str) -> Optional[int]:
         '财帛宫': 8,
         '子女宫': 9,
         '夫妻宫': 10,
-        '兄弟宫': 11
+        '兄弟宫': 11,
+        # 简化别名（不带"宫"）
+        '命': 0,
+        '父母': 1,
+        '福德': 2,
+        '田宅': 3,
+        '官禄': 4,
+        '事业': 4,  # 官禄宫别名
+        '奴仆': 5,
+        '交友': 5,
+        '迁移': 6,
+        '疾厄': 7,
+        '财帛': 8,
+        '子女': 9,
+        '夫妻': 10,
+        '兄弟': 11
     }
 
     # 英文key映射
@@ -194,7 +209,20 @@ def get_palace_index_by_name(palace_name: str) -> Optional[int]:
         'wealthPalace': 8,
         'childrenPalace': 9,
         'spousePalace': 10,
-        'siblingsPalace': 11
+        'siblingsPalace': 11,
+        # 简化别名（不带"Palace"）
+        'soul': 0,
+        'parents': 1,
+        'spirit': 2,
+        'property': 3,
+        'career': 4,
+        'friends': 5,
+        'surface': 6,
+        'health': 7,
+        'wealth': 8,
+        'children': 9,
+        'spouse': 10,
+        'siblings': 11
     }
 
     # 先尝试中文
