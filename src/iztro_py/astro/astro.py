@@ -69,6 +69,10 @@ def by_solar(
         >>> print(chart.get_soul_palace())
         >>> print(chart.star('紫微'))
     """
+    # 设置语言
+    from iztro_py.i18n import set_language
+    set_language(language)
+
     # 1. 解析阳历日期
     year, month, day = parse_solar_date(solar_date)
 
@@ -138,6 +142,7 @@ def by_solar(
         body=body_star,
         five_elements_class=get_five_elements_class_name(five_class),
         palaces=palaces,
+        language=language,
         raw_lunar_date=lunar_date,
         raw_chinese_date=chinese_date
     )

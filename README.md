@@ -1,289 +1,154 @@
 # iztro-py
 
-[![PyPI version](https://img.shields.io/pypi/v/iztro-py.svg)](https://pypi.org/project/iztro-py/)
-[![Python Version](https://img.shields.io/pypi/pyversions/iztro-py.svg)](https://pypi.org/project/iztro-py/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Downloads](https://img.shields.io/pypi/dm/iztro-py.svg)](https://pypi.org/project/iztro-py/)
-[![Tests](https://img.shields.io/badge/tests-48%20passed-brightgreen.svg)](https://github.com/spyfree/iztro-py)
-[![Coverage](https://img.shields.io/badge/coverage-86%25-yellowgreen.svg)](https://github.com/spyfree/iztro-py)
+[![PyPI version](https://badge.fury.io/py/iztro-py.svg)](https://pypi.org/project/iztro-py/)
+[![Python版本](https://img.shields.io/pypi/pyversions/iztro-py)](https://pypi.org/project/iztro-py/)
+[![License](https://img.shields.io/pypi/l/iztro-py)](https://github.com/SylarLong/iztro-py/blob/main/LICENSE)
 
-A **pure Python implementation** of [iztro](https://github.com/SylarLong/iztro) - A lightweight library for generating astrolabes for Zi Wei Dou Shu (紫微斗数, Purple Star Astrology), an ancient Chinese astrology.
+紫微斗数Python库 - 纯Python实现，支持多语言输出。
 
-> 💝 **Special Thanks** to [SylarLong](https://github.com/SylarLong) for creating the original [iztro](https://github.com/SylarLong/iztro) library. This project is a faithful Python implementation of his excellent work, maintaining full API compatibility while bringing the power of Zi Wei Dou Shu to the Python ecosystem.
+[English](./README_EN.md) | [한국어](./README_KO.md)
 
-## Features
+## 项目简介
 
-- ✨ **Pure Python Implementation** - No JavaScript interpreter needed, unlike py-iztro
-- 🚀 **High Performance** - Native Python implementation without cross-language overhead
-- 🔧 **Type Safe** - Full type hints with Pydantic models
-- 🌍 **Multi-language Support** - Simplified Chinese, Traditional Chinese, English, Japanese, Korean, Vietnamese
-- 📊 **Complete Functionality** - All features from the original iztro library
-- 🔗 **Fluent API** - Method chaining for intuitive queries
+`iztro-py` 是一个功能强大的紫微斗数（Purple Star Astrology）Python库。与 py-iztro 不同，这是一个**纯Python原生实现**，无需JavaScript解释器依赖。
 
-## Installation
+### 主要特性
+
+- ✨ **纯Python实现** - 无需JavaScript运行时环境
+- 🌍 **多语言支持** - 支持简体中文、English、한국어
+- 🔒 **类型安全** - 使用Pydantic模型确保数据完整性
+- 🎯 **流畅API** - 支持方法链式调用
+- 📦 **易于使用** - pip一键安装
+
+## 安装
 
 ```bash
 pip install iztro-py
 ```
 
-## Quick Start
+## 快速开始
+
+### 基本用法
 
 ```python
 from iztro_py import astro
 
-# Get astrolabe by solar date
-astrolabe = astro.by_solar('2000-8-16', 2, '男', True, 'zh-CN')
+# 通过阳历日期创建星盘（默认中文输出）
+chart = astro.by_solar('2000-8-16', 6, '男')
 
-# Get basic information
-print(astrolabe.gender)          # '男'
-print(astrolabe.solar_date)      # '2000-8-16'
-print(astrolabe.lunar_date)      # '2000年七月十八'
-print(astrolabe.sign)            # '狮子座'
-print(astrolabe.zodiac)          # '龙'
+# 获取命宫
+soul_palace = chart.get_soul_palace()
+print(f"命宫: {soul_palace.translate_name()}")
+print(f"天干地支: {soul_palace.translate_heavenly_stem()} {soul_palace.translate_earthly_branch()}")
 
-# Get palace by name or index
-soul_palace = astrolabe.palace('命宫')
-print(soul_palace.name)                    # '命宫'
-print(soul_palace.heavenly_stem)           # '庚'
-print(soul_palace.earthly_branch)          # '午'
-print(soul_palace.major_stars)             # List of major stars
-
-# Check if palace contains specific stars
-if soul_palace.has(['紫微']):
-    print('命宫有紫微星')
-
-# Get star object
-ziwei = astrolabe.star('紫微')
-print(ziwei.brightness)                    # '旺'
-print(ziwei.mutagen)                       # '禄' or None
-
-# Get surrounded palaces (三方四正)
-surrounded = astrolabe.surrounded_palaces('命宫')
-if surrounded.have_mutagen('忌'):
-    print('三方四正有化忌')
-
-# Chain method calls
-if astrolabe.star('紫微').surrounded_palaces().have_mutagen('忌'):
-    print('紫微星三方四正有化忌')
-
-# Get horoscope (运限) for a specific date
-horoscope = astrolabe.horoscope('2024-1-1', 6)
-print(horoscope.decadal.name)              # '24-33岁' (大限)
-print(horoscope.nominal_age)               # 25 (虚岁)
-print(horoscope.yearly.name)               # '甲辰年' (流年)
+# 查询主星
+for star in soul_palace.major_stars:
+    print(f"主星: {star.translate_name()} - 亮度: {star.translate_brightness()}")
 ```
 
-## API Documentation
-
-### Core Functions
-
-#### `astro.by_solar(solar_date, time_index, gender, fix_leap=True, language='zh-CN')`
-
-Get astrolabe by solar calendar date.
-
-**Parameters:**
-- `solar_date` (str): Solar date in format 'YYYY-M-D'
-- `time_index` (int): Time index 0-12 (0=early子时, 1=丑时, ..., 12=late子时)
-- `gender` (str): '男' or '女'
-- `fix_leap` (bool): Whether to fix leap month
-- `language` (str): Output language ('zh-CN', 'zh-TW', 'en-US', 'ja-JP', 'ko-KR', 'vi-VN')
-
-**Returns:** `FunctionalAstrolabe` object
-
-#### `astro.by_lunar(lunar_date, time_index, gender, is_leap_month=False, fix_leap=True, language='zh-CN')`
-
-Get astrolabe by lunar calendar date.
-
-**Parameters:**
-- `lunar_date` (str): Lunar date in format 'YYYY-M-D'
-- `time_index` (int): Time index 0-12
-- `gender` (str): '男' or '女'
-- `is_leap_month` (bool): Whether it's a leap month
-- `fix_leap` (bool): Whether to fix leap month
-- `language` (str): Output language
-
-**Returns:** `FunctionalAstrolabe` object
-
-### FunctionalAstrolabe Methods
-
-- `palace(name_or_index)` - Get palace by name or index
-- `star(star_name)` - Get star object
-- `surrounded_palaces(name_or_index)` - Get surrounded palaces (三方四正)
-- `horoscope(solar_date, time_index)` - Get horoscope data for specified date
-- `get_soul_palace()` - Get soul palace (命宫)
-- `get_body_palace()` - Get body palace (身宫)
-
-### FunctionalPalace Methods
-
-- `has(stars)` - Check if palace contains all specified stars
-- `has_one_of(stars)` - Check if palace contains any of specified stars
-- `not_have(stars)` - Check if palace doesn't contain any specified stars
-- `has_mutagen(mutagen)` - Check if palace has specified mutagen (四化)
-- `is_empty()` - Check if palace is empty
-
-### FunctionalStar Methods
-
-- `palace()` - Get palace containing this star
-- `surrounded_palaces()` - Get surrounded palaces of this star
-- `opposite_palace()` - Get opposite palace
-- `with_brightness(brightness)` - Check star brightness
-- `with_mutagen(mutagen)` - Check star mutagen
-- `is_bright()` - Check if star is bright (庙/旺)
-- `is_weak()` - Check if star is weak (陷)
-
-### Horoscope System (运势系统)
-
-The horoscope system provides fortune analysis for different time periods:
+### 多语言支持
 
 ```python
-# Get horoscope for a specific date
-horoscope = chart.horoscope('2024-1-1', 6)
+from iztro_py import astro
 
-# Decadal horoscope (大限) - 10 years per cycle
-print(horoscope.decadal.name)              # e.g., '24-33岁'
-print(horoscope.decadal.palace_names)      # Palace where decadal is located
-print(horoscope.decadal.mutagen)           # Four transformations
+# 中文输出（默认）
+chart_zh = astro.by_solar('2000-8-16', 6, '男', language='zh-CN')
+palace_zh = chart_zh.get_soul_palace()
+print(f"命宫: {palace_zh.translate_name('zh-CN')}")  # 输出: 命宫: 福德宫
 
-# Age limit (小限) - 1 year per cycle
-print(horoscope.age.name)                  # e.g., '25岁'
-print(horoscope.nominal_age)               # 25 (virtual age)
+# 英文输出
+chart_en = astro.by_solar('2000-8-16', 6, '男', language='en-US')
+palace_en = chart_en.get_soul_palace()
+print(f"Palace: {palace_en.translate_name('en-US')}")  # 输出: Palace: Spirit
 
-# Yearly horoscope (流年)
-print(horoscope.yearly.name)               # e.g., '甲辰年'
-print(horoscope.yearly.palace_names)       # Palace location in birth chart
-
-# Monthly horoscope (流月)
-print(horoscope.monthly.name)              # e.g., '丙子月'
-
-# Daily horoscope (流日)
-print(horoscope.daily.name)                # e.g., '癸酉日'
-
-# Hourly horoscope (流时)
-print(horoscope.hourly.name)               # e.g., '戊午时'
-
-# Get palace for any horoscope level
-yearly_palace = chart.palace(horoscope.yearly.index)
-if yearly_palace:
-    print(yearly_palace.major_stars)
-
-# Analyze three-sided palaces for yearly horoscope
-surpalaces = chart.surrounded_palaces(horoscope.yearly.index)
-if surpalaces.have_mutagen('禄'):
-    print('Yearly palace has luck transformation')
+# 韩文输出
+chart_ko = astro.by_solar('2000-8-16', 6, '남', language='ko-KR')
+palace_ko = chart_ko.get_soul_palace()
+print(f"궁: {palace_ko.translate_name('ko-KR')}")  # 输出: 궁: 복덕궁
 ```
 
-**Horoscope Levels:**
-- **大限 (Decadal)**: 10-year cycle based on five elements class (水二局/木三局/金四局/土五局/火六局)
-- **小限 (Age Limit)**: Annual cycle, starts from soul palace
-- **流年 (Yearly)**: Based on yearly heavenly stem and earthly branch
-- **流月 (Monthly)**: Based on monthly stem and branch
-- **流日 (Daily)**: Based on daily stem and branch
-- **流时 (Hourly)**: Based on hourly stem and branch
+### 查询星曜
 
-See [examples/horoscope_usage.py](examples/horoscope_usage.py) for detailed usage examples.
+```python
+# 查找特定星曜
+ziwei = chart.star('ziweiMaj')
+if ziwei:
+    print(f"星曜: {ziwei.translate_name()}")
+    print(f"亮度: {ziwei.translate_brightness()}")
+    print(f"所在宫位: {ziwei.palace().translate_name()}")
+```
 
-## Architecture
+### 三方四正
 
-This is a **pure Python reimplementation** of the original JavaScript iztro library:
+```python
+# 获取命宫的三方四正
+soul_palace = chart.get_soul_palace()
+surpalaces = chart.surrounded_palaces(soul_palace.index)
 
-- **No JavaScript interpreter** - Unlike py-iztro which wraps JS code
-- **Native Python** - All algorithms implemented in Python
-- **Better performance** - No cross-language overhead
-- **Easier to maintain** - Pure Python codebase
+for palace in surpalaces.all_palaces():
+    print(f"{palace.translate_name()}: {[s.translate_name() for s in palace.major_stars]}")
+```
 
-## Comparison
+## 支持的语言
 
-| Feature | iztro (JS) | py-iztro | iztro-py (this) |
-|---------|-----------|----------|-----------------|
-| Language | JavaScript | Python wrapper | Pure Python |
-| Dependencies | Node.js | JS interpreter | Python only |
-| Performance | Fast | Slow (overhead) | Fast |
-| Type Safety | TypeScript | Pydantic | Pydantic |
-| Maintenance | Active | Depends on JS | Independent |
+- **zh-CN**: 简体中文（默认）
+- **en-US**: English
+- **ko-KR**: 한국어
 
-## Development
+更多语言支持正在开发中...
+
+## 文档
+
+- [完整使用文档](./docs/README_zh.md)
+- [API参考](./docs/API.md)
+- [示例代码](./examples/)
+
+## 与 iztro (JS版本) 的对比
+
+|  | iztro-py | py-iztro |
+|---|---|---|
+| 实现方式 | 纯Python | JavaScript包装器 |
+| 依赖 | 仅Python标准库 | 需要JS解释器 |
+| 性能 | 高 | 较低（跨语言调用开销） |
+| 类型安全 | ✓ Pydantic模型 | ✗ |
+| 多语言支持 | ✓ | ✗ |
+
+## 开发
+
+### 安装开发依赖
 
 ```bash
-# Clone repository
-git clone https://github.com/spyfree/iztro-py.git
-cd iztro-py
-
-# Install dependencies
 pip install -e ".[dev]"
+```
 
-# Run tests
+### 运行测试
+
+```bash
 pytest
-
-# Run with coverage
 pytest --cov=src/iztro_py --cov-report=html
+```
 
-# Format code
+### 代码格式化
+
+```bash
 black src tests
-
-# Type check
 mypy src
 ```
 
-## License
+## 相关链接
 
-MIT License - see [LICENSE](LICENSE) file
+- [iztro (JavaScript版本)](https://github.com/SylarLong/iztro)
+- [在线排盘](https://ziwei.pub)
+- [紫微斗数介绍](https://zh.wikipedia.org/wiki/%E7%B4%AB%E5%BE%AE%E6%96%97%E6%95%B0)
 
-## Credits & Acknowledgments
+## 许可证
 
-This project is a pure Python reimplementation of the original [iztro](https://github.com/SylarLong/iztro) library created by [SylarLong](https://github.com/SylarLong).
+MIT License
 
-### 致敬原作者 (Tribute to the Original Author)
+## 贡献
 
-🙏 **深深感谢 [SylarLong](https://github.com/SylarLong)** 创建了优秀的 [iztro](https://github.com/SylarLong/iztro) 库。他的工作让紫微斗数这一中国传统文化瑰宝得以用现代编程语言实现，为开发者和爱好者提供了便捷的工具。
-
-**iztro-py** 是对原始 JavaScript 库的忠实 Python 实现，我们：
-- ✅ 保持了与原库的 **API 完全兼容**
-- ✅ 遵循了原库的 **算法和逻辑**
-- ✅ 致力于维护与原库的 **功能一致性**
-
-**原作者的贡献：**
-- 🎯 创建了完整的紫微斗数算法实现
-- 📚 提供了详细的文档和示例
-- 🌍 支持多语言国际化
-- 💎 持续维护和改进项目
-
-如果你喜欢这个项目，也请访问和支持原始的 [iztro](https://github.com/SylarLong/iztro) 项目！
+欢迎提交 Issue 和 Pull Request！
 
 ---
 
-**A huge thank you to [SylarLong](https://github.com/SylarLong)** for creating the excellent [iztro](https://github.com/SylarLong/iztro) library. His work has made Zi Wei Dou Shu, a treasure of traditional Chinese culture, accessible through modern programming languages.
-
-**iztro-py** is a faithful Python implementation of the original JavaScript library, maintaining:
-- ✅ Full **API compatibility**
-- ✅ Identical **algorithms and logic**
-- ✅ Consistent **functionality**
-
-If you like this project, please also visit and support the original [iztro](https://github.com/SylarLong/iztro) project!
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## Roadmap
-
-- [x] Project structure setup
-- [x] Core data types and constants
-- [x] Lunar/Solar calendar conversion
-- [x] Heavenly Stems and Earthly Branches calculations
-- [x] Palace positioning algorithms
-- [x] Star positioning algorithms (紫微、天府、14主星)
-- [x] Minor stars algorithms (14辅星)
-- [x] Mutagen system (四化)
-- [x] Brightness calculations
-- [x] FunctionalAstrolabe class
-- [x] FunctionalPalace class
-- [x] FunctionalStar class
-- [x] Surrounded palaces (三方四正)
-- [x] Horoscope system (大限、流年、流月、流日、流时)
-- [x] Unit tests (48/48 tests passing with 86% coverage)
-- [x] Usage examples
-- [x] PyPI package release
-- [ ] Internationalization (i18n) - currently zh-CN only
-- [ ] Documentation website
-- [ ] Performance optimization
-- [ ] Additional test cases
+如果这个项目对你有帮助，请给它一个 ⭐️

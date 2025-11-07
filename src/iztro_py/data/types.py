@@ -10,6 +10,47 @@ from typing import Literal, Optional, List, Tuple
 from pydantic import BaseModel, Field
 
 
+def _translate_name(key: str, lang: Optional[str] = None) -> str:
+    """
+    翻译名称的辅助函数
+    延迟导入 i18n 模块以避免循环依赖
+    """
+    from iztro_py.i18n import t
+
+    # 尝试多个可能的键
+    # 1. 直接作为星曜名称
+    if key in ['ziweiMaj', 'tianjiMaj', 'taiyangMaj', 'wuquMaj', 'tiantongMaj',
+               'lianzhenMaj', 'tianfuMaj', 'taiyinMaj', 'tanlangMaj', 'jumenMaj',
+               'tianxiangMaj', 'tianliangMaj', 'qishaMaj', 'pojunMaj']:
+        return t(f'stars.major.{key}', lang)
+
+    if key in ['zuofuMin', 'youbiMin', 'wenchangMin', 'wenquMin', 'tiankuiMin',
+               'tianyueMin', 'huoxingMin', 'lingxingMin', 'dikongMin', 'dijieMin',
+               'lucunMin', 'qingyangMin', 'tuoluoMin', 'tianmaMin']:
+        return t(f'stars.minor.{key}', lang)
+
+    # 2. 作为宫位名称
+    if key in ['soulPalace', 'parentsPalace', 'spiritPalace', 'propertyPalace',
+               'careerPalace', 'friendsPalace', 'surfacePalace', 'healthPalace',
+               'wealthPalace', 'childrenPalace', 'spousePalace', 'siblingsPalace']:
+        return t(f'palaces.{key}', lang)
+
+    # 3. 作为天干
+    if 'Heavenly' in key:
+        return t(f'heavenlyStem.{key}', lang)
+
+    # 4. 作为地支
+    if 'Earthly' in key:
+        return t(f'earthlyBranch.{key}', lang)
+
+    # 5. 作为时辰
+    if 'Hour' in key:
+        return t(f'time.{key}', lang)
+
+    # 默认返回原值
+    return t(key, lang)
+
+
 # ============================================================================
 # Basic Type Aliases
 # ============================================================================
@@ -213,6 +254,44 @@ class Star(BaseModel):
     class Config:
         frozen = False  # Allow modification for mutagen/brightness
 
+    def translate_name(self, lang: Optional[str] = None) -> str:
+        """
+        翻译星曜名称
+
+        Args:
+            lang: 目标语言代码，如不指定则使用当前语言
+
+        Returns:
+            翻译后的星曜名称
+        """
+        return _translate_name(self.name, lang)
+
+    def translate_brightness(self, lang: Optional[str] = None) -> Optional[str]:
+        """
+        翻译亮度
+
+        Args:
+            lang: 目标语言代码
+
+        Returns:
+            翻译后的亮度，如无亮度则返回 None
+        """
+        if not self.brightness:
+            return None
+        from iztro_py.i18n import t
+        # 亮度直接就是中文，需要映射到英文键
+        brightness_map = {
+            '庙': 'miao',
+            '旺': 'wang',
+            '得': 'de',
+            '利': 'li',
+            '平': 'ping',
+            '不': 'bu',
+            '陷': 'xian'
+        }
+        key = brightness_map.get(self.brightness, self.brightness)
+        return t(f'brightness.{key}', lang)
+
 
 class Decadal(BaseModel):
     """大限数据结构"""
@@ -241,6 +320,26 @@ class Palace(BaseModel):
 
     class Config:
         frozen = False
+
+    def translate_name(self, lang: Optional[str] = None) -> str:
+        """
+        翻译宫位名称
+
+        Args:
+            lang: 目标语言代码
+
+        Returns:
+            翻译后的宫位名称
+        """
+        return _translate_name(self.name, lang)
+
+    def translate_heavenly_stem(self, lang: Optional[str] = None) -> str:
+        """翻译天干"""
+        return _translate_name(self.heavenly_stem, lang)
+
+    def translate_earthly_branch(self, lang: Optional[str] = None) -> str:
+        """翻译地支"""
+        return _translate_name(self.earthly_branch, lang)
 
 
 class SoulAndBody(BaseModel):
@@ -288,12 +387,26 @@ class Astrolabe(BaseModel):
     five_elements_class: str  # 五行局
     palaces: List[Palace]
 
+    # Language setting
+    language: Language = 'zh-CN'
+
     # Raw dates for internal use
     raw_lunar_date: Optional[LunarDate] = None
     raw_chinese_date: Optional[HeavenlyStemAndEarthlyBranchDate] = None
 
     class Config:
         frozen = False
+
+    def set_language(self, lang: Language) -> None:
+        """
+        设置星盘语言
+
+        Args:
+            lang: 目标语言代码
+        """
+        from iztro_py.i18n import set_language
+        self.language = lang
+        set_language(lang)
 
 
 class SurroundedPalaces(BaseModel):
