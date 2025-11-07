@@ -21,6 +21,7 @@ from iztro_py.star.minor_star import place_minor_stars
 from iztro_py.star.mutagen import apply_mutagen_to_palaces
 from iztro_py.data.brightness import apply_brightness_to_palaces
 from iztro_py.data.earthly_branches import get_soul_star, get_body_star
+from iztro_py.star.location import get_start_indices
 from iztro_py.utils.calendar import (
     parse_solar_date,
     solar_to_lunar,
@@ -35,7 +36,8 @@ from iztro_py.utils.helpers import (
     get_five_elements_class,
     get_five_elements_class_name,
     get_time_name,
-    get_time_range
+    get_time_range,
+    hour_to_time_index,
 )
 
 
@@ -108,8 +110,15 @@ def by_solar(
     # 8. 初始化十二宫
     palaces = initialize_palaces(soul_and_body)
 
-    # 9. 安置主星
-    place_major_stars(palaces, five_class, lunar_date.day)
+    # 9. 安置主星（与原生 iztro 对齐的紫微/天府起局算法）
+    ziwei_idx, tianfu_idx = get_start_indices(
+        solar_date,
+        time_index,
+        fix_leap,
+        soul_and_body.heavenly_stem_of_soul,
+        soul_and_body.earthly_branch_of_soul,
+    )
+    place_major_stars(palaces, ziwei_idx, tianfu_idx)
 
     # 10. 安置辅星
     place_minor_stars(
@@ -127,6 +136,10 @@ def by_solar(
     apply_brightness_to_palaces(palaces)
 
     # 13. 创建Astrolabe对象
+    # 计算身宫地支（以身宫所在宫位的地支为准）
+    body_palace_rel_index = (soul_and_body.body_index - soul_and_body.soul_index) % 12
+    body_palace_branch = palaces[body_palace_rel_index]['earthly_branch']
+
     astrolabe = Astrolabe(
         gender=gender,
         solar_date=solar_date,
@@ -137,7 +150,7 @@ def by_solar(
         sign=sign,
         zodiac=zodiac,
         earthly_branch_of_soul_palace=soul_and_body.earthly_branch_of_soul,
-        earthly_branch_of_body_palace=chinese_date.year_branch,  # 简化处理
+        earthly_branch_of_body_palace=body_palace_branch,
         soul=soul_star,
         body=body_star,
         five_elements_class=get_five_elements_class_name(five_class),
@@ -149,6 +162,24 @@ def by_solar(
 
     # 14. 转换为FunctionalAstrolabe
     return FunctionalAstrolabe(astrolabe)
+
+
+def by_solar_hour(
+    solar_date: str,
+    hour: int,
+    gender: GenderName,
+    fix_leap: bool = True,
+    language: Language = 'zh-CN'
+) -> FunctionalAstrolabe:
+    """
+    通过阳历日期和小时数(0-23)获取星盘（便捷包装）
+
+    将小时映射为时辰索引，以与 iztro 一致：
+    - 23点为晚子时 (time_index=12)，0点为早子时 (time_index=0)
+    - 其他小时按每2小时一个时辰
+    """
+    ti = hour_to_time_index(hour)
+    return by_solar(solar_date, ti, gender, fix_leap, language)
 
 
 def by_lunar(
@@ -191,6 +222,21 @@ def by_lunar(
 
     # 4. 调用by_solar
     return by_solar(solar_date_str, time_index, gender, fix_leap, language)
+
+
+def by_lunar_hour(
+    lunar_date: str,
+    hour: int,
+    gender: GenderName,
+    is_leap_month: bool = False,
+    fix_leap: bool = True,
+    language: Language = 'zh-CN'
+) -> FunctionalAstrolabe:
+    """
+    通过农历日期和小时数(0-23)获取星盘（便捷包装）
+    """
+    ti = hour_to_time_index(hour)
+    return by_lunar(lunar_date, ti, gender, is_leap_month, fix_leap, language)
 
 
 def get_zodiac_by_solar_date(solar_date: str, language: Language = 'zh-CN') -> str:

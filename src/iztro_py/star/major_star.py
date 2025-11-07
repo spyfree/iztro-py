@@ -6,33 +6,46 @@ Functions for placing the 14 major stars (主星) into palaces.
 
 from typing import List
 from iztro_py.data.types import Star, FiveElementsClass
-from iztro_py.star.location import get_star_indices, get_major_star_positions
+from iztro_py.star.location import get_major_star_positions
 
 
 def place_major_stars(
     palaces: List[dict],
-    five_elements_class: FiveElementsClass,
-    lunar_day: int
+    arg1,
+    arg2,
 ) -> None:
     """
     将14颗主星安置到宫位中
 
     Args:
         palaces: 宫位列表
-        five_elements_class: 五行局
-        lunar_day: 农历日
+        arg1: 兼容两种调用方式：
+              - (FiveElementsClass, lunar_day)
+              - (ziwei_index: int, tianfu_index: int)
+        arg2: 同上
 
     Note:
         直接修改palaces列表，不返回值
     """
-    # 获取紫微和天府的位置
-    ziwei_index, tianfu_index = get_star_indices(five_elements_class, lunar_day)
+    from iztro_py.data.constants import EARTHLY_BRANCHES
 
-    # 获取所有主星位置
+    # 兼容旧API：如果第一个参数是 FiveElementsClass，则按旧算法计算索引
+    if isinstance(arg1, FiveElementsClass):
+        from iztro_py.star.location import get_ziwei_index, get_tianfu_index
+        five_class: FiveElementsClass = arg1
+        lunar_day: int = arg2
+        ziwei_index = get_ziwei_index(five_class, lunar_day)
+        tianfu_index = get_tianfu_index(ziwei_index)
+    else:
+        ziwei_index = int(arg1)
+        tianfu_index = int(arg2)
+
+    # 获取所有主星位置（地支索引）
     star_positions = get_major_star_positions(ziwei_index, tianfu_index)
 
     # 将星曜放置到对应宫位
-    for star_name, palace_index in star_positions.items():
+    # 注意：star_positions 中的索引是地支索引，需要转换为宫位索引
+    for star_name, earthly_branch_index in star_positions.items():
         star = Star(
             name=star_name,
             type='major',
@@ -41,7 +54,12 @@ def place_major_stars(
             mutagen=None  # 后续计算
         )
 
-        palaces[palace_index]['major_stars'].append(star)
+        # 查找具有该地支的宫位
+        target_branch = EARTHLY_BRANCHES[earthly_branch_index]
+        for palace in palaces:
+            if palace['earthly_branch'] == target_branch:
+                palace['major_stars'].append(star)
+                break
 
 
 def get_major_stars_in_palace(palace: dict) -> List[Star]:

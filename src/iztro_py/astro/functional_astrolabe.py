@@ -11,6 +11,7 @@ from iztro_py.astro.functional_palace import FunctionalPalace
 from iztro_py.astro.functional_star import FunctionalStar
 from iztro_py.astro.functional_surpalaces import FunctionalSurpalaces
 from iztro_py.data.constants import get_surrounded_indices
+from iztro_py.i18n import t
 
 
 class FunctionalAstrolabe(Astrolabe):
@@ -271,3 +272,62 @@ class FunctionalAstrolabe(Astrolabe):
 
     def __repr__(self) -> str:
         return f"FunctionalAstrolabe(date={self.solar_date}, gender={self.gender})"
+
+    # ---------------------------------------------------------------------
+    # Compatibility Export
+    # ---------------------------------------------------------------------
+    def to_iztro_dict(self) -> dict:
+        """
+        导出与原生 iztro/py-iztro 结构一致的字典（字段名与中文值对齐）
+
+        返回字段示例：
+        - gender, solarDate, lunarDate, chineseDate, time, timeRange, sign, zodiac
+        - earthlyBranchOfSoulPalace, earthlyBranchOfBodyPalace, soul, body, fiveElementsClass
+        - palaces: [{ name, isBodyPalace, isOriginalPalace, heavenlyStem, earthlyBranch, majorStars, minorStars }]
+        """
+        def tr_branch(branch_key: str) -> str:
+            return t(f"earthlyBranch.{branch_key}") if 'Earthly' in branch_key else branch_key
+
+        def tr_stem(stem_key: str) -> str:
+            return t(f"heavenlyStem.{stem_key}") if 'Heavenly' in stem_key else stem_key
+
+        def star_dict(star: FunctionalStar) -> dict:
+            return {
+                'name': star.translate_name(),
+                'type': star.type,
+                'scope': star.scope,
+                'brightness': star.brightness,
+                'mutagen': star.mutagen,
+            }
+
+        palaces = []
+        for p in self.palaces:
+            palaces.append({
+                'name': p.translate_name(),
+                'isBodyPalace': p.is_body_palace,
+                'isOriginalPalace': p.is_original_palace,
+                'heavenlyStem': tr_stem(p.heavenly_stem),
+                'earthlyBranch': tr_branch(p.earthly_branch),
+                'majorStars': [star_dict(s) for s in p.major_stars],
+                'minorStars': [star_dict(s) for s in p.minor_stars],
+                'adjectiveStars': [star_dict(s) for s in p.adjective_stars],
+            })
+
+        from iztro_py.data.types import Star
+
+        return {
+            'gender': self.gender,
+            'solarDate': self.solar_date,
+            'lunarDate': self.lunar_date,
+            'chineseDate': self.chinese_date,
+            'time': self.time,
+            'timeRange': self.time_range,
+            'sign': self.sign,
+            'zodiac': self.zodiac,
+            'earthlyBranchOfSoulPalace': tr_branch(self.earthly_branch_of_soul_palace),
+            'earthlyBranchOfBodyPalace': tr_branch(self.earthly_branch_of_body_palace),
+            'soul': Star(name=self.soul, type='major', scope='origin').translate_name(),
+            'body': Star(name=self.body, type='major', scope='origin').translate_name(),
+            'fiveElementsClass': self.five_elements_class,
+            'palaces': palaces,
+        }

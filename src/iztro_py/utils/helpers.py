@@ -136,6 +136,28 @@ def get_time_name(time_index: int) -> str:
         raise ValueError(f"Invalid time index: {time_index}. Must be 0-12.")
 
 
+def hour_to_time_index(hour: int) -> int:
+    """
+    将 24 小时制的小时数 (0-23) 映射为时辰索引 (0-12)
+
+    规则与 iztro 保持一致：
+    - 子时分早子时(0)与晚子时(12)：23点对应晚子时(12)，0点对应早子时(0)
+    - 其他小时按每两小时一个时辰：(hour + 1) // 2
+
+    Args:
+        hour: 小时 (0-23)
+
+    Returns:
+        时辰索引 (0-12)
+    """
+    if not (0 <= hour <= 23):
+        raise ValueError(f"hour must be in 0..23, got {hour}")
+
+    if hour == 23:
+        return 12  # 晚子时
+    return (hour + 1) // 2
+
+
 def calculate_nominal_age(birth_year: int, target_year: int, age_divide: str = 'normal') -> int:
     """
     计算虚岁

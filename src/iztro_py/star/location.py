@@ -6,8 +6,10 @@ especially Ziwei (紫微) and Tianfu (天府).
 """
 
 from typing import Tuple
-from iztro_py.data.types import FiveElementsClass
+from datetime import date, timedelta
+from iztro_py.data.types import FiveElementsClass, HeavenlyStemName, EarthlyBranchName
 from iztro_py.data.constants import fix_index, ZIWEI_START_POSITIONS
+from iztro_py.utils.calendar import parse_solar_date, solar_to_lunar
 
 
 def get_ziwei_index(five_elements_class: FiveElementsClass, lunar_day: int) -> int:
@@ -55,9 +57,7 @@ def get_ziwei_index(five_elements_class: FiveElementsClass, lunar_day: int) -> i
     # 算法：(农历日期 - 1) // 五行局数值 = 循环次数
     # 每个循环移动一个宫位
     cycles = (lunar_day - 1) // class_value
-    remainder = (lunar_day - 1) % class_value
-
-    # 从起始宫位开始，顺行cycles个宫位
+    # 与原版 iztro 不完全一致的简化算法，已被 get_start_indices 替代
     ziwei_index = fix_index(start_pos + cycles)
 
     return ziwei_index
@@ -95,23 +95,91 @@ def get_tianfu_index(ziwei_index: int) -> int:
     return tianfu_index
 
 
+# Backward-compat helper to satisfy existing tests/imports
 def get_star_indices(
     five_elements_class: FiveElementsClass,
     lunar_day: int
 ) -> Tuple[int, int]:
     """
-    获取紫微星和天府星的位置
+    兼容旧接口：根据五行局与农历日返回紫微与天府索引
 
-    Args:
-        five_elements_class: 五行局
-        lunar_day: 农历日
-
-    Returns:
-        (紫微星索引, 天府星索引) 元组
+    注意：该算法为简化版，生产使用请改用 get_start_indices。
     """
     ziwei_index = get_ziwei_index(five_elements_class, lunar_day)
     tianfu_index = get_tianfu_index(ziwei_index)
+    return ziwei_index, tianfu_index
 
+def get_start_indices(
+    solar_date_str: str,
+    time_index: int,
+    fix_leap: bool,
+    heavenly_stem_of_soul: HeavenlyStemName,
+    earthly_branch_of_soul: EarthlyBranchName,
+) -> Tuple[int, int]:
+    """
+    计算紫微与天府起始索引（与原生 iztro 对齐）
+
+    对应 iztro/lib/star/location.getStartIndex 的 Python 实现。
+
+    规则要点：
+    - “六五四三二，酉午亥辰丑；局数除日数，商数宫前走；若见数无余，便要起虎口，日数小于局，还直宫中守。”
+    - 晚子时（time_index==12）按次日处理（跨月则顺延到下一月初一）
+    - 五行局按命宫干支起局
+
+    Returns:
+        (紫微索引, 天府索引)
+    """
+    # 解析阳历日期并获取当日农历
+    year, month, day = parse_solar_date(solar_date_str)
+
+    # 晚子时按次日计算农历日
+    if time_index == 12:
+        d = date(year, month, day) + timedelta(days=1)
+        lunar = solar_to_lunar(d.year, d.month, d.day, fix_leap)
+        lunar_day = lunar.day
+    else:
+        lunar = solar_to_lunar(year, month, day, fix_leap)
+        lunar_day = lunar.day
+
+    # 五行局数值
+    class_value = FiveElementsClass(
+        FiveElementsClass["WOOD_3"].value  # dummy init to satisfy type checkers
+    )
+    # 直接使用传入的命宫干支计算的五行局数值
+    # 复用已有查表逻辑
+    from iztro_py.utils.helpers import get_five_elements_class
+
+    five_cls = get_five_elements_class(heavenly_stem_of_soul, earthly_branch_of_soul)
+    class_value = five_cls.value
+
+    # 寻找最小 offset 使 (lunar_day + offset) 能被 class_value 整除
+    offset = -1
+    remainder = -1
+    while remainder != 0:
+        offset += 1
+        divisor = lunar_day + offset
+        remainder = divisor % class_value
+        quotient = divisor // class_value
+
+    # 商对 12 取模（以寅为0的坐标系）
+    quotient %= 12
+
+    # 起始紫微索引（寅为0坐标系）
+    node_ziwei_index = quotient - 1
+
+    # 循环次数为偶数：逆时针加 offset；奇数：顺时针减 offset
+    if offset % 2 == 0:
+        node_ziwei_index += offset
+    else:
+        node_ziwei_index -= offset
+    node_ziwei_index = fix_index(node_ziwei_index)
+
+    # 天府星位置与紫微星相对（同一坐标系下）
+    node_tianfu_index = fix_index(12 - node_ziwei_index)
+
+    # iztro 的索引以寅宫为0，而本库以子宫为0，需要转换：ours = (iztro + 2) % 12
+    ziwei_index = fix_index(node_ziwei_index + 2)
+    tianfu_index = fix_index(node_tianfu_index + 2)
     return ziwei_index, tianfu_index
 
 

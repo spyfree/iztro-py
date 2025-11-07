@@ -209,15 +209,30 @@ def initialize_palaces(soul_and_body: SoulAndBody) -> list[dict]:
 
     palaces = []
 
+    # 重要：宫位地支是从命宫的地支开始，按地支顺序排列
+    # 例如：命宫在亥 -> 父母宫在子 -> 福德宫在丑 -> ...
+    soul_index = soul_and_body.soul_index
+    body_index = soul_and_body.body_index
+
+    # 计算身宫在宫位序列中的相对索引（以命宫所在宫位为0）
+    body_palace_rel_index = fix_index(body_index - soul_index)
+
     for i in range(12):
+        # 计算这个宫位对应的地支索引
+        # 从命宫开始，i=0是命宫，i=1是父母宫等
+        earthly_branch_index = fix_index(soul_index + i)
+
+        # 判断该宫位是否为身宫（相对命宫的序列位置等于身宫相对索引）
+        is_body = (i == body_palace_rel_index)
+
         palace = {
             'index': i,
             'name': PALACES[i],
-            'is_body_palace': (i == soul_and_body.body_index),
-            'is_original_palace': (i == soul_and_body.soul_index),
-            'earthly_branch': EARTHLY_BRANCHES[i],
+            'is_body_palace': is_body,
+            'is_original_palace': (i == 0),  # 第0个宫位总是命宫
+            'earthly_branch': EARTHLY_BRANCHES[earthly_branch_index],
             'heavenly_stem': get_palace_heavenly_stem(
-                i,
+                earthly_branch_index,
                 soul_and_body.soul_index,
                 soul_and_body.heavenly_stem_of_soul
             ),
