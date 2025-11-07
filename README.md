@@ -15,7 +15,7 @@
 ### 主要特性
 
 - ✨ **纯Python实现** - 无需JavaScript运行时环境
-- 🌍 **多语言支持** - 支持简体中文、English、한국어
+- 🌍 **多语言支持** - 支持简体中文、繁體中文、English、日本語、한국어、Tiếng Việt
 - 🔒 **类型安全** - 使用Pydantic模型确保数据完整性
 - 🎯 **流畅API** - 支持方法链式调用
 - 📦 **易于使用** - pip一键安装
@@ -51,20 +51,29 @@ for star in soul_palace.major_stars:
 ```python
 from iztro_py import astro
 
-# 中文输出（默认）
-chart_zh = astro.by_solar('2000-8-16', 6, '男', language='zh-CN')
-palace_zh = chart_zh.get_soul_palace()
-print(f"命宫: {palace_zh.translate_name('zh-CN')}")  # 输出: 命宫: 福德宫
+# 简体中文（默认）
+chart = astro.by_solar('2000-8-16', 6, '男', language='zh-CN')
+print(chart.get_soul_palace().translate_name('zh-CN'))  # 输出: 福德宫
 
-# 英文输出
-chart_en = astro.by_solar('2000-8-16', 6, '男', language='en-US')
-palace_en = chart_en.get_soul_palace()
-print(f"Palace: {palace_en.translate_name('en-US')}")  # 输出: Palace: Spirit
+# 繁體中文
+chart = astro.by_solar('2000-8-16', 6, '男', language='zh-TW')
+print(chart.get_soul_palace().translate_name('zh-TW'))  # 输出: 福德宮
 
-# 韩文输出
-chart_ko = astro.by_solar('2000-8-16', 6, '남', language='ko-KR')
-palace_ko = chart_ko.get_soul_palace()
-print(f"궁: {palace_ko.translate_name('ko-KR')}")  # 输出: 궁: 복덕궁
+# English
+chart = astro.by_solar('2000-8-16', 6, '男', language='en-US')
+print(chart.get_soul_palace().translate_name('en-US'))  # 输出: Spirit
+
+# 日本語
+chart = astro.by_solar('2000-8-16', 6, '男', language='ja-JP')
+print(chart.get_soul_palace().translate_name('ja-JP'))  # 输出: 福徳宮
+
+# 한국어
+chart = astro.by_solar('2000-8-16', 6, '남', language='ko-KR')
+print(chart.get_soul_palace().translate_name('ko-KR'))  # 输出: 복덕궁
+
+# Tiếng Việt
+chart = astro.by_solar('2000-8-16', 6, 'nam', language='vi-VN')
+print(chart.get_soul_palace().translate_name('vi-VN'))  # 输出: Phúc Đức Cung
 ```
 
 ### 查询星曜
@@ -91,11 +100,14 @@ for palace in surpalaces.all_palaces():
 
 ## 支持的语言
 
-- **zh-CN**: 简体中文（默认）
-- **en-US**: English
-- **ko-KR**: 한국어
+- **zh-CN**: 简体中文（默认）🇨🇳
+- **zh-TW**: 繁體中文 🇹🇼
+- **en-US**: English 🇺🇸
+- **ja-JP**: 日本語 🇯🇵
+- **ko-KR**: 한국어 🇰🇷
+- **vi-VN**: Tiếng Việt 🇻🇳
 
-更多语言支持正在开发中...
+涵盖紫微斗数主要流行的东亚和东南亚地区！
 
 ## 文档
 

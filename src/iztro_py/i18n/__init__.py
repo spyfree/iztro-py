@@ -4,8 +4,11 @@
 提供多语言支持，默认语言为简体中文 (zh-CN)
 支持的语言：
 - zh-CN: 简体中文
+- zh-TW: 繁體中文
 - en-US: English
+- ja-JP: 日本語
 - ko-KR: 한국어
+- vi-VN: Tiếng Việt
 """
 
 from typing import Dict, Any, Optional
@@ -22,11 +25,11 @@ def set_language(lang: str) -> None:
     设置当前语言
 
     Args:
-        lang: 语言代码，支持 'zh-CN', 'en-US', 'ko-KR'
+        lang: 语言代码，支持 'zh-CN', 'zh-TW', 'en-US', 'ja-JP', 'ko-KR', 'vi-VN'
               不支持的语言将降级为 'zh-CN'
     """
     global _current_language
-    supported = ['zh-CN', 'en-US', 'ko-KR']
+    supported = ['zh-CN', 'zh-TW', 'en-US', 'ja-JP', 'ko-KR', 'vi-VN']
 
     # 如果语言不支持，降级到中文，但不报错
     if lang not in supported:
@@ -62,12 +65,21 @@ def _load_locale(lang: str) -> None:
         if lang == 'zh-CN':
             from .locales import zh_CN
             _locales[lang] = zh_CN.translations
+        elif lang == 'zh-TW':
+            from .locales import zh_TW
+            _locales[lang] = zh_TW.translations
         elif lang == 'en-US':
             from .locales import en_US
             _locales[lang] = en_US.translations
+        elif lang == 'ja-JP':
+            from .locales import ja_JP
+            _locales[lang] = ja_JP.translations
         elif lang == 'ko-KR':
             from .locales import ko_KR
             _locales[lang] = ko_KR.translations
+        elif lang == 'vi-VN':
+            from .locales import vi_VN
+            _locales[lang] = vi_VN.translations
     except ImportError:
         raise ValueError(f"Language resource not found: {lang}")
 
