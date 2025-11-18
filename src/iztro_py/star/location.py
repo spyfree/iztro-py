@@ -5,7 +5,7 @@ Contains core algorithms for calculating positions of major stars,
 especially Ziwei (紫微) and Tianfu (天府).
 """
 
-from typing import Tuple
+from typing import Dict, Tuple
 from datetime import date, timedelta
 from iztro_py.data.types import FiveElementsClass, HeavenlyStemName, EarthlyBranchName
 from iztro_py.data.constants import fix_index, ZIWEI_START_POSITIONS
@@ -178,7 +178,7 @@ def get_start_indices(
     return ziwei_index, tianfu_index
 
 
-def get_major_star_positions(ziwei_index: int, tianfu_index: int) -> dict[str, int]:
+def get_major_star_positions(ziwei_index: int, tianfu_index: int) -> Dict[str, int]:
     """
     根据紫微和天府星位置，计算其他主星位置
 
