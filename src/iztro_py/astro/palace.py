@@ -141,7 +141,7 @@ def get_body_palace_index(soul_index: int, body_index: int) -> int:
 
 def calculate_palace_ages(
     palace_index: int, soul_palace_index: int, five_elements_class_value: int, is_forward: bool
-) -> list[int]:
+) -> List[int]:
     """
     计算宫位的小限年龄数组
 
