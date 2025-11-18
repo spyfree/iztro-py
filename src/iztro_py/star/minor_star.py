@@ -4,7 +4,7 @@ Minor stars placement for iztro-py
 Functions for placing the 14 minor stars (辅星) into palaces.
 """
 
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 from iztro_py.data.types import Star, HeavenlyStemName, EarthlyBranchName
 from iztro_py.data.constants import HEAVENLY_STEMS, EARTHLY_BRANCHES
 from iztro_py.star.location import (
@@ -19,7 +19,9 @@ from iztro_py.star.location import (
 )
 
 
-def _find_palace_by_branch_index(palaces: List[dict], branch_index: int) -> Optional[dict]:
+def _find_palace_by_branch_index(
+    palaces: List[Dict[str, Any]], branch_index: int
+) -> Optional[Dict[str, Any]]:
     """
     根据地支索引查找对应的宫位
 
@@ -38,7 +40,7 @@ def _find_palace_by_branch_index(palaces: List[dict], branch_index: int) -> Opti
 
 
 def place_minor_stars(
-    palaces: List[dict],
+    palaces: List[Dict[str, Any]],
     lunar_month: int,
     time_index: int,
     year_stem: HeavenlyStemName,
