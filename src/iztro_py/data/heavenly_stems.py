@@ -5,8 +5,8 @@ Contains detailed information about the ten heavenly stems including
 yin-yang, five elements, clashes, and mutagen (四化) configurations.
 """
 
-from typing import Dict, List
-from iztro_py.data.types import HeavenlyStemName, YinYang, FiveElements, StarName
+from typing import Dict, List, Optional
+from iztro_py.data.types import HeavenlyStemName, YinYang, FiveElements, StarName, Mutagen
 
 
 class HeavenlyStem:
@@ -129,7 +129,7 @@ def get_mutagen(heavenly_stem: HeavenlyStemName) -> List[StarName]:
     return HEAVENLY_STEMS_CONFIG[heavenly_stem].mutagen
 
 
-def get_mutagen_type(heavenly_stem: HeavenlyStemName, star_name: StarName) -> str | None:
+def get_mutagen_type(heavenly_stem: HeavenlyStemName, star_name: StarName) -> Optional[Mutagen]:
     """
     获取指定星耀在指定天干下的四化类型
 
@@ -141,7 +141,7 @@ def get_mutagen_type(heavenly_stem: HeavenlyStemName, star_name: StarName) -> st
         四化类型：'禄'、'权'、'科'、'忌'，如果不是四化星则返回 None
     """
     mutagen_stars = HEAVENLY_STEMS_CONFIG[heavenly_stem].mutagen
-    mutagen_types = ['禄', '权', '科', '忌']
+    mutagen_types: List[Mutagen] = ['禄', '权', '科', '忌']
 
     if star_name in mutagen_stars:
         index = mutagen_stars.index(star_name)

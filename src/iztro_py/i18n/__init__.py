@@ -126,7 +126,7 @@ def translate_dict(data: Dict[str, Any], lang: Optional[str] = None) -> Dict[str
     Returns:
         翻译后的字典
     """
-    result = {}
+    result: Dict[str, Any] = {}
     for key, value in data.items():
         if isinstance(value, str):
             result[key] = t(value, lang)

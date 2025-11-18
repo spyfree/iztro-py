@@ -142,15 +142,12 @@ def get_start_indices(
         lunar_day = lunar.day
 
     # 五行局数值
-    class_value = FiveElementsClass(
-        FiveElementsClass["WOOD_3"].value  # dummy init to satisfy type checkers
-    )
     # 直接使用传入的命宫干支计算的五行局数值
     # 复用已有查表逻辑
     from iztro_py.utils.helpers import get_five_elements_class
 
     five_cls = get_five_elements_class(heavenly_stem_of_soul, earthly_branch_of_soul)
-    class_value = five_cls.value
+    class_value: int = five_cls.value
 
     # 寻找最小 offset 使 (lunar_day + offset) 能被 class_value 整除
     offset = -1

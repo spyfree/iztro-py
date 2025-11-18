@@ -33,7 +33,6 @@ def test_by_solar_api():
     assert chart.sign == '狮子座'
 
     print("✓ by_solar API测试通过\n")
-    return chart
 
 
 def test_functional_palace():
