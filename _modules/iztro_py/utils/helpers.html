@@ -79,7 +79,7 @@
 <span class="sd">Common utility functions used throughout the library.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">HeavenlyStemName</span><span class="p">,</span> <span class="n">EarthlyBranchName</span><span class="p">,</span> <span class="n">FiveElementsClass</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.constants</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">HEAVENLY_STEMS</span><span class="p">,</span>
@@ -357,7 +357,7 @@
     <span class="n">gender</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">soul_palace_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
     <span class="n">year_branch_yin_yang</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;阳&quot;</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    计算大限年龄范围</span>
 
