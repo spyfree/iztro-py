@@ -39,10 +39,16 @@ dev = [
     "mypy>=1.0.0",
     "ruff>=0.1.0",
 ]
+docs = [
+    "sphinx>=7.0.0",
+    "sphinx-rtd-theme>=2.0.0",
+    "sphinx-autodoc-typehints>=1.25.0",
+    "myst-parser>=2.0.0",
+]
 
 [project.urls]
 Homepage = "https://github.com/spyfree/iztro-py"
-Documentation = "https://github.com/spyfree/iztro-py#readme"
+Documentation = "https://spyfree.github.io/iztro-py/"
 Repository = "https://github.com/spyfree/iztro-py"
 Issues = "https://github.com/spyfree/iztro-py/issues"
 
