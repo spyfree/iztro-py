@@ -31,11 +31,11 @@ class FunctionalStar(Star):
             type=star.type,
             scope=star.scope,
             brightness=star.brightness,
-            mutagen=star.mutagen
+            mutagen=star.mutagen,
         )
-        self._palace: Optional['FunctionalPalace'] = None
+        self._palace: Optional["FunctionalPalace"] = None
 
-    def set_palace(self, palace: 'FunctionalPalace') -> None:
+    def set_palace(self, palace: "FunctionalPalace") -> None:
         """
         设置星曜所在宫位
 
@@ -44,7 +44,7 @@ class FunctionalStar(Star):
         """
         self._palace = palace
 
-    def palace(self) -> Optional['FunctionalPalace']:
+    def palace(self) -> Optional["FunctionalPalace"]:
         """
         获取星曜所在宫位
 
@@ -91,7 +91,7 @@ class FunctionalStar(Star):
         else:
             return self.mutagen == mutagen
 
-    def opposite_palace(self) -> Optional['FunctionalPalace']:
+    def opposite_palace(self) -> Optional["FunctionalPalace"]:
         """
         获取星曜的对宫
 
@@ -102,6 +102,7 @@ class FunctionalStar(Star):
             return None
 
         from iztro_py.data.constants import get_opposite_index
+
         opposite_index = get_opposite_index(self._palace.index)
 
         # 从星盘中获取对宫
@@ -111,7 +112,7 @@ class FunctionalStar(Star):
 
         return None
 
-    def surrounded_palaces(self) -> Optional['FunctionalSurpalaces']:
+    def surrounded_palaces(self) -> Optional["FunctionalSurpalaces"]:
         """
         获取星曜的三方四正宫位
 
@@ -129,19 +130,19 @@ class FunctionalStar(Star):
 
     def is_major(self) -> bool:
         """判断是否为主星"""
-        return self.type == 'major'
+        return self.type == "major"
 
     def is_minor(self) -> bool:
         """判断是否为辅星"""
-        return self.type in ['soft', 'tough', 'lucun', 'tianma']
+        return self.type in ["soft", "tough", "lucun", "tianma"]
 
     def is_bright(self) -> bool:
         """判断是否庙旺（亮度好）"""
-        return self.brightness in ['庙', '旺']
+        return self.brightness in ["庙", "旺"]
 
     def is_weak(self) -> bool:
         """判断是否陷弱（亮度差）"""
-        return self.brightness == '陷'
+        return self.brightness == "陷"
 
     def has_mutagen(self) -> bool:
         """判断是否有四化"""
@@ -154,7 +155,7 @@ class FunctionalStar(Star):
             parts.append(f"({self.brightness})")
         if self.mutagen:
             parts.append(f"[化{self.mutagen}]")
-        return ''.join(parts)
+        return "".join(parts)
 
     def __repr__(self) -> str:
         return f"FunctionalStar({self.name}, brightness={self.brightness}, mutagen={self.mutagen})"

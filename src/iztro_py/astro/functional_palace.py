@@ -47,16 +47,16 @@ class FunctionalPalace(Palace):
             jiangqian12=palace.jiangqian12,
             suiqian12=palace.suiqian12,
             decadal=palace.decadal,
-            ages=palace.ages
+            ages=palace.ages,
         )
 
-        self._astrolabe: Optional['FunctionalAstrolabe'] = None
+        self._astrolabe: Optional["FunctionalAstrolabe"] = None
 
         # 设置星曜的宫位引用
         for star in self.major_stars + self.minor_stars + self.adjective_stars:
             star.set_palace(self)
 
-    def set_astrolabe(self, astrolabe: 'FunctionalAstrolabe') -> None:
+    def set_astrolabe(self, astrolabe: "FunctionalAstrolabe") -> None:
         """
         设置宫位所属的星盘
 
@@ -65,7 +65,7 @@ class FunctionalPalace(Palace):
         """
         self._astrolabe = astrolabe
 
-    def astrolabe(self) -> Optional['FunctionalAstrolabe']:
+    def astrolabe(self) -> Optional["FunctionalAstrolabe"]:
         """
         获取宫位所属的星盘
 
@@ -208,7 +208,7 @@ class FunctionalPalace(Palace):
 
         marker_str = f"[{'/'.join(markers)}]" if markers else ""
 
-        major_str = ', '.join(str(s) for s in self.major_stars) if self.major_stars else "空宫"
+        major_str = ", ".join(str(s) for s in self.major_stars) if self.major_stars else "空宫"
 
         return f"{self.name}{marker_str}: {major_str}"
 

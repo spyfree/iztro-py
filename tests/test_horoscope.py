@@ -4,7 +4,8 @@ Test horoscope (运势) system
 
 import sys
 import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../src")))
 
 from iztro_py import astro
 
@@ -16,10 +17,10 @@ def test_horoscope_basic():
     print("=" * 60)
 
     # 创建星盘：2000年8月16日午时出生的男命
-    chart = astro.by_solar('2000-8-16', 6, '男')
+    chart = astro.by_solar("2000-8-16", 6, "男")
 
     # 获取2024年1月1日午时的运势
-    horoscope = chart.horoscope('2024-1-1', 6)
+    horoscope = chart.horoscope("2024-1-1", 6)
 
     print(f"查询日期: {horoscope.solar_date}")
     print(f"农历: {horoscope.lunar_date}")
@@ -78,10 +79,10 @@ def test_horoscope_different_ages():
     print("=" * 60)
 
     # 创建星盘：1990年1月1日子时出生的女命
-    chart = astro.by_solar('1990-1-1', 0, '女')
+    chart = astro.by_solar("1990-1-1", 0, "女")
 
     # 测试不同年份的运势
-    test_years = ['2000-1-1', '2010-1-1', '2020-1-1', '2024-1-1']
+    test_years = ["2000-1-1", "2010-1-1", "2020-1-1", "2024-1-1"]
 
     for year_str in test_years:
         horoscope = chart.horoscope(year_str, 0)
@@ -101,8 +102,8 @@ def test_horoscope_male_vs_female():
     print("=" * 60)
 
     # 男命
-    chart_male = astro.by_solar('2000-8-16', 6, '男')
-    horoscope_male = chart_male.horoscope('2024-1-1', 6)
+    chart_male = astro.by_solar("2000-8-16", 6, "男")
+    horoscope_male = chart_male.horoscope("2024-1-1", 6)
 
     print("男命 (2000-8-16):")
     print(f"  大限: {horoscope_male.decadal.name}")
@@ -110,8 +111,8 @@ def test_horoscope_male_vs_female():
     print()
 
     # 女命
-    chart_female = astro.by_solar('2000-8-16', 6, '女')
-    horoscope_female = chart_female.horoscope('2024-1-1', 6)
+    chart_female = astro.by_solar("2000-8-16", 6, "女")
+    horoscope_female = chart_female.horoscope("2024-1-1", 6)
 
     print("女命 (2000-8-16):")
     print(f"  大限: {horoscope_female.decadal.name}")
@@ -128,16 +129,16 @@ def test_horoscope_integration():
     print("测试：运势系统与星盘的整合")
     print("=" * 60)
 
-    chart = astro.by_solar('2000-8-16', 6, '男')
+    chart = astro.by_solar("2000-8-16", 6, "男")
 
     # 获取运势
-    horoscope = chart.horoscope('2024-6-15', 6)
+    horoscope = chart.horoscope("2024-6-15", 6)
 
     # 获取大限宫位
     decadal_palace = chart.palace(horoscope.decadal.index)
     if decadal_palace:
         print(f"大限宫位: {decadal_palace.name}")
-        major_stars = ', '.join(s.name for s in decadal_palace.major_stars) or '空'
+        major_stars = ", ".join(s.name for s in decadal_palace.major_stars) or "空"
         print(f"  主星: {major_stars}")
         print()
 
@@ -145,7 +146,7 @@ def test_horoscope_integration():
     yearly_palace = chart.palace(horoscope.yearly.index)
     if yearly_palace:
         print(f"流年宫位: {yearly_palace.name}")
-        major_stars = ', '.join(s.name for s in yearly_palace.major_stars) or '空'
+        major_stars = ", ".join(s.name for s in yearly_palace.major_stars) or "空"
         print(f"  主星: {major_stars}")
         print()
 
@@ -154,14 +155,14 @@ def test_horoscope_integration():
     if surpalaces:
         print("流年命宫三方四正:")
         for p in surpalaces.all_palaces():
-            stars = ', '.join(s.name for s in p.major_stars) or '空'
+            stars = ", ".join(s.name for s in p.major_stars) or "空"
             print(f"  {p.name}: {stars}")
         print()
 
     print("✓ 运势系统整合测试通过\n")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     try:
         test_horoscope_basic()
         test_horoscope_different_ages()
@@ -174,5 +175,6 @@ if __name__ == '__main__':
     except Exception as e:
         print(f"\n✗✗✗ 测试失败: {e}")
         import traceback
+
         traceback.print_exc()
         sys.exit(1)

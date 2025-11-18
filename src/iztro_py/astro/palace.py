@@ -5,24 +5,13 @@ Contains functions for calculating palace positions, especially
 the soul palace (命宫) and body palace (身宫).
 """
 
-from typing import Any, Dict
-from iztro_py.data.types import (
-    SoulAndBody,
-    HeavenlyStemName,
-    EarthlyBranchName
-)
-from iztro_py.data.constants import (
-    HEAVENLY_STEMS,
-    EARTHLY_BRANCHES,
-    TIGER_RULE,
-    fix_index
-)
+from typing import Any, Dict, List
+from iztro_py.data.types import SoulAndBody, HeavenlyStemName, EarthlyBranchName
+from iztro_py.data.constants import HEAVENLY_STEMS, EARTHLY_BRANCHES, TIGER_RULE, fix_index
 
 
 def get_soul_and_body(
-    lunar_month: int,
-    time_index: int,
-    year_stem: HeavenlyStemName
+    lunar_month: int, time_index: int, year_stem: HeavenlyStemName
 ) -> SoulAndBody:
     """
     计算命宫和身宫的位置
@@ -80,14 +69,12 @@ def get_soul_and_body(
         soul_index=soul_index,
         body_index=body_index,
         heavenly_stem_of_soul=heavenly_stem_of_soul,
-        earthly_branch_of_soul=earthly_branch_of_soul
+        earthly_branch_of_soul=earthly_branch_of_soul,
     )
 
 
 def get_palace_heavenly_stem(
-    palace_index: int,
-    soul_palace_index: int,
-    soul_palace_stem: HeavenlyStemName
+    palace_index: int, soul_palace_index: int, soul_palace_stem: HeavenlyStemName
 ) -> HeavenlyStemName:
     """
     根据命宫天干推算其他宫位的天干
@@ -153,10 +140,7 @@ def get_body_palace_index(soul_index: int, body_index: int) -> int:
 
 
 def calculate_palace_ages(
-    palace_index: int,
-    soul_palace_index: int,
-    five_elements_class_value: int,
-    is_forward: bool
+    palace_index: int, soul_palace_index: int, five_elements_class_value: int, is_forward: bool
 ) -> list[int]:
     """
     计算宫位的小限年龄数组
@@ -196,7 +180,7 @@ def calculate_palace_ages(
     return ages
 
 
-def initialize_palaces(soul_and_body: SoulAndBody) -> list[dict]:
+def initialize_palaces(soul_and_body: SoulAndBody) -> List[Dict[str, Any]]:
     """
     初始化十二宫位的基础信息
 
@@ -224,28 +208,26 @@ def initialize_palaces(soul_and_body: SoulAndBody) -> list[dict]:
         earthly_branch_index = fix_index(soul_index + i)
 
         # 判断该宫位是否为身宫（相对命宫的序列位置等于身宫相对索引）
-        is_body = (i == body_palace_rel_index)
+        is_body = i == body_palace_rel_index
 
         palace: Dict[str, Any] = {
-            'index': i,
-            'name': PALACES[i],
-            'is_body_palace': is_body,
-            'is_original_palace': (i == 0),  # 第0个宫位总是命宫
-            'earthly_branch': EARTHLY_BRANCHES[earthly_branch_index],
-            'heavenly_stem': get_palace_heavenly_stem(
-                earthly_branch_index,
-                soul_and_body.soul_index,
-                soul_and_body.heavenly_stem_of_soul
+            "index": i,
+            "name": PALACES[i],
+            "is_body_palace": is_body,
+            "is_original_palace": (i == 0),  # 第0个宫位总是命宫
+            "earthly_branch": EARTHLY_BRANCHES[earthly_branch_index],
+            "heavenly_stem": get_palace_heavenly_stem(
+                earthly_branch_index, soul_and_body.soul_index, soul_and_body.heavenly_stem_of_soul
             ),
-            'major_stars': [],
-            'minor_stars': [],
-            'adjective_stars': [],
-            'changsheng12': None,
-            'boshi12': None,
-            'jiangqian12': None,
-            'suiqian12': None,
-            'decadal': None,
-            'ages': []
+            "major_stars": [],
+            "minor_stars": [],
+            "adjective_stars": [],
+            "changsheng12": None,
+            "boshi12": None,
+            "jiangqian12": None,
+            "suiqian12": None,
+            "decadal": None,
+            "ages": [],
         }
 
         palaces.append(palace)

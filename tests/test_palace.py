@@ -4,7 +4,8 @@ Test palace positioning algorithms
 
 import sys
 import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../src")))
 
 from iztro_py.astro.palace import get_soul_and_body, initialize_palaces
 from iztro_py.data.types import FiveElementsClass
@@ -19,11 +20,7 @@ def test_soul_and_body_palace():
     print("=" * 60)
 
     # 测试案例：农历7月、午时(6)、庚年
-    soul_and_body = get_soul_and_body(
-        lunar_month=7,
-        time_index=6,
-        year_stem='gengHeavenly'
-    )
+    soul_and_body = get_soul_and_body(lunar_month=7, time_index=6, year_stem="gengHeavenly")
 
     print(f"命宫索引: {soul_and_body.soul_index}")
     print(f"身宫索引: {soul_and_body.body_index}")
@@ -43,15 +40,10 @@ def test_five_elements_class():
     print("=" * 60)
 
     # 测试案例
-    soul_and_body = get_soul_and_body(
-        lunar_month=7,
-        time_index=6,
-        year_stem='gengHeavenly'
-    )
+    soul_and_body = get_soul_and_body(lunar_month=7, time_index=6, year_stem="gengHeavenly")
 
     five_class = get_five_elements_class(
-        soul_and_body.heavenly_stem_of_soul,
-        soul_and_body.earthly_branch_of_soul
+        soul_and_body.heavenly_stem_of_soul, soul_and_body.earthly_branch_of_soul
     )
 
     print(f"命宫: {soul_and_body.heavenly_stem_of_soul} {soul_and_body.earthly_branch_of_soul}")
@@ -62,7 +54,7 @@ def test_five_elements_class():
         FiveElementsClass.WOOD_3,
         FiveElementsClass.METAL_4,
         FiveElementsClass.EARTH_5,
-        FiveElementsClass.FIRE_6
+        FiveElementsClass.FIRE_6,
     ]
     print("✓ 五行局计算测试通过\n")
 
@@ -73,11 +65,7 @@ def test_initialize_palaces():
     print("测试：宫位初始化")
     print("=" * 60)
 
-    soul_and_body = get_soul_and_body(
-        lunar_month=7,
-        time_index=6,
-        year_stem='gengHeavenly'
-    )
+    soul_and_body = get_soul_and_body(lunar_month=7, time_index=6, year_stem="gengHeavenly")
 
     palaces = initialize_palaces(soul_and_body)
 
@@ -89,11 +77,13 @@ def test_initialize_palaces():
     assert len(palaces) == 12
 
     # 验证命宫标记（命宫总是第0个宫位）
-    assert palaces[0]['is_original_palace'] == True
+    assert palaces[0]["is_original_palace"] == True
 
     # 验证身宫标记（需要根据地支查找）
-    body_palace = next(p for p in palaces if p['earthly_branch'] == EARTHLY_BRANCHES[soul_and_body.body_index])
-    assert body_palace['is_body_palace'] == True
+    body_palace = next(
+        p for p in palaces if p["earthly_branch"] == EARTHLY_BRANCHES[soul_and_body.body_index]
+    )
+    assert body_palace["is_body_palace"] == True
 
     # 打印前3个宫位信息
     for i in range(3):
@@ -106,7 +96,7 @@ def test_initialize_palaces():
     print("\n✓ 宫位初始化测试通过\n")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     try:
         test_soul_and_body_palace()
         test_five_elements_class()
@@ -118,5 +108,6 @@ if __name__ == '__main__':
     except Exception as e:
         print(f"\n✗✗✗ 测试失败: {e}")
         import traceback
+
         traceback.print_exc()
         sys.exit(1)

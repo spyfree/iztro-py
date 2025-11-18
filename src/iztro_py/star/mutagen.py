@@ -9,10 +9,7 @@ from iztro_py.data.types import HeavenlyStemName, StarName, Mutagen
 from iztro_py.data.heavenly_stems import get_mutagen, get_mutagen_type
 
 
-def apply_mutagen_to_palaces(
-    palaces: List[dict],
-    year_stem: HeavenlyStemName
-) -> None:
+def apply_mutagen_to_palaces(palaces: List[dict], year_stem: HeavenlyStemName) -> None:
     """
     为所有宫位中的星曜添加四化属性
 
@@ -31,13 +28,13 @@ def apply_mutagen_to_palaces(
     # 遍历所有宫位
     for palace in palaces:
         # 检查主星
-        for star in palace['major_stars']:
+        for star in palace["major_stars"]:
             mutagen_type = get_mutagen_type(year_stem, star.name)
             if mutagen_type:
                 star.mutagen = mutagen_type
 
         # 检查辅星
-        for star in palace['minor_stars']:
+        for star in palace["minor_stars"]:
             mutagen_type = get_mutagen_type(year_stem, star.name)
             if mutagen_type:
                 star.mutagen = mutagen_type
@@ -54,12 +51,9 @@ def get_mutagen_stars(year_stem: HeavenlyStemName) -> dict[Mutagen, StarName]:
         四化类型到星曜名称的映射字典
     """
     mutagen_stars = get_mutagen(year_stem)
-    mutagen_types: List[Mutagen] = ['禄', '权', '科', '忌']
+    mutagen_types: List[Mutagen] = ["禄", "权", "科", "忌"]
 
-    return {
-        mutagen_types[i]: mutagen_stars[i]
-        for i in range(4)
-    }
+    return {mutagen_types[i]: mutagen_stars[i] for i in range(4)}
 
 
 def has_mutagen(star_name: StarName, year_stem: HeavenlyStemName) -> Optional[Mutagen]:
@@ -89,12 +83,12 @@ def get_palace_mutagens(palace: dict) -> List[tuple[StarName, Mutagen]]:
     mutagen_stars = []
 
     # 检查主星
-    for star in palace.get('major_stars', []):
+    for star in palace.get("major_stars", []):
         if star.mutagen:
             mutagen_stars.append((star.name, star.mutagen))
 
     # 检查辅星
-    for star in palace.get('minor_stars', []):
+    for star in palace.get("minor_stars", []):
         if star.mutagen:
             mutagen_stars.append((star.name, star.mutagen))
 

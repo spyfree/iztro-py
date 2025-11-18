@@ -4,13 +4,14 @@ Test star positioning algorithms
 
 import sys
 import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../src")))
 
 from iztro_py.star.location import (
     get_ziwei_index,
     get_tianfu_index,
     get_star_indices,
-    get_major_star_positions
+    get_major_star_positions,
 )
 from iztro_py.star.major_star import place_major_stars
 from iztro_py.star.minor_star import place_minor_stars
@@ -51,20 +52,19 @@ def test_major_stars_placement():
     print("=" * 60)
 
     # 准备宫位
-    soul_and_body = get_soul_and_body(7, 6, 'gengHeavenly')
+    soul_and_body = get_soul_and_body(7, 6, "gengHeavenly")
     palaces = initialize_palaces(soul_and_body)
 
     # 计算五行局
     five_class = get_five_elements_class(
-        soul_and_body.heavenly_stem_of_soul,
-        soul_and_body.earthly_branch_of_soul
+        soul_and_body.heavenly_stem_of_soul, soul_and_body.earthly_branch_of_soul
     )
 
     # 安置主星
     place_major_stars(palaces, five_class, 17)
 
     # 统计主星数量
-    total_major_stars = sum(len(p['major_stars']) for p in palaces)
+    total_major_stars = sum(len(p["major_stars"]) for p in palaces)
 
     print(f"五行局: {five_class}")
     print(f"农历日: 17")
@@ -75,8 +75,8 @@ def test_major_stars_placement():
 
     # 打印有主星的宫位
     for palace in palaces:
-        if palace['major_stars']:
-            star_names = [s.name for s in palace['major_stars']]
+        if palace["major_stars"]:
+            star_names = [s.name for s in palace["major_stars"]]
             print(f"宫位 {palace['index']} ({palace['name']}): {', '.join(star_names)}")
 
     print("\n✓ 14主星安置测试通过\n")
@@ -89,20 +89,16 @@ def test_minor_stars_placement():
     print("=" * 60)
 
     # 准备宫位
-    soul_and_body = get_soul_and_body(7, 6, 'gengHeavenly')
+    soul_and_body = get_soul_and_body(7, 6, "gengHeavenly")
     palaces = initialize_palaces(soul_and_body)
 
     # 安置辅星
     place_minor_stars(
-        palaces,
-        lunar_month=7,
-        time_index=6,
-        year_stem='gengHeavenly',
-        year_branch='chenEarthly'
+        palaces, lunar_month=7, time_index=6, year_stem="gengHeavenly", year_branch="chenEarthly"
     )
 
     # 统计辅星数量
-    total_minor_stars = sum(len(p['minor_stars']) for p in palaces)
+    total_minor_stars = sum(len(p["minor_stars"]) for p in palaces)
 
     print(f"安置的辅星总数: {total_minor_stars}")
 
@@ -112,8 +108,8 @@ def test_minor_stars_placement():
     # 打印前3个有辅星的宫位
     count = 0
     for palace in palaces:
-        if palace['minor_stars'] and count < 3:
-            star_names = [s.name for s in palace['minor_stars']]
+        if palace["minor_stars"] and count < 3:
+            star_names = [s.name for s in palace["minor_stars"]]
             print(f"宫位 {palace['index']} ({palace['name']}): {', '.join(star_names)}")
             count += 1
 
@@ -127,18 +123,17 @@ def test_mutagen_application():
     print("=" * 60)
 
     # 准备宫位和星曜
-    soul_and_body = get_soul_and_body(7, 6, 'gengHeavenly')
+    soul_and_body = get_soul_and_body(7, 6, "gengHeavenly")
     palaces = initialize_palaces(soul_and_body)
     five_class = get_five_elements_class(
-        soul_and_body.heavenly_stem_of_soul,
-        soul_and_body.earthly_branch_of_soul
+        soul_and_body.heavenly_stem_of_soul, soul_and_body.earthly_branch_of_soul
     )
 
     place_major_stars(palaces, five_class, 17)
-    place_minor_stars(palaces, 7, 6, 'gengHeavenly', 'chenEarthly')
+    place_minor_stars(palaces, 7, 6, "gengHeavenly", "chenEarthly")
 
     # 应用四化
-    year_stem = 'gengHeavenly'
+    year_stem = "gengHeavenly"
     apply_mutagen_to_palaces(palaces, year_stem)
 
     # 获取四化星配置
@@ -149,7 +144,7 @@ def test_mutagen_application():
     # 统计四化星数量
     mutagen_count = 0
     for palace in palaces:
-        for star in palace['major_stars'] + palace['minor_stars']:
+        for star in palace["major_stars"] + palace["minor_stars"]:
             if star.mutagen:
                 mutagen_count += 1
                 print(f"  {star.name} 化 {star.mutagen}")
@@ -168,11 +163,10 @@ def test_brightness_application():
     print("=" * 60)
 
     # 准备宫位和星曜
-    soul_and_body = get_soul_and_body(7, 6, 'gengHeavenly')
+    soul_and_body = get_soul_and_body(7, 6, "gengHeavenly")
     palaces = initialize_palaces(soul_and_body)
     five_class = get_five_elements_class(
-        soul_and_body.heavenly_stem_of_soul,
-        soul_and_body.earthly_branch_of_soul
+        soul_and_body.heavenly_stem_of_soul, soul_and_body.earthly_branch_of_soul
     )
 
     place_major_stars(palaces, five_class, 17)
@@ -183,7 +177,7 @@ def test_brightness_application():
     # 统计有亮度的星曜
     brightness_count = 0
     for palace in palaces:
-        for star in palace['major_stars']:
+        for star in palace["major_stars"]:
             if star.brightness:
                 brightness_count += 1
                 if brightness_count <= 5:  # 只打印前5颗
@@ -196,7 +190,7 @@ def test_brightness_application():
     print("✓ 亮度应用测试通过\n")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     try:
         test_ziwei_tianfu_position()
         test_major_stars_placement()
@@ -210,5 +204,6 @@ if __name__ == '__main__':
     except Exception as e:
         print(f"\n✗✗✗ 测试失败: {e}")
         import traceback
+
         traceback.print_exc()
         sys.exit(1)

@@ -9,25 +9,27 @@ from typing import List, Optional
 from datetime import datetime
 
 from iztro_py.data.types import (
-    Horoscope, HoroscopeItem, PalaceName, StarName,
-    HeavenlyStemName, EarthlyBranchName, FiveElementsClass, Palace
+    Horoscope,
+    HoroscopeItem,
+    PalaceName,
+    StarName,
+    HeavenlyStemName,
+    EarthlyBranchName,
+    FiveElementsClass,
+    Palace,
 )
 from iztro_py.utils.calendar import (
     solar_to_lunar,
     get_heavenly_stem_and_earthly_branch_date,
-    format_lunar_date
+    format_lunar_date,
 )
 from iztro_py.utils.helpers import (
     get_decadal_palace_index,
     get_decadal_range,
     calculate_nominal_age,
-    fix_index
+    fix_index,
 )
-from iztro_py.data.constants import (
-    HEAVENLY_STEMS,
-    EARTHLY_BRANCHES,
-    fix_index as const_fix_index
-)
+from iztro_py.data.constants import HEAVENLY_STEMS, EARTHLY_BRANCHES, fix_index as const_fix_index
 
 
 def get_horoscope(
@@ -38,7 +40,7 @@ def get_horoscope(
     five_elements_class: FiveElementsClass,
     gender: str,
     year_branch_yin_yang: str,
-    birth_year: int
+    birth_year: int,
 ) -> Horoscope:
     """
     获取指定日期的运势信息
@@ -57,7 +59,7 @@ def get_horoscope(
         完整的运势信息
     """
     # 解析日期
-    parts = solar_date_str.split('-')
+    parts = solar_date_str.split("-")
     year = int(parts[0])
     month = int(parts[1])
     day = int(parts[2]) if len(parts) > 2 else 1
@@ -88,49 +90,23 @@ def get_horoscope(
         gender,
         year_branch_yin_yang,
         palaces,
-        year_stem
+        year_stem,
     )
 
     # 小限
-    age_horoscope = get_age_horoscope(
-        nominal_age,
-        soul_palace_index,
-        gender,
-        palaces,
-        year_stem
-    )
+    age_horoscope = get_age_horoscope(nominal_age, soul_palace_index, gender, palaces, year_stem)
 
     # 流年
-    yearly = get_yearly_horoscope(
-        year_branch,
-        year_stem,
-        palaces,
-        year_stem
-    )
+    yearly = get_yearly_horoscope(year_branch, year_stem, palaces, year_stem)
 
     # 流月
-    monthly = get_monthly_horoscope(
-        month_branch,
-        month_stem,
-        palaces,
-        year_stem
-    )
+    monthly = get_monthly_horoscope(month_branch, month_stem, palaces, year_stem)
 
     # 流日
-    daily = get_daily_horoscope(
-        day_branch,
-        day_stem,
-        palaces,
-        year_stem
-    )
+    daily = get_daily_horoscope(day_branch, day_stem, palaces, year_stem)
 
     # 流时
-    hourly = get_hourly_horoscope(
-        hour_branch,
-        hour_stem,
-        palaces,
-        year_stem
-    )
+    hourly = get_hourly_horoscope(hour_branch, hour_stem, palaces, year_stem)
 
     return Horoscope(
         solar_date=solar_date_str,
@@ -141,7 +117,7 @@ def get_horoscope(
         monthly=monthly,
         daily=daily,
         hourly=hourly,
-        nominal_age=nominal_age
+        nominal_age=nominal_age,
     )
 
 
@@ -152,7 +128,7 @@ def get_decadal_horoscope(
     gender: str,
     year_branch_yin_yang: str,
     palaces: List[Palace],
-    year_stem: HeavenlyStemName
+    year_stem: HeavenlyStemName,
 ) -> HoroscopeItem:
     """
     获取大限信息
@@ -174,20 +150,12 @@ def get_decadal_horoscope(
     """
     # 获取大限宫位索引
     palace_index = get_decadal_palace_index(
-        age,
-        five_elements_class,
-        soul_palace_index,
-        gender,
-        year_branch_yin_yang
+        age, five_elements_class, soul_palace_index, gender, year_branch_yin_yang
     )
 
     # 获取大限年龄范围
     age_range = get_decadal_range(
-        five_elements_class,
-        palace_index,
-        gender,
-        soul_palace_index,
-        year_branch_yin_yang
+        five_elements_class, palace_index, gender, soul_palace_index, year_branch_yin_yang
     )
 
     # 获取宫位信息
@@ -206,7 +174,7 @@ def get_decadal_horoscope(
         earthly_branch=palace.earthly_branch,
         palace_names=palace_names,
         mutagen=decadal_mutagen,
-        stars=None  # 大限不安流耀
+        stars=None,  # 大限不安流耀
     )
 
 
@@ -215,7 +183,7 @@ def get_age_horoscope(
     soul_palace_index: int,
     gender: str,
     palaces: List[Palace],
-    year_stem: HeavenlyStemName
+    year_stem: HeavenlyStemName,
 ) -> HoroscopeItem:
     """
     获取小限信息
@@ -234,7 +202,7 @@ def get_age_horoscope(
     """
     # 小限从1岁开始
     # 男命顺行，女命逆行
-    if gender == '男':
+    if gender == "男":
         palace_index = fix_index(soul_palace_index + age - 1)
     else:
         palace_index = fix_index(soul_palace_index - age + 1)
@@ -251,7 +219,7 @@ def get_age_horoscope(
         earthly_branch=palace.earthly_branch,
         palace_names=[palace.name],
         mutagen=age_mutagen,
-        stars=None
+        stars=None,
     )
 
 
@@ -259,7 +227,7 @@ def get_yearly_horoscope(
     year_branch: EarthlyBranchName,
     year_stem: HeavenlyStemName,
     palaces: List[Palace],
-    birth_year_stem: HeavenlyStemName
+    birth_year_stem: HeavenlyStemName,
 ) -> HoroscopeItem:
     """
     获取流年信息
@@ -303,7 +271,7 @@ def get_yearly_horoscope(
         earthly_branch=year_branch,
         palace_names=palace_names,
         mutagen=yearly_mutagen,
-        stars=None  # 可以扩展添加流年星
+        stars=None,  # 可以扩展添加流年星
     )
 
 
@@ -311,7 +279,7 @@ def get_monthly_horoscope(
     month_branch: EarthlyBranchName,
     month_stem: HeavenlyStemName,
     palaces: List[Palace],
-    year_stem: HeavenlyStemName
+    year_stem: HeavenlyStemName,
 ) -> HoroscopeItem:
     """
     获取流月信息
@@ -346,7 +314,7 @@ def get_monthly_horoscope(
         earthly_branch=month_branch,
         palace_names=[palace.name],
         mutagen=monthly_mutagen,
-        stars=None
+        stars=None,
     )
 
 
@@ -354,7 +322,7 @@ def get_daily_horoscope(
     day_branch: EarthlyBranchName,
     day_stem: HeavenlyStemName,
     palaces: List[Palace],
-    year_stem: HeavenlyStemName
+    year_stem: HeavenlyStemName,
 ) -> HoroscopeItem:
     """
     获取流日信息
@@ -389,7 +357,7 @@ def get_daily_horoscope(
         earthly_branch=day_branch,
         palace_names=[palace.name],
         mutagen=daily_mutagen,
-        stars=None
+        stars=None,
     )
 
 
@@ -397,7 +365,7 @@ def get_hourly_horoscope(
     hour_branch: EarthlyBranchName,
     hour_stem: HeavenlyStemName,
     palaces: List[Palace],
-    year_stem: HeavenlyStemName
+    year_stem: HeavenlyStemName,
 ) -> HoroscopeItem:
     """
     获取流时信息
@@ -432,13 +400,14 @@ def get_hourly_horoscope(
         earthly_branch=hour_branch,
         palace_names=[palace.name],
         mutagen=hourly_mutagen,
-        stars=None
+        stars=None,
     )
 
 
 # ============================================================================
 # Helper Functions
 # ============================================================================
+
 
 def _get_mutagen_stars(stem: HeavenlyStemName) -> List[StarName]:
     """
@@ -458,18 +427,18 @@ def _get_mutagen_stars(stem: HeavenlyStemName) -> List[StarName]:
 def _get_branch_index(branch: EarthlyBranchName) -> int:
     """获取地支索引"""
     branch_order = [
-        'ziEarthly',     # 0 - 子
-        'chouEarthly',   # 1 - 丑
-        'yinEarthly',    # 2 - 寅
-        'maoEarthly',    # 3 - 卯
-        'chenEarthly',   # 4 - 辰
-        'siEarthly',     # 5 - 巳
-        'wuEarthly',     # 6 - 午
-        'weiEarthly',    # 7 - 未
-        'shenEarthly',   # 8 - 申
-        'youEarthly',    # 9 - 酉
-        'xuEarthly',     # 10 - 戌
-        'haiEarthly'     # 11 - 亥
+        "ziEarthly",  # 0 - 子
+        "chouEarthly",  # 1 - 丑
+        "yinEarthly",  # 2 - 寅
+        "maoEarthly",  # 3 - 卯
+        "chenEarthly",  # 4 - 辰
+        "siEarthly",  # 5 - 巳
+        "wuEarthly",  # 6 - 午
+        "weiEarthly",  # 7 - 未
+        "shenEarthly",  # 8 - 申
+        "youEarthly",  # 9 - 酉
+        "xuEarthly",  # 10 - 戌
+        "haiEarthly",  # 11 - 亥
     ]
 
     try:
@@ -481,16 +450,16 @@ def _get_branch_index(branch: EarthlyBranchName) -> int:
 def _get_stem_name(stem: HeavenlyStemName) -> str:
     """获取天干中文名"""
     stem_names = {
-        'jiaHeavenly': '甲',
-        'yiHeavenly': '乙',
-        'bingHeavenly': '丙',
-        'dingHeavenly': '丁',
-        'wuHeavenly': '戊',
-        'jiHeavenly': '己',
-        'gengHeavenly': '庚',
-        'xinHeavenly': '辛',
-        'renHeavenly': '壬',
-        'guiHeavenly': '癸'
+        "jiaHeavenly": "甲",
+        "yiHeavenly": "乙",
+        "bingHeavenly": "丙",
+        "dingHeavenly": "丁",
+        "wuHeavenly": "戊",
+        "jiHeavenly": "己",
+        "gengHeavenly": "庚",
+        "xinHeavenly": "辛",
+        "renHeavenly": "壬",
+        "guiHeavenly": "癸",
     }
     return stem_names.get(stem, stem)
 
@@ -498,17 +467,17 @@ def _get_stem_name(stem: HeavenlyStemName) -> str:
 def _get_branch_name(branch: EarthlyBranchName) -> str:
     """获取地支中文名"""
     branch_names = {
-        'ziEarthly': '子',
-        'chouEarthly': '丑',
-        'yinEarthly': '寅',
-        'maoEarthly': '卯',
-        'chenEarthly': '辰',
-        'siEarthly': '巳',
-        'wuEarthly': '午',
-        'weiEarthly': '未',
-        'shenEarthly': '申',
-        'youEarthly': '酉',
-        'xuEarthly': '戌',
-        'haiEarthly': '亥'
+        "ziEarthly": "子",
+        "chouEarthly": "丑",
+        "yinEarthly": "寅",
+        "maoEarthly": "卯",
+        "chenEarthly": "辰",
+        "siEarthly": "巳",
+        "wuEarthly": "午",
+        "weiEarthly": "未",
+        "shenEarthly": "申",
+        "youEarthly": "酉",
+        "xuEarthly": "戌",
+        "haiEarthly": "亥",
     }
     return branch_names.get(branch, branch)

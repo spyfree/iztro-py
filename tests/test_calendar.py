@@ -4,7 +4,8 @@ Test calendar conversion functions
 
 import sys
 import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../src")))
 
 from datetime import date
 from iztro_py.utils.calendar import (
@@ -18,7 +19,7 @@ from iztro_py.utils.calendar import (
     get_zodiac,
     get_sign,
     format_lunar_date,
-    format_chinese_date
+    format_chinese_date,
 )
 
 
@@ -64,11 +65,7 @@ def test_stem_branch_calculation():
 
     # 2000年8月16日午时（时辰索引6）
     chinese_date = get_heavenly_stem_and_earthly_branch_date(
-        year=2000,
-        month=8,
-        day=16,
-        time_index=6,
-        lunar_month=7
+        year=2000, month=8, day=16, time_index=6, lunar_month=7
     )
 
     print(f"四柱：{format_chinese_date(chinese_date)}")
@@ -78,8 +75,8 @@ def test_stem_branch_calculation():
     print(f"时干支: {chinese_date.time_stem} {chinese_date.time_branch}")
 
     # 2000年是庚辰年
-    assert chinese_date.year_stem == 'gengHeavenly'
-    assert chinese_date.year_branch == 'chenEarthly'
+    assert chinese_date.year_stem == "gengHeavenly"
+    assert chinese_date.year_branch == "chenEarthly"
     print("✓ 天干地支计算测试通过\n")
 
 
@@ -96,12 +93,12 @@ def test_zodiac_and_sign():
     print(f"2000年生肖: {zodiac}")
     print(f"8月16日星座: {sign}")
 
-    assert zodiac == '龙'
-    assert sign == '狮子座'
+    assert zodiac == "龙"
+    assert sign == "狮子座"
     print("✓ 生肖星座测试通过\n")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     try:
         test_solar_to_lunar()
         test_lunar_to_solar()
@@ -114,5 +111,6 @@ if __name__ == '__main__':
     except Exception as e:
         print(f"\n✗✗✗ 测试失败: {e}")
         import traceback
+
         traceback.print_exc()
         sys.exit(1)

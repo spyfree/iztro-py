@@ -25,7 +25,7 @@ class FunctionalSurpalaces(SurroundedPalaces):
         target: FunctionalPalace,
         opposite: FunctionalPalace,
         wealth: FunctionalPalace,
-        career: FunctionalPalace
+        career: FunctionalPalace,
     ):
         """
         初始化FunctionalSurpalaces
@@ -36,12 +36,7 @@ class FunctionalSurpalaces(SurroundedPalaces):
             wealth: 财帛位
             career: 官禄位
         """
-        super().__init__(
-            target=target,
-            opposite=opposite,
-            wealth=wealth,
-            career=career
-        )
+        super().__init__(target=target, opposite=opposite, wealth=wealth, career=career)
 
     def have(self, stars: List[StarName]) -> bool:
         """

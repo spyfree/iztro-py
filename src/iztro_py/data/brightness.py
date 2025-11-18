@@ -17,54 +17,39 @@ from iztro_py.data.constants import EARTHLY_BRANCHES
 
 STAR_BRIGHTNESS: Dict[StarName, List[Optional[Brightness]]] = {
     # 紫微星
-    'ziweiMaj': ['旺', '旺', '得', '旺', '庙', '庙', '旺', '旺', '得', '旺', '平', '庙'],
-
+    "ziweiMaj": ["旺", "旺", "得", "旺", "庙", "庙", "旺", "旺", "得", "旺", "平", "庙"],
     # 天机星
-    'tianjiMaj': ['旺', '旺', '平', '陷', '平', '平', '平', '平', '平', '平', '庙', '庙'],
-
+    "tianjiMaj": ["旺", "旺", "平", "陷", "平", "平", "平", "平", "平", "平", "庙", "庙"],
     # 太阳星
-    'taiyangMaj': ['庙', '庙', '庙', '庙', '旺', '利', '平', '陷', '陷', '陷', '陷', '得'],
-
+    "taiyangMaj": ["庙", "庙", "庙", "庙", "旺", "利", "平", "陷", "陷", "陷", "陷", "得"],
     # 武曲星
-    'wuquMaj': ['平', '陷', '得', '利', '陷', '旺', '旺', '旺', '庙', '庙', '得', '得'],
-
+    "wuquMaj": ["平", "陷", "得", "利", "陷", "旺", "旺", "旺", "庙", "庙", "得", "得"],
     # 天同星
-    'tiantongMaj': ['得', '陷', '陷', '得', '利', '旺', '得', '得', '利', '旺', '庙', '庙'],
-
+    "tiantongMaj": ["得", "陷", "陷", "得", "利", "旺", "得", "得", "利", "旺", "庙", "庙"],
     # 廉贞星
-    'lianzhenMaj': ['陷', '陷', '陷', '庙', '旺', '利', '平', '平', '平', '平', '庙', '旺'],
-
+    "lianzhenMaj": ["陷", "陷", "陷", "庙", "旺", "利", "平", "平", "平", "平", "庙", "旺"],
     # 天府星
-    'tianfuMaj': ['庙', '庙', '庙', '庙', '庙', '庙', '庙', '庙', '庙', '庙', '庙', '庙'],
-
+    "tianfuMaj": ["庙", "庙", "庙", "庙", "庙", "庙", "庙", "庙", "庙", "庙", "庙", "庙"],
     # 太阴星
-    'taiyinMaj': ['得', '得', '平', '陷', '旺', '庙', '平', '得', '平', '陷', '庙', '庙'],
-
+    "taiyinMaj": ["得", "得", "平", "陷", "旺", "庙", "平", "得", "平", "陷", "庙", "庙"],
     # 贪狼星
-    'tanlangMaj': ['旺', '旺', '陷', '陷', '利', '得', '庙', '旺', '庙', '旺', '陷', '得'],
-
+    "tanlangMaj": ["旺", "旺", "陷", "陷", "利", "得", "庙", "旺", "庙", "旺", "陷", "得"],
     # 巨门星
-    'jumenMaj': ['得', '得', '陷', '陷', '陷', '平', '庙', '旺', '平', '得', '旺', '得'],
-
+    "jumenMaj": ["得", "得", "陷", "陷", "陷", "平", "庙", "旺", "平", "得", "旺", "得"],
     # 天相星
-    'tianxiangMaj': ['旺', '旺', '平', '平', '庙', '庙', '旺', '旺', '平', '平', '庙', '庙'],
-
+    "tianxiangMaj": ["旺", "旺", "平", "平", "庙", "庙", "旺", "旺", "平", "平", "庙", "庙"],
     # 天梁星
-    'tianliangMaj': ['庙', '庙', '平', '平', '旺', '旺', '平', '平', '利', '利', '得', '得'],
-
+    "tianliangMaj": ["庙", "庙", "平", "平", "旺", "旺", "平", "平", "利", "利", "得", "得"],
     # 七杀星
-    'qishaMaj': ['庙', '庙', '平', '平', '陷', '陷', '旺', '旺', '得', '得', '利', '利'],
-
+    "qishaMaj": ["庙", "庙", "平", "平", "陷", "陷", "旺", "旺", "得", "得", "利", "利"],
     # 破军星
-    'pojunMaj': ['得', '得', '陷', '旺', '庙', '平', '陷', '平', '旺', '庙', '陷', '得'],
-
+    "pojunMaj": ["得", "得", "陷", "旺", "庙", "平", "陷", "平", "旺", "庙", "陷", "得"],
     # 辅星的亮度通常不标注，这里可以留空或使用默认值
 }
 
 
 def get_star_brightness(
-    star_name: StarName,
-    palace_branch: EarthlyBranchName
+    star_name: StarName, palace_branch: EarthlyBranchName
 ) -> Optional[Brightness]:
     """
     根据星曜名称和宫位地支获取星曜亮度
@@ -90,16 +75,16 @@ def get_star_brightness(
     brightness_index_map = {
         0: 10,  # 子
         1: 11,  # 丑
-        2: 0,   # 寅
-        3: 1,   # 卯
-        4: 2,   # 辰
-        5: 3,   # 巳
-        6: 4,   # 午
-        7: 5,   # 未
-        8: 6,   # 申
-        9: 7,   # 酉
+        2: 0,  # 寅
+        3: 1,  # 卯
+        4: 2,  # 辰
+        5: 3,  # 巳
+        6: 4,  # 午
+        7: 5,  # 未
+        8: 6,  # 申
+        9: 7,  # 酉
         10: 8,  # 戌
-        11: 9   # 亥
+        11: 9,  # 亥
     }
 
     brightness_index = brightness_index_map[branch_index]
@@ -118,10 +103,10 @@ def apply_brightness_to_palaces(palaces: List[dict]) -> None:
         直接修改palaces列表，不返回值
     """
     for palace in palaces:
-        palace_branch = palace['earthly_branch']
+        palace_branch = palace["earthly_branch"]
 
         # 为主星添加亮度
-        for star in palace['major_stars']:
+        for star in palace["major_stars"]:
             brightness = get_star_brightness(star.name, palace_branch)
             if brightness:
                 star.brightness = brightness
@@ -143,16 +128,7 @@ def get_brightness_score(brightness: Optional[Brightness]) -> int:
     Returns:
         数值评分 (0-6)，庙最高，陷最低
     """
-    scores = {
-        '庙': 6,
-        '旺': 5,
-        '得': 4,
-        '利': 3,
-        '平': 2,
-        '不': 1,
-        '陷': 0,
-        None: 0
-    }
+    scores = {"庙": 6, "旺": 5, "得": 4, "利": 3, "平": 2, "不": 1, "陷": 0, None: 0}
 
     return scores.get(brightness, 0)
 
@@ -167,7 +143,7 @@ def is_bright(brightness: Optional[Brightness]) -> bool:
     Returns:
         是否为庙或旺
     """
-    return brightness in ['庙', '旺']
+    return brightness in ["庙", "旺"]
 
 
 def is_weak(brightness: Optional[Brightness]) -> bool:
@@ -180,4 +156,4 @@ def is_weak(brightness: Optional[Brightness]) -> bool:
     Returns:
         是否为陷
     """
-    return brightness == '陷'
+    return brightness == "陷"

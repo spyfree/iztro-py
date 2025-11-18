@@ -13,14 +13,14 @@ from iztro_py.data.types import (
     LunarDate,
     HeavenlyStemAndEarthlyBranchDate,
     HeavenlyStemName,
-    EarthlyBranchName
+    EarthlyBranchName,
 )
 from iztro_py.data.constants import (
     HEAVENLY_STEMS,
     EARTHLY_BRANCHES,
     TIGER_RULE,
     RAT_RULE,
-    fix_index
+    fix_index,
 )
 
 
@@ -28,12 +28,8 @@ from iztro_py.data.constants import (
 # Solar to Lunar Conversion
 # ============================================================================
 
-def solar_to_lunar(
-    year: int,
-    month: int,
-    day: int,
-    fix_leap: bool = True
-) -> LunarDate:
+
+def solar_to_lunar(year: int, month: int, day: int, fix_leap: bool = True) -> LunarDate:
     """
     阳历转农历
 
@@ -60,12 +56,7 @@ def solar_to_lunar(
             # 调整为前一个月的非闰月
             is_leap = False
 
-        return LunarDate(
-            year=lunar.year,
-            month=lunar.month,
-            day=lunar.day,
-            is_leap_month=is_leap
-        )
+        return LunarDate(year=lunar.year, month=lunar.month, day=lunar.day, is_leap_month=is_leap)
 
     except DateNotExist:
         raise ValueError(f"Invalid solar date: {year}-{month}-{day}")
@@ -87,7 +78,7 @@ def parse_solar_date(date_str: str) -> Tuple[int, int, int]:
         ValueError: 如果日期格式无效
     """
     try:
-        parts = date_str.split('-')
+        parts = date_str.split("-")
         if len(parts) != 3:
             raise ValueError(f"Invalid date format: {date_str}")
 
@@ -105,11 +96,9 @@ def parse_solar_date(date_str: str) -> Tuple[int, int, int]:
 # Lunar to Solar Conversion
 # ============================================================================
 
+
 def lunar_to_solar(
-    year: int,
-    month: int,
-    day: int,
-    is_leap_month: bool = False
+    year: int, month: int, day: int, is_leap_month: bool = False
 ) -> Tuple[int, int, int]:
     """
     农历转阳历
@@ -158,6 +147,7 @@ def parse_lunar_date(date_str: str) -> Tuple[int, int, int]:
 # Heavenly Stems and Earthly Branches Calculation
 # ============================================================================
 
+
 def get_year_stem_branch(year: int) -> Tuple[HeavenlyStemName, EarthlyBranchName]:
     """
     根据年份计算年干支
@@ -178,8 +168,7 @@ def get_year_stem_branch(year: int) -> Tuple[HeavenlyStemName, EarthlyBranchName
 
 
 def get_month_stem_branch(
-    year_stem: HeavenlyStemName,
-    month: int
+    year_stem: HeavenlyStemName, month: int
 ) -> Tuple[HeavenlyStemName, EarthlyBranchName]:
     """
     根据年干和月份计算月干支（五虎遁）
@@ -240,8 +229,7 @@ def get_day_stem_branch(solar_date: date) -> Tuple[HeavenlyStemName, EarthlyBran
 
 
 def get_time_stem_branch(
-    day_stem: HeavenlyStemName,
-    time_index: int
+    day_stem: HeavenlyStemName, time_index: int
 ) -> Tuple[HeavenlyStemName, EarthlyBranchName]:
     """
     根据日干和时辰索引计算时干支（五鼠遁）
@@ -281,11 +269,7 @@ def get_time_stem_branch(
 
 
 def get_heavenly_stem_and_earthly_branch_date(
-    year: int,
-    month: int,
-    day: int,
-    time_index: int,
-    lunar_month: Optional[int] = None
+    year: int, month: int, day: int, time_index: int, lunar_month: Optional[int] = None
 ) -> HeavenlyStemAndEarthlyBranchDate:
     """
     获取完整的四柱（年月日时的天干地支）
@@ -325,7 +309,7 @@ def get_heavenly_stem_and_earthly_branch_date(
         day_stem=day_stem,
         day_branch=day_branch,
         time_stem=time_stem,
-        time_branch=time_branch
+        time_branch=time_branch,
     )
 
 
@@ -335,35 +319,35 @@ def get_heavenly_stem_and_earthly_branch_date(
 
 # 生肖对应地支
 ZODIAC_NAMES = {
-    'ziEarthly': '鼠',
-    'chouEarthly': '牛',
-    'yinEarthly': '虎',
-    'maoEarthly': '兔',
-    'chenEarthly': '龙',
-    'siEarthly': '蛇',
-    'wuEarthly': '马',
-    'weiEarthly': '羊',
-    'shenEarthly': '猴',
-    'youEarthly': '鸡',
-    'xuEarthly': '狗',
-    'haiEarthly': '猪'
+    "ziEarthly": "鼠",
+    "chouEarthly": "牛",
+    "yinEarthly": "虎",
+    "maoEarthly": "兔",
+    "chenEarthly": "龙",
+    "siEarthly": "蛇",
+    "wuEarthly": "马",
+    "weiEarthly": "羊",
+    "shenEarthly": "猴",
+    "youEarthly": "鸡",
+    "xuEarthly": "狗",
+    "haiEarthly": "猪",
 }
 
 # 星座日期范围 (月, 日)
 SIGN_DATES = [
-    ((3, 21), (4, 19), '白羊座'),    # Aries
-    ((4, 20), (5, 20), '金牛座'),    # Taurus
-    ((5, 21), (6, 21), '双子座'),    # Gemini
-    ((6, 22), (7, 22), '巨蟹座'),    # Cancer
-    ((7, 23), (8, 22), '狮子座'),    # Leo
-    ((8, 23), (9, 22), '处女座'),    # Virgo
-    ((9, 23), (10, 23), '天秤座'),   # Libra
-    ((10, 24), (11, 22), '天蝎座'),  # Scorpio
-    ((11, 23), (12, 21), '射手座'),  # Sagittarius
-    ((12, 22), (12, 31), '摩羯座'),  # Capricorn
-    ((1, 1), (1, 19), '摩羯座'),     # Capricorn (continued)
-    ((1, 20), (2, 18), '水瓶座'),    # Aquarius
-    ((2, 19), (3, 20), '双鱼座'),    # Pisces
+    ((3, 21), (4, 19), "白羊座"),  # Aries
+    ((4, 20), (5, 20), "金牛座"),  # Taurus
+    ((5, 21), (6, 21), "双子座"),  # Gemini
+    ((6, 22), (7, 22), "巨蟹座"),  # Cancer
+    ((7, 23), (8, 22), "狮子座"),  # Leo
+    ((8, 23), (9, 22), "处女座"),  # Virgo
+    ((9, 23), (10, 23), "天秤座"),  # Libra
+    ((10, 24), (11, 22), "天蝎座"),  # Scorpio
+    ((11, 23), (12, 21), "射手座"),  # Sagittarius
+    ((12, 22), (12, 31), "摩羯座"),  # Capricorn
+    ((1, 1), (1, 19), "摩羯座"),  # Capricorn (continued)
+    ((1, 20), (2, 18), "水瓶座"),  # Aquarius
+    ((2, 19), (3, 20), "双鱼座"),  # Pisces
 ]
 
 
@@ -377,7 +361,7 @@ def get_zodiac(year_branch: EarthlyBranchName) -> str:
     Returns:
         生肖名称
     """
-    return ZODIAC_NAMES.get(year_branch, '未知')
+    return ZODIAC_NAMES.get(year_branch, "未知")
 
 
 def get_sign(month: int, day: int) -> str:
@@ -401,16 +385,18 @@ def get_sign(month: int, day: int) -> str:
                 return sign_name
         else:
             # 跨月
-            if (month == start_month and day >= start_day) or \
-               (month == end_month and day <= end_day):
+            if (month == start_month and day >= start_day) or (
+                month == end_month and day <= end_day
+            ):
                 return sign_name
 
-    return '未知'
+    return "未知"
 
 
 # ============================================================================
 # Format Functions
 # ============================================================================
+
 
 def format_lunar_date(lunar_date: LunarDate) -> str:
     """
@@ -423,8 +409,8 @@ def format_lunar_date(lunar_date: LunarDate) -> str:
         格式化后的字符串，如 "2000年七月十八" 或 "2000年闰七月十八"
     """
     # 数字转中文
-    chinese_numbers = ['〇', '一', '二', '三', '四', '五', '六', '七', '八', '九', '十']
-    months = ['', '正', '二', '三', '四', '五', '六', '七', '八', '九', '十', '冬', '腊']
+    chinese_numbers = ["〇", "一", "二", "三", "四", "五", "六", "七", "八", "九", "十"]
+    months = ["", "正", "二", "三", "四", "五", "六", "七", "八", "九", "十", "冬", "腊"]
 
     # 月份
     if lunar_date.month <= 12:
@@ -464,17 +450,31 @@ def format_chinese_date(chinese_date: HeavenlyStemAndEarthlyBranchDate) -> str:
     """
     # 天干地支中文映射
     stem_names = {
-        'jiaHeavenly': '甲', 'yiHeavenly': '乙', 'bingHeavenly': '丙',
-        'dingHeavenly': '丁', 'wuHeavenly': '戊', 'jiHeavenly': '己',
-        'gengHeavenly': '庚', 'xinHeavenly': '辛', 'renHeavenly': '壬',
-        'guiHeavenly': '癸'
+        "jiaHeavenly": "甲",
+        "yiHeavenly": "乙",
+        "bingHeavenly": "丙",
+        "dingHeavenly": "丁",
+        "wuHeavenly": "戊",
+        "jiHeavenly": "己",
+        "gengHeavenly": "庚",
+        "xinHeavenly": "辛",
+        "renHeavenly": "壬",
+        "guiHeavenly": "癸",
     }
 
     branch_names = {
-        'ziEarthly': '子', 'chouEarthly': '丑', 'yinEarthly': '寅',
-        'maoEarthly': '卯', 'chenEarthly': '辰', 'siEarthly': '巳',
-        'wuEarthly': '午', 'weiEarthly': '未', 'shenEarthly': '申',
-        'youEarthly': '酉', 'xuEarthly': '戌', 'haiEarthly': '亥'
+        "ziEarthly": "子",
+        "chouEarthly": "丑",
+        "yinEarthly": "寅",
+        "maoEarthly": "卯",
+        "chenEarthly": "辰",
+        "siEarthly": "巳",
+        "wuEarthly": "午",
+        "weiEarthly": "未",
+        "shenEarthly": "申",
+        "youEarthly": "酉",
+        "xuEarthly": "戌",
+        "haiEarthly": "亥",
     }
 
     year_str = f"{stem_names[chinese_date.year_stem]}{branch_names[chinese_date.year_branch]}"

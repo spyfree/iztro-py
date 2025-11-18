@@ -12,7 +12,7 @@ from iztro_py.data.types import (
     Language,
     Astrolabe,
     LunarDate,
-    HeavenlyStemAndEarthlyBranchDate
+    HeavenlyStemAndEarthlyBranchDate,
 )
 from iztro_py.astro.functional_astrolabe import FunctionalAstrolabe
 from iztro_py.astro.palace import get_soul_and_body, initialize_palaces
@@ -30,7 +30,7 @@ from iztro_py.utils.calendar import (
     get_zodiac,
     get_sign,
     format_lunar_date,
-    format_chinese_date
+    format_chinese_date,
 )
 from iztro_py.utils.helpers import (
     get_five_elements_class,
@@ -46,7 +46,7 @@ def by_solar(
     time_index: int,
     gender: GenderName,
     fix_leap: bool = True,
-    language: Language = 'zh-CN'
+    language: Language = "zh-CN",
 ) -> FunctionalAstrolabe:
     """
     通过阳历日期获取紫微斗数星盘
@@ -73,6 +73,7 @@ def by_solar(
     """
     # 设置语言
     from iztro_py.i18n import set_language
+
     set_language(language)
 
     # 1. 解析阳历日期
@@ -91,16 +92,11 @@ def by_solar(
     sign = get_sign(month, day)
 
     # 5. 计算命宫身宫
-    soul_and_body = get_soul_and_body(
-        lunar_date.month,
-        time_index,
-        chinese_date.year_stem
-    )
+    soul_and_body = get_soul_and_body(lunar_date.month, time_index, chinese_date.year_stem)
 
     # 6. 计算五行局
     five_class = get_five_elements_class(
-        soul_and_body.heavenly_stem_of_soul,
-        soul_and_body.earthly_branch_of_soul
+        soul_and_body.heavenly_stem_of_soul, soul_and_body.earthly_branch_of_soul
     )
 
     # 7. 命主身主
@@ -122,11 +118,7 @@ def by_solar(
 
     # 10. 安置辅星
     place_minor_stars(
-        palaces,
-        lunar_date.month,
-        time_index,
-        chinese_date.year_stem,
-        chinese_date.year_branch
+        palaces, lunar_date.month, time_index, chinese_date.year_stem, chinese_date.year_branch
     )
 
     # 11. 应用四化
@@ -138,7 +130,7 @@ def by_solar(
     # 13. 创建Astrolabe对象
     # 计算身宫地支（以身宫所在宫位的地支为准）
     body_palace_rel_index = (soul_and_body.body_index - soul_and_body.soul_index) % 12
-    body_palace_branch = palaces[body_palace_rel_index]['earthly_branch']
+    body_palace_branch = palaces[body_palace_rel_index]["earthly_branch"]
 
     astrolabe = Astrolabe(
         gender=gender,
@@ -157,7 +149,7 @@ def by_solar(
         palaces=palaces,
         language=language,
         raw_lunar_date=lunar_date,
-        raw_chinese_date=chinese_date
+        raw_chinese_date=chinese_date,
     )
 
     # 14. 转换为FunctionalAstrolabe
@@ -169,7 +161,7 @@ def by_solar_hour(
     hour: int,
     gender: GenderName,
     fix_leap: bool = True,
-    language: Language = 'zh-CN'
+    language: Language = "zh-CN",
 ) -> FunctionalAstrolabe:
     """
     通过阳历日期和小时数(0-23)获取星盘（便捷包装）
@@ -188,7 +180,7 @@ def by_lunar(
     gender: GenderName,
     is_leap_month: bool = False,
     fix_leap: bool = True,
-    language: Language = 'zh-CN'
+    language: Language = "zh-CN",
 ) -> FunctionalAstrolabe:
     """
     通过农历日期获取紫微斗数星盘
@@ -213,9 +205,7 @@ def by_lunar(
     year, month, day = parse_solar_date(lunar_date)  # 格式相同
 
     # 2. 农历转阳历
-    solar_year, solar_month, solar_day = lunar_to_solar(
-        year, month, day, is_leap_month
-    )
+    solar_year, solar_month, solar_day = lunar_to_solar(year, month, day, is_leap_month)
 
     # 3. 构造阳历日期字符串
     solar_date_str = f"{solar_year}-{solar_month}-{solar_day}"
@@ -230,7 +220,7 @@ def by_lunar_hour(
     gender: GenderName,
     is_leap_month: bool = False,
     fix_leap: bool = True,
-    language: Language = 'zh-CN'
+    language: Language = "zh-CN",
 ) -> FunctionalAstrolabe:
     """
     通过农历日期和小时数(0-23)获取星盘（便捷包装）
@@ -239,7 +229,7 @@ def by_lunar_hour(
     return by_lunar(lunar_date, ti, gender, is_leap_month, fix_leap, language)
 
 
-def get_zodiac_by_solar_date(solar_date: str, language: Language = 'zh-CN') -> str:
+def get_zodiac_by_solar_date(solar_date: str, language: Language = "zh-CN") -> str:
     """
     根据阳历日期获取生肖
 
@@ -255,7 +245,7 @@ def get_zodiac_by_solar_date(solar_date: str, language: Language = 'zh-CN') -> s
     return get_zodiac(chinese_date.year_branch)
 
 
-def get_sign_by_solar_date(solar_date: str, language: Language = 'zh-CN') -> str:
+def get_sign_by_solar_date(solar_date: str, language: Language = "zh-CN") -> str:
     """
     根据阳历日期获取星座
 

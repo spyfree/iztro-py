@@ -5,22 +5,17 @@ Common utility functions used throughout the library.
 """
 
 from typing import Optional
-from iztro_py.data.types import (
-    HeavenlyStemName,
-    EarthlyBranchName,
-    FiveElementsClass
-)
+from iztro_py.data.types import HeavenlyStemName, EarthlyBranchName, FiveElementsClass
 from iztro_py.data.constants import (
     HEAVENLY_STEMS,
     EARTHLY_BRANCHES,
     FIVE_ELEMENTS_CLASS_LOOKUP,
-    fix_index
+    fix_index,
 )
 
 
 def get_five_elements_class(
-    heavenly_stem: HeavenlyStemName,
-    earthly_branch: EarthlyBranchName
+    heavenly_stem: HeavenlyStemName, earthly_branch: EarthlyBranchName
 ) -> FiveElementsClass:
     """
     根据命宫天干地支获取五行局
@@ -63,11 +58,11 @@ def get_five_elements_class_name(five_elements_class: FiveElementsClass) -> str:
         中文名称，如 "水二局"
     """
     names = {
-        FiveElementsClass.WATER_2: '水二局',
-        FiveElementsClass.WOOD_3: '木三局',
-        FiveElementsClass.METAL_4: '金四局',
-        FiveElementsClass.EARTH_5: '土五局',
-        FiveElementsClass.FIRE_6: '火六局'
+        FiveElementsClass.WATER_2: "水二局",
+        FiveElementsClass.WOOD_3: "木三局",
+        FiveElementsClass.METAL_4: "金四局",
+        FiveElementsClass.EARTH_5: "土五局",
+        FiveElementsClass.FIRE_6: "火六局",
     }
     return names[five_elements_class]
 
@@ -83,19 +78,19 @@ def get_time_range(time_index: int) -> str:
         时间范围字符串，如 "11:00~13:00"
     """
     time_ranges = [
-        '00:00~01:00',  # 早子时
-        '01:00~03:00',  # 丑时
-        '03:00~05:00',  # 寅时
-        '05:00~07:00',  # 卯时
-        '07:00~09:00',  # 辰时
-        '09:00~11:00',  # 巳时
-        '11:00~13:00',  # 午时
-        '13:00~15:00',  # 未时
-        '15:00~17:00',  # 申时
-        '17:00~19:00',  # 酉时
-        '19:00~21:00',  # 戌时
-        '21:00~23:00',  # 亥时
-        '23:00~00:00'   # 晚子时
+        "00:00~01:00",  # 早子时
+        "01:00~03:00",  # 丑时
+        "03:00~05:00",  # 寅时
+        "05:00~07:00",  # 卯时
+        "07:00~09:00",  # 辰时
+        "09:00~11:00",  # 巳时
+        "11:00~13:00",  # 午时
+        "13:00~15:00",  # 未时
+        "15:00~17:00",  # 申时
+        "17:00~19:00",  # 酉时
+        "19:00~21:00",  # 戌时
+        "21:00~23:00",  # 亥时
+        "23:00~00:00",  # 晚子时
     ]
 
     if 0 <= time_index < len(time_ranges):
@@ -115,19 +110,19 @@ def get_time_name(time_index: int) -> str:
         时辰中文名称，如 "午时"
     """
     time_names = [
-        '子时',  # 0 早子时
-        '丑时',  # 1
-        '寅时',  # 2
-        '卯时',  # 3
-        '辰时',  # 4
-        '巳时',  # 5
-        '午时',  # 6
-        '未时',  # 7
-        '申时',  # 8
-        '酉时',  # 9
-        '戌时',  # 10
-        '亥时',  # 11
-        '子时'   # 12 晚子时
+        "子时",  # 0 早子时
+        "丑时",  # 1
+        "寅时",  # 2
+        "卯时",  # 3
+        "辰时",  # 4
+        "巳时",  # 5
+        "午时",  # 6
+        "未时",  # 7
+        "申时",  # 8
+        "酉时",  # 9
+        "戌时",  # 10
+        "亥时",  # 11
+        "子时",  # 12 晚子时
     ]
 
     if 0 <= time_index < len(time_names):
@@ -158,7 +153,7 @@ def hour_to_time_index(hour: int) -> int:
     return (hour + 1) // 2
 
 
-def calculate_nominal_age(birth_year: int, target_year: int, age_divide: str = 'normal') -> int:
+def calculate_nominal_age(birth_year: int, target_year: int, age_divide: str = "normal") -> int:
     """
     计算虚岁
 
@@ -188,63 +183,63 @@ def get_palace_index_by_name(palace_name: str) -> Optional[int]:
     """
     # 中文名称映射
     chinese_names = {
-        '命宫': 0,
-        '父母宫': 1,
-        '福德宫': 2,
-        '田宅宫': 3,
-        '官禄宫': 4,
-        '奴仆宫': 5,
-        '交友宫': 5,  # 奴仆宫别名
-        '迁移宫': 6,
-        '疾厄宫': 7,
-        '财帛宫': 8,
-        '子女宫': 9,
-        '夫妻宫': 10,
-        '兄弟宫': 11,
+        "命宫": 0,
+        "父母宫": 1,
+        "福德宫": 2,
+        "田宅宫": 3,
+        "官禄宫": 4,
+        "奴仆宫": 5,
+        "交友宫": 5,  # 奴仆宫别名
+        "迁移宫": 6,
+        "疾厄宫": 7,
+        "财帛宫": 8,
+        "子女宫": 9,
+        "夫妻宫": 10,
+        "兄弟宫": 11,
         # 简化别名（不带"宫"）
-        '命': 0,
-        '父母': 1,
-        '福德': 2,
-        '田宅': 3,
-        '官禄': 4,
-        '事业': 4,  # 官禄宫别名
-        '奴仆': 5,
-        '交友': 5,
-        '迁移': 6,
-        '疾厄': 7,
-        '财帛': 8,
-        '子女': 9,
-        '夫妻': 10,
-        '兄弟': 11
+        "命": 0,
+        "父母": 1,
+        "福德": 2,
+        "田宅": 3,
+        "官禄": 4,
+        "事业": 4,  # 官禄宫别名
+        "奴仆": 5,
+        "交友": 5,
+        "迁移": 6,
+        "疾厄": 7,
+        "财帛": 8,
+        "子女": 9,
+        "夫妻": 10,
+        "兄弟": 11,
     }
 
     # 英文key映射
     english_keys = {
-        'soulPalace': 0,
-        'parentsPalace': 1,
-        'spiritPalace': 2,
-        'propertyPalace': 3,
-        'careerPalace': 4,
-        'friendsPalace': 5,
-        'surfacePalace': 6,
-        'healthPalace': 7,
-        'wealthPalace': 8,
-        'childrenPalace': 9,
-        'spousePalace': 10,
-        'siblingsPalace': 11,
+        "soulPalace": 0,
+        "parentsPalace": 1,
+        "spiritPalace": 2,
+        "propertyPalace": 3,
+        "careerPalace": 4,
+        "friendsPalace": 5,
+        "surfacePalace": 6,
+        "healthPalace": 7,
+        "wealthPalace": 8,
+        "childrenPalace": 9,
+        "spousePalace": 10,
+        "siblingsPalace": 11,
         # 简化别名（不带"Palace"）
-        'soul': 0,
-        'parents': 1,
-        'spirit': 2,
-        'property': 3,
-        'career': 4,
-        'friends': 5,
-        'surface': 6,
-        'health': 7,
-        'wealth': 8,
-        'children': 9,
-        'spouse': 10,
-        'siblings': 11
+        "soul": 0,
+        "parents": 1,
+        "spirit": 2,
+        "property": 3,
+        "career": 4,
+        "friends": 5,
+        "surface": 6,
+        "health": 7,
+        "wealth": 8,
+        "children": 9,
+        "spouse": 10,
+        "siblings": 11,
     }
 
     # 先尝试中文
@@ -263,7 +258,7 @@ def get_decadal_range(
     palace_index: int,
     gender: str,
     soul_palace_index: int = 0,
-    year_branch_yin_yang: str = '阳'
+    year_branch_yin_yang: str = "阳",
 ) -> tuple[int, int]:
     """
     计算大限年龄范围
@@ -287,8 +282,9 @@ def get_decadal_range(
 
     # 判断顺逆行
     # 男阳女阴顺行，男阴女阳逆行
-    is_forward = (gender == '男' and year_branch_yin_yang == '阳') or \
-                 (gender == '女' and year_branch_yin_yang == '阴')
+    is_forward = (gender == "男" and year_branch_yin_yang == "阳") or (
+        gender == "女" and year_branch_yin_yang == "阴"
+    )
 
     # 计算此宫位是第几个大限（从0开始）
     if is_forward:
@@ -310,7 +306,7 @@ def get_decadal_palace_index(
     five_elements_class: FiveElementsClass,
     soul_palace_index: int,
     gender: str,
-    year_branch_yin_yang: str = '阳'
+    year_branch_yin_yang: str = "阳",
 ) -> int:
     """
     根据年龄获取大限所在的宫位索引
@@ -329,8 +325,9 @@ def get_decadal_palace_index(
 
     # 判断顺逆行
     # 男阳女阴顺行，男阴女阳逆行
-    is_forward = (gender == '男' and year_branch_yin_yang == '阳') or \
-                 (gender == '女' and year_branch_yin_yang == '阴')
+    is_forward = (gender == "男" and year_branch_yin_yang == "阳") or (
+        gender == "女" and year_branch_yin_yang == "阴"
+    )
 
     # 计算从命宫开始的第几个大限（从0开始）
     decadal_order = (age - start_age) // 10

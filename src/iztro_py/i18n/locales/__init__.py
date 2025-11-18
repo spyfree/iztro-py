@@ -10,4 +10,4 @@ Available locales:
 - vi_VN: Vietnamese (Tiếng Việt)
 """
 
-__all__ = ['zh_CN', 'zh_TW', 'en_US', 'ja_JP', 'ko_KR', 'vi_VN']
+__all__ = ["zh_CN", "zh_TW", "en_US", "ja_JP", "ko_KR", "vi_VN"]
