@@ -14,7 +14,7 @@
 from typing import Dict, Any, Optional
 
 # 当前语言设置
-_current_language = 'zh-CN'
+_current_language = "zh-CN"
 
 # 语言资源缓存
 _locales: Dict[str, Dict[str, Any]] = {}
@@ -29,13 +29,17 @@ def set_language(lang: str) -> None:
               不支持的语言将降级为 'zh-CN'
     """
     global _current_language
-    supported = ['zh-CN', 'zh-TW', 'en-US', 'ja-JP', 'ko-KR', 'vi-VN']
+    supported = ["zh-CN", "zh-TW", "en-US", "ja-JP", "ko-KR", "vi-VN"]
 
     # 如果语言不支持，降级到中文，但不报错
     if lang not in supported:
         import warnings
-        warnings.warn(f"Language '{lang}' is not fully supported yet. Falling back to 'zh-CN'. Supported: {supported}", UserWarning)
-        lang = 'zh-CN'
+
+        warnings.warn(
+            f"Language '{lang}' is not fully supported yet. Falling back to 'zh-CN'. Supported: {supported}",
+            UserWarning,
+        )
+        lang = "zh-CN"
 
     _current_language = lang
     _load_locale(lang)
@@ -62,23 +66,29 @@ def _load_locale(lang: str) -> None:
         return
 
     try:
-        if lang == 'zh-CN':
+        if lang == "zh-CN":
             from .locales import zh_CN
+
             _locales[lang] = zh_CN.translations
-        elif lang == 'zh-TW':
+        elif lang == "zh-TW":
             from .locales import zh_TW
+
             _locales[lang] = zh_TW.translations
-        elif lang == 'en-US':
+        elif lang == "en-US":
             from .locales import en_US
+
             _locales[lang] = en_US.translations
-        elif lang == 'ja-JP':
+        elif lang == "ja-JP":
             from .locales import ja_JP
+
             _locales[lang] = ja_JP.translations
-        elif lang == 'ko-KR':
+        elif lang == "ko-KR":
             from .locales import ko_KR
+
             _locales[lang] = ko_KR.translations
-        elif lang == 'vi-VN':
+        elif lang == "vi-VN":
             from .locales import vi_VN
+
             _locales[lang] = vi_VN.translations
     except ImportError:
         raise ValueError(f"Language resource not found: {lang}")
@@ -104,7 +114,7 @@ def t(key: str, lang: Optional[str] = None) -> str:
     locale = _locales.get(target_lang, {})
 
     # 支持嵌套键，如 'palaces.soulPalace'
-    keys = key.split('.')
+    keys = key.split(".")
     value = locale
     for k in keys:
         if isinstance(value, dict):
@@ -140,7 +150,7 @@ def translate_dict(data: Dict[str, Any], lang: Optional[str] = None) -> Dict[str
 
 
 # 默认加载中文
-_load_locale('zh-CN')
+_load_locale("zh-CN")
 
 
-__all__ = ['set_language', 'get_language', 't', 'translate_dict']
+__all__ = ["set_language", "get_language", "t", "translate_dict"]

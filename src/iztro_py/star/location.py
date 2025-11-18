@@ -44,11 +44,11 @@ def get_ziwei_index(five_elements_class: FiveElementsClass, lunar_day: int) -> i
     # 起始宫位索引
     # 水2->酉9, 木3->午6, 金4->亥11, 土5->辰4, 火6->丑1
     start_positions = {
-        2: 9,   # 水二局：酉宫
-        3: 6,   # 木三局：午宫
+        2: 9,  # 水二局：酉宫
+        3: 6,  # 木三局：午宫
         4: 11,  # 金四局：亥宫
-        5: 4,   # 土五局：辰宫
-        6: 1    # 火六局：丑宫
+        5: 4,  # 土五局：辰宫
+        6: 1,  # 火六局：丑宫
     }
 
     start_pos = start_positions[class_value]
@@ -96,10 +96,7 @@ def get_tianfu_index(ziwei_index: int) -> int:
 
 
 # Backward-compat helper to satisfy existing tests/imports
-def get_star_indices(
-    five_elements_class: FiveElementsClass,
-    lunar_day: int
-) -> Tuple[int, int]:
+def get_star_indices(five_elements_class: FiveElementsClass, lunar_day: int) -> Tuple[int, int]:
     """
     兼容旧接口：根据五行局与农历日返回紫微与天府索引
 
@@ -108,6 +105,7 @@ def get_star_indices(
     ziwei_index = get_ziwei_index(five_elements_class, lunar_day)
     tianfu_index = get_tianfu_index(ziwei_index)
     return ziwei_index, tianfu_index
+
 
 def get_start_indices(
     solar_date_str: str,
@@ -180,10 +178,7 @@ def get_start_indices(
     return ziwei_index, tianfu_index
 
 
-def get_major_star_positions(
-    ziwei_index: int,
-    tianfu_index: int
-) -> dict[str, int]:
+def get_major_star_positions(ziwei_index: int, tianfu_index: int) -> dict[str, int]:
     """
     根据紫微和天府星位置，计算其他主星位置
 
@@ -375,8 +370,7 @@ def get_minor_star_positions_kongjie(time_index: int) -> Tuple[int, int]:
 
 
 def get_minor_star_positions_lucun_yangtuo_tianma(
-    year_stem_index: int,
-    year_branch_index: int
+    year_stem_index: int, year_branch_index: int
 ) -> Tuple[int, int, int, int]:
     """
     计算禄存、擎羊、陀罗、天马星位置（按年干支）

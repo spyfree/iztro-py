@@ -5,7 +5,7 @@ The main class for interacting with a Zi Wei Dou Shu astrolabe.
 Provides rich API for querying palaces, stars, and their relationships.
 """
 
-from typing import Optional, Union
+from typing import List, Optional, Union
 from iztro_py.data.types import Astrolabe, PalaceName, StarName
 from iztro_py.astro.functional_palace import FunctionalPalace
 from iztro_py.astro.functional_star import FunctionalStar
@@ -47,7 +47,7 @@ class FunctionalAstrolabe(Astrolabe):
             five_elements_class=astrolabe.five_elements_class,
             palaces=functional_palaces,
             raw_lunar_date=astrolabe.raw_lunar_date,
-            raw_chinese_date=astrolabe.raw_chinese_date
+            raw_chinese_date=astrolabe.raw_chinese_date,
         )
 
         # 设置宫位的星盘引用
@@ -83,6 +83,7 @@ class FunctionalAstrolabe(Astrolabe):
 
             # 再尝试中文名
             from iztro_py.utils.helpers import get_palace_index_by_name
+
             palace_index = get_palace_index_by_name(index_or_name)
             if palace_index is not None:
                 return self.palaces[palace_index]
@@ -111,8 +112,7 @@ class FunctionalAstrolabe(Astrolabe):
         return None
 
     def surrounded_palaces(
-        self,
-        index_or_name: Union[int, PalaceName]
+        self, index_or_name: Union[int, PalaceName]
     ) -> Optional[FunctionalSurpalaces]:
         """
         获取指定宫位的三方四正
@@ -134,18 +134,18 @@ class FunctionalAstrolabe(Astrolabe):
         # 获取三方四正的索引
         indices = get_surrounded_indices(target_palace.index)
 
-        opposite_palace = self.palaces[indices['opposite']]
-        wealth_palace = self.palaces[indices['wealth']]
-        career_palace = self.palaces[indices['career']]
+        opposite_palace = self.palaces[indices["opposite"]]
+        wealth_palace = self.palaces[indices["wealth"]]
+        career_palace = self.palaces[indices["career"]]
 
         return FunctionalSurpalaces(
             target=target_palace,
             opposite=opposite_palace,
             wealth=wealth_palace,
-            career=career_palace
+            career=career_palace,
         )
 
-    def not_empty_palaces(self) -> list[FunctionalPalace]:
+    def not_empty_palaces(self) -> List[FunctionalPalace]:
         """
         获取所有非空宫（有主星的宫位）
 
@@ -154,7 +154,7 @@ class FunctionalAstrolabe(Astrolabe):
         """
         return [p for p in self.palaces if not p.is_empty()]
 
-    def empty_palaces(self) -> list[FunctionalPalace]:
+    def empty_palaces(self) -> List[FunctionalPalace]:
         """
         获取所有空宫（无主星的宫位）
 
@@ -187,11 +187,7 @@ class FunctionalAstrolabe(Astrolabe):
                 return palace
         return None
 
-    def horoscope(
-        self,
-        solar_date: str,
-        time_index: int = 0
-    ):
+    def horoscope(self, solar_date: str, time_index: int = 0):
         """
         获取指定日期的运势信息（大限、流年、流月、流日、流时）
 
@@ -212,7 +208,7 @@ class FunctionalAstrolabe(Astrolabe):
         from iztro_py.data.types import FiveElementsClass
 
         # 获取出生年份
-        birth_year = int(self.solar_date.split('-')[0])
+        birth_year = int(self.solar_date.split("-")[0])
 
         # 获取命宫索引
         soul_palace = self.get_soul_palace()
@@ -220,15 +216,14 @@ class FunctionalAstrolabe(Astrolabe):
 
         # 获取五行局
         five_elements_class_map = {
-            '水二局': FiveElementsClass.WATER_2,
-            '木三局': FiveElementsClass.WOOD_3,
-            '金四局': FiveElementsClass.METAL_4,
-            '土五局': FiveElementsClass.EARTH_5,
-            '火六局': FiveElementsClass.FIRE_6
+            "水二局": FiveElementsClass.WATER_2,
+            "木三局": FiveElementsClass.WOOD_3,
+            "金四局": FiveElementsClass.METAL_4,
+            "土五局": FiveElementsClass.EARTH_5,
+            "火六局": FiveElementsClass.FIRE_6,
         }
         five_elements = five_elements_class_map.get(
-            self.five_elements_class,
-            FiveElementsClass.WATER_2
+            self.five_elements_class, FiveElementsClass.WATER_2
         )
 
         # 获取出生年支阴阳
@@ -236,10 +231,11 @@ class FunctionalAstrolabe(Astrolabe):
             year_branch = self.raw_chinese_date.year_branch
             # 从地支获取阴阳
             from iztro_py.data.earthly_branches import EARTHLY_BRANCHES_CONFIG
+
             branch_config = EARTHLY_BRANCHES_CONFIG.get(year_branch)
-            year_branch_yin_yang = branch_config.yin_yang if branch_config else '阳'
+            year_branch_yin_yang = branch_config.yin_yang if branch_config else "阳"
         else:
-            year_branch_yin_yang = '阳'
+            year_branch_yin_yang = "阳"
 
         return get_horoscope(
             solar_date_str=solar_date,
@@ -249,7 +245,7 @@ class FunctionalAstrolabe(Astrolabe):
             five_elements_class=five_elements,
             gender=self.gender,
             year_branch_yin_yang=year_branch_yin_yang,
-            birth_year=birth_year
+            birth_year=birth_year,
         )
 
     def __str__(self) -> str:
@@ -262,13 +258,13 @@ class FunctionalAstrolabe(Astrolabe):
             f"五行局: {self.five_elements_class}",
             f"命主: {self.soul} | 身主: {self.body}",
             "",
-            "十二宫:"
+            "十二宫:",
         ]
 
         for palace in self.palaces:
             lines.append(f"  {palace}")
 
-        return '\n'.join(lines)
+        return "\n".join(lines)
 
     def __repr__(self) -> str:
         return f"FunctionalAstrolabe(date={self.solar_date}, gender={self.gender})"
@@ -285,49 +281,52 @@ class FunctionalAstrolabe(Astrolabe):
         - earthlyBranchOfSoulPalace, earthlyBranchOfBodyPalace, soul, body, fiveElementsClass
         - palaces: [{ name, isBodyPalace, isOriginalPalace, heavenlyStem, earthlyBranch, majorStars, minorStars }]
         """
+
         def tr_branch(branch_key: str) -> str:
-            return t(f"earthlyBranch.{branch_key}") if 'Earthly' in branch_key else branch_key
+            return t(f"earthlyBranch.{branch_key}") if "Earthly" in branch_key else branch_key
 
         def tr_stem(stem_key: str) -> str:
-            return t(f"heavenlyStem.{stem_key}") if 'Heavenly' in stem_key else stem_key
+            return t(f"heavenlyStem.{stem_key}") if "Heavenly" in stem_key else stem_key
 
         def star_dict(star: FunctionalStar) -> dict:
             return {
-                'name': star.translate_name(),
-                'type': star.type,
-                'scope': star.scope,
-                'brightness': star.brightness,
-                'mutagen': star.mutagen,
+                "name": star.translate_name(),
+                "type": star.type,
+                "scope": star.scope,
+                "brightness": star.brightness,
+                "mutagen": star.mutagen,
             }
 
         palaces = []
         for p in self.palaces:
-            palaces.append({
-                'name': p.translate_name(),
-                'isBodyPalace': p.is_body_palace,
-                'isOriginalPalace': p.is_original_palace,
-                'heavenlyStem': tr_stem(p.heavenly_stem),
-                'earthlyBranch': tr_branch(p.earthly_branch),
-                'majorStars': [star_dict(s) for s in p.major_stars],
-                'minorStars': [star_dict(s) for s in p.minor_stars],
-                'adjectiveStars': [star_dict(s) for s in p.adjective_stars],
-            })
+            palaces.append(
+                {
+                    "name": p.translate_name(),
+                    "isBodyPalace": p.is_body_palace,
+                    "isOriginalPalace": p.is_original_palace,
+                    "heavenlyStem": tr_stem(p.heavenly_stem),
+                    "earthlyBranch": tr_branch(p.earthly_branch),
+                    "majorStars": [star_dict(s) for s in p.major_stars],
+                    "minorStars": [star_dict(s) for s in p.minor_stars],
+                    "adjectiveStars": [star_dict(s) for s in p.adjective_stars],
+                }
+            )
 
         from iztro_py.data.types import Star
 
         return {
-            'gender': self.gender,
-            'solarDate': self.solar_date,
-            'lunarDate': self.lunar_date,
-            'chineseDate': self.chinese_date,
-            'time': self.time,
-            'timeRange': self.time_range,
-            'sign': self.sign,
-            'zodiac': self.zodiac,
-            'earthlyBranchOfSoulPalace': tr_branch(self.earthly_branch_of_soul_palace),
-            'earthlyBranchOfBodyPalace': tr_branch(self.earthly_branch_of_body_palace),
-            'soul': Star(name=self.soul, type='major', scope='origin').translate_name(),
-            'body': Star(name=self.body, type='major', scope='origin').translate_name(),
-            'fiveElementsClass': self.five_elements_class,
-            'palaces': palaces,
+            "gender": self.gender,
+            "solarDate": self.solar_date,
+            "lunarDate": self.lunar_date,
+            "chineseDate": self.chinese_date,
+            "time": self.time,
+            "timeRange": self.time_range,
+            "sign": self.sign,
+            "zodiac": self.zodiac,
+            "earthlyBranchOfSoulPalace": tr_branch(self.earthly_branch_of_soul_palace),
+            "earthlyBranchOfBodyPalace": tr_branch(self.earthly_branch_of_body_palace),
+            "soul": Star(name=self.soul, type="major", scope="origin").translate_name(),
+            "body": Star(name=self.body, type="major", scope="origin").translate_name(),
+            "fiveElementsClass": self.five_elements_class,
+            "palaces": palaces,
         }

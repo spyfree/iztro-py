@@ -5,7 +5,8 @@ Integration test - Complete astrolabe generation
 
 import sys
 import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../src")))
 
 from iztro_py.utils.calendar import (
     parse_solar_date,
@@ -14,13 +15,13 @@ from iztro_py.utils.calendar import (
     get_zodiac,
     get_sign,
     format_lunar_date,
-    format_chinese_date
+    format_chinese_date,
 )
 from iztro_py.utils.helpers import (
     get_five_elements_class,
     get_five_elements_class_name,
     get_time_name,
-    get_time_range
+    get_time_range,
 )
 from iztro_py.astro.palace import get_soul_and_body, initialize_palaces
 from iztro_py.star.major_star import place_major_stars
@@ -69,21 +70,18 @@ def generate_astrolabe(solar_date_str: str, time_index: int, gender: str):
     print(f"  时辰: {get_time_name(time_index)} ({get_time_range(time_index)})")
 
     # 5. 计算命宫身宫
-    soul_and_body = get_soul_and_body(
-        lunar_date.month,
-        time_index,
-        chinese_date.year_stem
-    )
+    soul_and_body = get_soul_and_body(lunar_date.month, time_index, chinese_date.year_stem)
 
     print(f"\n🏠 命身宫信息:")
     print(f"  命宫: 索引 {soul_and_body.soul_index}")
-    print(f"  命宫干支: {soul_and_body.heavenly_stem_of_soul} {soul_and_body.earthly_branch_of_soul}")
+    print(
+        f"  命宫干支: {soul_and_body.heavenly_stem_of_soul} {soul_and_body.earthly_branch_of_soul}"
+    )
     print(f"  身宫: 索引 {soul_and_body.body_index}")
 
     # 6. 计算五行局
     five_class = get_five_elements_class(
-        soul_and_body.heavenly_stem_of_soul,
-        soul_and_body.earthly_branch_of_soul
+        soul_and_body.heavenly_stem_of_soul, soul_and_body.earthly_branch_of_soul
     )
     print(f"  五行局: {get_five_elements_class_name(five_class)}")
 
@@ -101,11 +99,7 @@ def generate_astrolabe(solar_date_str: str, time_index: int, gender: str):
 
     # 10. 安置辅星
     place_minor_stars(
-        palaces,
-        lunar_date.month,
-        time_index,
-        chinese_date.year_stem,
-        chinese_date.year_branch
+        palaces, lunar_date.month, time_index, chinese_date.year_stem, chinese_date.year_branch
     )
 
     # 11. 应用四化
@@ -121,9 +115,9 @@ def generate_astrolabe(solar_date_str: str, time_index: int, gender: str):
     for palace in palaces:
         # 宫位基本信息
         palace_marker = ""
-        if palace['is_original_palace']:
+        if palace["is_original_palace"]:
             palace_marker += " [命]"
-        if palace['is_body_palace']:
+        if palace["is_body_palace"]:
             palace_marker += " [身]"
 
         print(f"\n【{palace['name']}{palace_marker}】")
@@ -131,9 +125,9 @@ def generate_astrolabe(solar_date_str: str, time_index: int, gender: str):
         print(f"  干支: {palace['heavenly_stem']} {palace['earthly_branch']}")
 
         # 主星
-        if palace['major_stars']:
+        if palace["major_stars"]:
             print(f"  主星:", end="")
-            for star in palace['major_stars']:
+            for star in palace["major_stars"]:
                 star_info = f" {star.name}"
                 if star.brightness:
                     star_info += f"({star.brightness})"
@@ -143,9 +137,9 @@ def generate_astrolabe(solar_date_str: str, time_index: int, gender: str):
             print()
 
         # 辅星
-        if palace['minor_stars']:
+        if palace["minor_stars"]:
             print(f"  辅星:", end="")
-            for star in palace['minor_stars']:
+            for star in palace["minor_stars"]:
                 star_info = f" {star.name}"
                 if star.mutagen:
                     star_info += f"[化{star.mutagen}]"
@@ -153,11 +147,10 @@ def generate_astrolabe(solar_date_str: str, time_index: int, gender: str):
             print()
 
     # 统计信息
-    total_major = sum(len(p['major_stars']) for p in palaces)
-    total_minor = sum(len(p['minor_stars']) for p in palaces)
+    total_major = sum(len(p["major_stars"]) for p in palaces)
+    total_minor = sum(len(p["minor_stars"]) for p in palaces)
     total_mutagen = sum(
-        len([s for s in p['major_stars'] + p['minor_stars'] if s.mutagen])
-        for p in palaces
+        len([s for s in p["major_stars"] + p["minor_stars"] if s.mutagen]) for p in palaces
     )
 
     print("\n" + "=" * 80)
@@ -168,37 +161,37 @@ def generate_astrolabe(solar_date_str: str, time_index: int, gender: str):
     print("=" * 80)
 
     return {
-        'solar_date': solar_date_str,
-        'lunar_date': lunar_date,
-        'chinese_date': chinese_date,
-        'gender': gender,
-        'zodiac': zodiac,
-        'sign': sign,
-        'time_index': time_index,
-        'soul_and_body': soul_and_body,
-        'five_elements_class': five_class,
-        'soul_star': soul_star,
-        'body_star': body_star,
-        'palaces': palaces
+        "solar_date": solar_date_str,
+        "lunar_date": lunar_date,
+        "chinese_date": chinese_date,
+        "gender": gender,
+        "zodiac": zodiac,
+        "sign": sign,
+        "time_index": time_index,
+        "soul_and_body": soul_and_body,
+        "five_elements_class": five_class,
+        "soul_star": soul_star,
+        "body_star": body_star,
+        "palaces": palaces,
     }
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     try:
         # 测试案例1：2000年8月16日午时男命
-        astrolabe1 = generate_astrolabe('2000-8-16', 6, '男')
+        astrolabe1 = generate_astrolabe("2000-8-16", 6, "男")
 
         # 验证结果
-        assert len(astrolabe1['palaces']) == 12
-        assert astrolabe1['zodiac'] == '龙'
-        assert astrolabe1['sign'] == '狮子座'
+        assert len(astrolabe1["palaces"]) == 12
+        assert astrolabe1["zodiac"] == "龙"
+        assert astrolabe1["sign"] == "狮子座"
 
         print("\n\n")
 
         # 测试案例2：1990年1月1日子时女命
-        astrolabe2 = generate_astrolabe('1990-1-1', 0, '女')
+        astrolabe2 = generate_astrolabe("1990-1-1", 0, "女")
 
-        assert len(astrolabe2['palaces']) == 12
+        assert len(astrolabe2["palaces"]) == 12
 
         print("\n" + "=" * 80)
         print("✓✓✓ 所有集成测试通过！星盘生成功能正常！")
@@ -207,5 +200,6 @@ if __name__ == '__main__':
     except Exception as e:
         print(f"\n✗✗✗ 测试失败: {e}")
         import traceback
+
         traceback.print_exc()
         sys.exit(1)

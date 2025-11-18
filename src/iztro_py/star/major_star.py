@@ -32,6 +32,7 @@ def place_major_stars(
     # 兼容旧API：如果第一个参数是 FiveElementsClass，则按旧算法计算索引
     if isinstance(arg1, FiveElementsClass):
         from iztro_py.star.location import get_ziwei_index, get_tianfu_index
+
         five_class: FiveElementsClass = arg1
         lunar_day: int = arg2
         ziwei_index = get_ziwei_index(five_class, lunar_day)
@@ -48,17 +49,17 @@ def place_major_stars(
     for star_name, earthly_branch_index in star_positions.items():
         star = Star(
             name=star_name,
-            type='major',
-            scope='origin',
+            type="major",
+            scope="origin",
             brightness=None,  # 后续计算
-            mutagen=None  # 后续计算
+            mutagen=None,  # 后续计算
         )
 
         # 查找具有该地支的宫位
         target_branch = EARTHLY_BRANCHES[earthly_branch_index]
         for palace in palaces:
-            if palace['earthly_branch'] == target_branch:
-                palace['major_stars'].append(star)
+            if palace["earthly_branch"] == target_branch:
+                palace["major_stars"].append(star)
                 break
 
 
@@ -72,7 +73,7 @@ def get_major_stars_in_palace(palace: dict) -> List[Star]:
     Returns:
         主星列表
     """
-    return palace.get('major_stars', [])
+    return palace.get("major_stars", [])
 
 
 def has_major_star(palace: dict, star_name: str) -> bool:
