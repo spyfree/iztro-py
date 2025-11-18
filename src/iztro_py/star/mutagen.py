@@ -4,7 +4,7 @@ Mutagen (四化) calculation for iztro-py
 Functions for calculating and applying mutagen transformations to stars.
 """
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 from iztro_py.data.types import HeavenlyStemName, StarName, Mutagen
 from iztro_py.data.heavenly_stems import get_mutagen, get_mutagen_type
 
@@ -70,7 +70,7 @@ def has_mutagen(star_name: StarName, year_stem: HeavenlyStemName) -> Optional[Mu
     return get_mutagen_type(year_stem, star_name)
 
 
-def get_palace_mutagens(palace: dict) -> List[tuple[StarName, Mutagen]]:
+def get_palace_mutagens(palace: Dict[str, Any]) -> List[Tuple[StarName, Mutagen]]:
     """
     获取宫位中所有带四化的星曜
 

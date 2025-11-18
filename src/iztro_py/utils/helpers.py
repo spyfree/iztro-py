@@ -4,7 +4,7 @@ Helper utilities for iztro-py
 Common utility functions used throughout the library.
 """
 
-from typing import Optional
+from typing import Optional, Tuple
 from iztro_py.data.types import HeavenlyStemName, EarthlyBranchName, FiveElementsClass
 from iztro_py.data.constants import (
     HEAVENLY_STEMS,
@@ -259,7 +259,7 @@ def get_decadal_range(
     gender: str,
     soul_palace_index: int = 0,
     year_branch_yin_yang: str = "阳",
-) -> tuple[int, int]:
+) -> Tuple[int, int]:
     """
     计算大限年龄范围
 
