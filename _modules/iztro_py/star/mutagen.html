@@ -79,14 +79,14 @@
 <span class="sd">Functions for calculating and applying mutagen transformations to stars.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">HeavenlyStemName</span><span class="p">,</span> <span class="n">StarName</span><span class="p">,</span> <span class="n">Mutagen</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.heavenly_stems</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_mutagen</span><span class="p">,</span> <span class="n">get_mutagen_type</span>
 
 
 <div class="viewcode-block" id="apply_mutagen_to_palaces">
 <a class="viewcode-back" href="../../../api/star.html#iztro_py.star.mutagen.apply_mutagen_to_palaces">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">apply_mutagen_to_palaces</span><span class="p">(</span><span class="n">palaces</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span> <span class="n">year_stem</span><span class="p">:</span> <span class="n">HeavenlyStemName</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">apply_mutagen_to_palaces</span><span class="p">(</span><span class="n">palaces</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="n">year_stem</span><span class="p">:</span> <span class="n">HeavenlyStemName</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    为所有宫位中的星曜添加四化属性</span>
 

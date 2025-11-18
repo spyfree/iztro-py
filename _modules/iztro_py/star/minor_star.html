@@ -79,7 +79,7 @@
 <span class="sd">Functions for placing the 14 minor stars (辅星) into palaces.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Star</span><span class="p">,</span> <span class="n">HeavenlyStemName</span><span class="p">,</span> <span class="n">EarthlyBranchName</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">HEAVENLY_STEMS</span><span class="p">,</span> <span class="n">EARTHLY_BRANCHES</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.star.location</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
@@ -94,7 +94,9 @@
 <span class="p">)</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_find_palace_by_branch_index</span><span class="p">(</span><span class="n">palaces</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span> <span class="n">branch_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_find_palace_by_branch_index</span><span class="p">(</span>
+    <span class="n">palaces</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="n">branch_index</span><span class="p">:</span> <span class="nb">int</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    根据地支索引查找对应的宫位</span>
 
@@ -115,7 +117,7 @@
 <div class="viewcode-block" id="place_minor_stars">
 <a class="viewcode-back" href="../../../api/star.html#iztro_py.star.minor_star.place_minor_stars">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">place_minor_stars</span><span class="p">(</span>
-    <span class="n">palaces</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span>
+    <span class="n">palaces</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span>
     <span class="n">lunar_month</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">time_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">year_stem</span><span class="p">:</span> <span class="n">HeavenlyStemName</span><span class="p">,</span>
