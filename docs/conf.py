@@ -8,7 +8,7 @@ sys.path.insert(0, os.path.abspath('../src'))
 project = 'iztro-py'
 copyright = '2024, iztro-py Contributors'
 author = 'iztro-py Contributors'
-release = '0.3.2'
+release = '0.3.3'
 
 # -- General configuration ---------------------------------------------------
 extensions = [

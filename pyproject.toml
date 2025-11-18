@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "iztro-py"
-version = "0.3.2"
+version = "0.3.3"
 description = "A pure Python implementation of iztro - A lightweight Zi Wei Dou Shu (Purple Star Astrology) library with full i18n support (6 languages)"
 readme = "README.md"
 requires-python = ">=3.8"
