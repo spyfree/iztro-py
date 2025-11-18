@@ -1,0 +1,470 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>iztro_py.astro.functional_astrolabe &mdash; iztro-py 0.3.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=d5a15cff"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            iztro-py
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">内容目录:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">安装</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart.html">快速开始</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">使用示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">更新日志</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">iztro-py</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">iztro_py.astro.functional_astrolabe</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for iztro_py.astro.functional_astrolabe</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">FunctionalAstrolabe class - Complete astrolabe with functional methods</span>
+
+<span class="sd">The main class for interacting with a Zi Wei Dou Shu astrolabe.</span>
+<span class="sd">Provides rich API for querying palaces, stars, and their relationships.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Astrolabe</span><span class="p">,</span> <span class="n">PalaceName</span><span class="p">,</span> <span class="n">StarName</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.astro.functional_palace</span><span class="w"> </span><span class="kn">import</span> <span class="n">FunctionalPalace</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.astro.functional_star</span><span class="w"> </span><span class="kn">import</span> <span class="n">FunctionalStar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.astro.functional_surpalaces</span><span class="w"> </span><span class="kn">import</span> <span class="n">FunctionalSurpalaces</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_surrounded_indices</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.i18n</span><span class="w"> </span><span class="kn">import</span> <span class="n">t</span>
+
+
+<div class="viewcode-block" id="FunctionalAstrolabe">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.astro.functional_astrolabe.FunctionalAstrolabe">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FunctionalAstrolabe</span><span class="p">(</span><span class="n">Astrolabe</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    功能增强的星盘类</span>
+
+<span class="sd">    继承自Astrolabe，提供丰富的查询和链式调用API</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="FunctionalAstrolabe.__init__">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.astro.functional_astrolabe.FunctionalAstrolabe.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">astrolabe</span><span class="p">:</span> <span class="n">Astrolabe</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        初始化FunctionalAstrolabe</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            astrolabe: 基础Astrolabe对象</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># 转换宫位为FunctionalPalace</span>
+        <span class="n">functional_palaces</span> <span class="o">=</span> <span class="p">[</span><span class="n">FunctionalPalace</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">astrolabe</span><span class="o">.</span><span class="n">palaces</span><span class="p">]</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">gender</span><span class="o">=</span><span class="n">astrolabe</span><span class="o">.</span><span class="n">gender</span><span class="p">,</span>
+            <span class="n">solar_date</span><span class="o">=</span><span class="n">astrolabe</span><span class="o">.</span><span class="n">solar_date</span><span class="p">,</span>
+            <span class="n">lunar_date</span><span class="o">=</span><span class="n">astrolabe</span><span class="o">.</span><span class="n">lunar_date</span><span class="p">,</span>
+            <span class="n">chinese_date</span><span class="o">=</span><span class="n">astrolabe</span><span class="o">.</span><span class="n">chinese_date</span><span class="p">,</span>
+            <span class="n">time</span><span class="o">=</span><span class="n">astrolabe</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
+            <span class="n">time_range</span><span class="o">=</span><span class="n">astrolabe</span><span class="o">.</span><span class="n">time_range</span><span class="p">,</span>
+            <span class="n">sign</span><span class="o">=</span><span class="n">astrolabe</span><span class="o">.</span><span class="n">sign</span><span class="p">,</span>
+            <span class="n">zodiac</span><span class="o">=</span><span class="n">astrolabe</span><span class="o">.</span><span class="n">zodiac</span><span class="p">,</span>
+            <span class="n">earthly_branch_of_soul_palace</span><span class="o">=</span><span class="n">astrolabe</span><span class="o">.</span><span class="n">earthly_branch_of_soul_palace</span><span class="p">,</span>
+            <span class="n">earthly_branch_of_body_palace</span><span class="o">=</span><span class="n">astrolabe</span><span class="o">.</span><span class="n">earthly_branch_of_body_palace</span><span class="p">,</span>
+            <span class="n">soul</span><span class="o">=</span><span class="n">astrolabe</span><span class="o">.</span><span class="n">soul</span><span class="p">,</span>
+            <span class="n">body</span><span class="o">=</span><span class="n">astrolabe</span><span class="o">.</span><span class="n">body</span><span class="p">,</span>
+            <span class="n">five_elements_class</span><span class="o">=</span><span class="n">astrolabe</span><span class="o">.</span><span class="n">five_elements_class</span><span class="p">,</span>
+            <span class="n">palaces</span><span class="o">=</span><span class="n">functional_palaces</span><span class="p">,</span>
+            <span class="n">raw_lunar_date</span><span class="o">=</span><span class="n">astrolabe</span><span class="o">.</span><span class="n">raw_lunar_date</span><span class="p">,</span>
+            <span class="n">raw_chinese_date</span><span class="o">=</span><span class="n">astrolabe</span><span class="o">.</span><span class="n">raw_chinese_date</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># 设置宫位的星盘引用</span>
+        <span class="k">for</span> <span class="n">palace</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">palaces</span><span class="p">:</span>
+            <span class="n">palace</span><span class="o">.</span><span class="n">set_astrolabe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FunctionalAstrolabe.palace">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.astro.functional_astrolabe.FunctionalAstrolabe.palace">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">palace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index_or_name</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">PalaceName</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">FunctionalPalace</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        获取指定的宫位对象</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            index_or_name: 宫位索引 (0-11) 或宫位名称</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            宫位对象，如果不存在则返回None</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; astrolabe.palace(0)</span>
+<span class="sd">            &gt;&gt;&gt; astrolabe.palace(&#39;soulPalace&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; astrolabe.palace(&#39;命宫&#39;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">index_or_name</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="c1"># 按索引查询</span>
+            <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">index_or_name</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">palaces</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">palaces</span><span class="p">[</span><span class="n">index_or_name</span><span class="p">]</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># 按名称查询</span>
+            <span class="c1"># 先尝试英文名</span>
+            <span class="k">for</span> <span class="n">palace</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">palaces</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">palace</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">index_or_name</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">palace</span>
+
+            <span class="c1"># 再尝试中文名</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.utils.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_palace_index_by_name</span>
+
+            <span class="n">palace_index</span> <span class="o">=</span> <span class="n">get_palace_index_by_name</span><span class="p">(</span><span class="n">index_or_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">palace_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">palaces</span><span class="p">[</span><span class="n">palace_index</span><span class="p">]</span>
+
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="FunctionalAstrolabe.star">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.astro.functional_astrolabe.FunctionalAstrolabe.star">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">star</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">star_name</span><span class="p">:</span> <span class="n">StarName</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">FunctionalStar</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        获取指定的星曜对象</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            star_name: 星曜名称</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            星曜对象，如果不存在则返回None</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; astrolabe.star(&#39;ziweiMaj&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; astrolabe.star(&#39;紫微&#39;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">palace</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">palaces</span><span class="p">:</span>
+            <span class="n">star</span> <span class="o">=</span> <span class="n">palace</span><span class="o">.</span><span class="n">get_star</span><span class="p">(</span><span class="n">star_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">star</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">star</span>
+
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="FunctionalAstrolabe.surrounded_palaces">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.astro.functional_astrolabe.FunctionalAstrolabe.surrounded_palaces">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">surrounded_palaces</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">index_or_name</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">PalaceName</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">FunctionalSurpalaces</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        获取指定宫位的三方四正</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            index_or_name: 宫位索引或名称</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            三方四正对象，如果宫位不存在则返回None</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; astrolabe.surrounded_palaces(0)</span>
+<span class="sd">            &gt;&gt;&gt; astrolabe.surrounded_palaces(&#39;命宫&#39;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">target_palace</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">palace</span><span class="p">(</span><span class="n">index_or_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">target_palace</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="c1"># 获取三方四正的索引</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">get_surrounded_indices</span><span class="p">(</span><span class="n">target_palace</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+
+        <span class="n">opposite_palace</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">palaces</span><span class="p">[</span><span class="n">indices</span><span class="p">[</span><span class="s2">&quot;opposite&quot;</span><span class="p">]]</span>
+        <span class="n">wealth_palace</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">palaces</span><span class="p">[</span><span class="n">indices</span><span class="p">[</span><span class="s2">&quot;wealth&quot;</span><span class="p">]]</span>
+        <span class="n">career_palace</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">palaces</span><span class="p">[</span><span class="n">indices</span><span class="p">[</span><span class="s2">&quot;career&quot;</span><span class="p">]]</span>
+
+        <span class="k">return</span> <span class="n">FunctionalSurpalaces</span><span class="p">(</span>
+            <span class="n">target</span><span class="o">=</span><span class="n">target_palace</span><span class="p">,</span>
+            <span class="n">opposite</span><span class="o">=</span><span class="n">opposite_palace</span><span class="p">,</span>
+            <span class="n">wealth</span><span class="o">=</span><span class="n">wealth_palace</span><span class="p">,</span>
+            <span class="n">career</span><span class="o">=</span><span class="n">career_palace</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FunctionalAstrolabe.not_empty_palaces">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.astro.functional_astrolabe.FunctionalAstrolabe.not_empty_palaces">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">not_empty_palaces</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">FunctionalPalace</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        获取所有非空宫（有主星的宫位）</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            非空宫列表</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">palaces</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">p</span><span class="o">.</span><span class="n">is_empty</span><span class="p">()]</span></div>
+
+
+<div class="viewcode-block" id="FunctionalAstrolabe.empty_palaces">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.astro.functional_astrolabe.FunctionalAstrolabe.empty_palaces">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">empty_palaces</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">FunctionalPalace</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        获取所有空宫（无主星的宫位）</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            空宫列表</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">palaces</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">is_empty</span><span class="p">()]</span></div>
+
+
+<div class="viewcode-block" id="FunctionalAstrolabe.get_soul_palace">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.astro.functional_astrolabe.FunctionalAstrolabe.get_soul_palace">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_soul_palace</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">FunctionalPalace</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        获取命宫</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            命宫对象</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">palace</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">palaces</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">palace</span><span class="o">.</span><span class="n">is_original_palace</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">palace</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="FunctionalAstrolabe.get_body_palace">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.astro.functional_astrolabe.FunctionalAstrolabe.get_body_palace">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_body_palace</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">FunctionalPalace</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        获取身宫</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            身宫对象</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">palace</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">palaces</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">palace</span><span class="o">.</span><span class="n">is_body_palace</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">palace</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="FunctionalAstrolabe.horoscope">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.astro.functional_astrolabe.FunctionalAstrolabe.horoscope">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">horoscope</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">solar_date</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">time_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        获取指定日期的运势信息（大限、流年、流月、流日、流时）</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            solar_date: 查询的阳历日期 (YYYY-M-D or YYYY-MM-DD)</span>
+<span class="sd">            time_index: 时辰索引 (0-12)，默认为0（子时）</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Horoscope对象，包含大限、流年、流月、流日、流时信息</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; chart = astro.by_solar(&#39;2000-8-16&#39;, 6, &#39;男&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; horoscope = chart.horoscope(&#39;2024-1-1&#39;, 6)</span>
+<span class="sd">            &gt;&gt;&gt; print(f&quot;大限: {horoscope.decadal.name}&quot;)</span>
+<span class="sd">            &gt;&gt;&gt; print(f&quot;流年: {horoscope.yearly.name}&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.astro.horoscope</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_horoscope</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">FiveElementsClass</span>
+
+        <span class="c1"># 获取出生年份</span>
+        <span class="n">birth_year</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">solar_date</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="c1"># 获取命宫索引</span>
+        <span class="n">soul_palace</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_soul_palace</span><span class="p">()</span>
+        <span class="n">soul_palace_index</span> <span class="o">=</span> <span class="n">soul_palace</span><span class="o">.</span><span class="n">index</span> <span class="k">if</span> <span class="n">soul_palace</span> <span class="k">else</span> <span class="mi">0</span>
+
+        <span class="c1"># 获取五行局</span>
+        <span class="n">five_elements_class_map</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;水二局&quot;</span><span class="p">:</span> <span class="n">FiveElementsClass</span><span class="o">.</span><span class="n">WATER_2</span><span class="p">,</span>
+            <span class="s2">&quot;木三局&quot;</span><span class="p">:</span> <span class="n">FiveElementsClass</span><span class="o">.</span><span class="n">WOOD_3</span><span class="p">,</span>
+            <span class="s2">&quot;金四局&quot;</span><span class="p">:</span> <span class="n">FiveElementsClass</span><span class="o">.</span><span class="n">METAL_4</span><span class="p">,</span>
+            <span class="s2">&quot;土五局&quot;</span><span class="p">:</span> <span class="n">FiveElementsClass</span><span class="o">.</span><span class="n">EARTH_5</span><span class="p">,</span>
+            <span class="s2">&quot;火六局&quot;</span><span class="p">:</span> <span class="n">FiveElementsClass</span><span class="o">.</span><span class="n">FIRE_6</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">five_elements</span> <span class="o">=</span> <span class="n">five_elements_class_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">five_elements_class</span><span class="p">,</span> <span class="n">FiveElementsClass</span><span class="o">.</span><span class="n">WATER_2</span>
+        <span class="p">)</span>
+
+        <span class="c1"># 获取出生年支阴阳</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw_chinese_date</span><span class="p">:</span>
+            <span class="n">year_branch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw_chinese_date</span><span class="o">.</span><span class="n">year_branch</span>
+            <span class="c1"># 从地支获取阴阳</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.earthly_branches</span><span class="w"> </span><span class="kn">import</span> <span class="n">EARTHLY_BRANCHES_CONFIG</span>
+
+            <span class="n">branch_config</span> <span class="o">=</span> <span class="n">EARTHLY_BRANCHES_CONFIG</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">year_branch</span><span class="p">)</span>
+            <span class="n">year_branch_yin_yang</span> <span class="o">=</span> <span class="n">branch_config</span><span class="o">.</span><span class="n">yin_yang</span> <span class="k">if</span> <span class="n">branch_config</span> <span class="k">else</span> <span class="s2">&quot;阳&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">year_branch_yin_yang</span> <span class="o">=</span> <span class="s2">&quot;阳&quot;</span>
+
+        <span class="k">return</span> <span class="n">get_horoscope</span><span class="p">(</span>
+            <span class="n">solar_date_str</span><span class="o">=</span><span class="n">solar_date</span><span class="p">,</span>
+            <span class="n">time_index</span><span class="o">=</span><span class="n">time_index</span><span class="p">,</span>
+            <span class="n">palaces</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">palaces</span><span class="p">,</span>
+            <span class="n">soul_palace_index</span><span class="o">=</span><span class="n">soul_palace_index</span><span class="p">,</span>
+            <span class="n">five_elements_class</span><span class="o">=</span><span class="n">five_elements</span><span class="p">,</span>
+            <span class="n">gender</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">gender</span><span class="p">,</span>
+            <span class="n">year_branch_yin_yang</span><span class="o">=</span><span class="n">year_branch_yin_yang</span><span class="p">,</span>
+            <span class="n">birth_year</span><span class="o">=</span><span class="n">birth_year</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;字符串表示&quot;&quot;&quot;</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="sa">f</span><span class="s2">&quot;紫微斗数星盘&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;出生日期: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">solar_date</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">lunar_date</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;性别: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">gender</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;生肖: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">zodiac</span><span class="si">}</span><span class="s2"> | 星座: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sign</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;五行局: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">five_elements_class</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;命主: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">soul</span><span class="si">}</span><span class="s2"> | 身主: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">body</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;十二宫:&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">palace</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">palaces</span><span class="p">:</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">palace</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;FunctionalAstrolabe(date=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">solar_date</span><span class="si">}</span><span class="s2">, gender=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">gender</span><span class="si">}</span><span class="s2">)&quot;</span>
+
+    <span class="c1"># ---------------------------------------------------------------------</span>
+    <span class="c1"># Compatibility Export</span>
+    <span class="c1"># ---------------------------------------------------------------------</span>
+<div class="viewcode-block" id="FunctionalAstrolabe.to_iztro_dict">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.astro.functional_astrolabe.FunctionalAstrolabe.to_iztro_dict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_iztro_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        导出与原生 iztro/py-iztro 结构一致的字典（字段名与中文值对齐）</span>
+
+<span class="sd">        返回字段示例：</span>
+<span class="sd">        - gender, solarDate, lunarDate, chineseDate, time, timeRange, sign, zodiac</span>
+<span class="sd">        - earthlyBranchOfSoulPalace, earthlyBranchOfBodyPalace, soul, body, fiveElementsClass</span>
+<span class="sd">        - palaces: [{ name, isBodyPalace, isOriginalPalace, heavenlyStem, earthlyBranch, majorStars, minorStars }]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">tr_branch</span><span class="p">(</span><span class="n">branch_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">t</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;earthlyBranch.</span><span class="si">{</span><span class="n">branch_key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="s2">&quot;Earthly&quot;</span> <span class="ow">in</span> <span class="n">branch_key</span> <span class="k">else</span> <span class="n">branch_key</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">tr_stem</span><span class="p">(</span><span class="n">stem_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">t</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;heavenlyStem.</span><span class="si">{</span><span class="n">stem_key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="s2">&quot;Heavenly&quot;</span> <span class="ow">in</span> <span class="n">stem_key</span> <span class="k">else</span> <span class="n">stem_key</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">star_dict</span><span class="p">(</span><span class="n">star</span><span class="p">:</span> <span class="n">FunctionalStar</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">star</span><span class="o">.</span><span class="n">translate_name</span><span class="p">(),</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">star</span><span class="o">.</span><span class="n">type</span><span class="p">,</span>
+                <span class="s2">&quot;scope&quot;</span><span class="p">:</span> <span class="n">star</span><span class="o">.</span><span class="n">scope</span><span class="p">,</span>
+                <span class="s2">&quot;brightness&quot;</span><span class="p">:</span> <span class="n">star</span><span class="o">.</span><span class="n">brightness</span><span class="p">,</span>
+                <span class="s2">&quot;mutagen&quot;</span><span class="p">:</span> <span class="n">star</span><span class="o">.</span><span class="n">mutagen</span><span class="p">,</span>
+            <span class="p">}</span>
+
+        <span class="n">palaces</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">palaces</span><span class="p">:</span>
+            <span class="n">palaces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">translate_name</span><span class="p">(),</span>
+                    <span class="s2">&quot;isBodyPalace&quot;</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">is_body_palace</span><span class="p">,</span>
+                    <span class="s2">&quot;isOriginalPalace&quot;</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">is_original_palace</span><span class="p">,</span>
+                    <span class="s2">&quot;heavenlyStem&quot;</span><span class="p">:</span> <span class="n">tr_stem</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">heavenly_stem</span><span class="p">),</span>
+                    <span class="s2">&quot;earthlyBranch&quot;</span><span class="p">:</span> <span class="n">tr_branch</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">earthly_branch</span><span class="p">),</span>
+                    <span class="s2">&quot;majorStars&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">star_dict</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">major_stars</span><span class="p">],</span>
+                    <span class="s2">&quot;minorStars&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">star_dict</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">minor_stars</span><span class="p">],</span>
+                    <span class="s2">&quot;adjectiveStars&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">star_dict</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">adjective_stars</span><span class="p">],</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+
+        <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Star</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;gender&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">gender</span><span class="p">,</span>
+            <span class="s2">&quot;solarDate&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">solar_date</span><span class="p">,</span>
+            <span class="s2">&quot;lunarDate&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">lunar_date</span><span class="p">,</span>
+            <span class="s2">&quot;chineseDate&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">chinese_date</span><span class="p">,</span>
+            <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
+            <span class="s2">&quot;timeRange&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_range</span><span class="p">,</span>
+            <span class="s2">&quot;sign&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sign</span><span class="p">,</span>
+            <span class="s2">&quot;zodiac&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">zodiac</span><span class="p">,</span>
+            <span class="s2">&quot;earthlyBranchOfSoulPalace&quot;</span><span class="p">:</span> <span class="n">tr_branch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">earthly_branch_of_soul_palace</span><span class="p">),</span>
+            <span class="s2">&quot;earthlyBranchOfBodyPalace&quot;</span><span class="p">:</span> <span class="n">tr_branch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">earthly_branch_of_body_palace</span><span class="p">),</span>
+            <span class="s2">&quot;soul&quot;</span><span class="p">:</span> <span class="n">Star</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">soul</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;major&quot;</span><span class="p">,</span> <span class="n">scope</span><span class="o">=</span><span class="s2">&quot;origin&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">translate_name</span><span class="p">(),</span>
+            <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="n">Star</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">body</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;major&quot;</span><span class="p">,</span> <span class="n">scope</span><span class="o">=</span><span class="s2">&quot;origin&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">translate_name</span><span class="p">(),</span>
+            <span class="s2">&quot;fiveElementsClass&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">five_elements_class</span><span class="p">,</span>
+            <span class="s2">&quot;palaces&quot;</span><span class="p">:</span> <span class="n">palaces</span><span class="p">,</span>
+        <span class="p">}</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, iztro-py Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

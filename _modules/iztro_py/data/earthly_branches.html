@@ -1,0 +1,383 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>iztro_py.data.earthly_branches &mdash; iztro-py 0.3.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=d5a15cff"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            iztro-py
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">内容目录:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">安装</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart.html">快速开始</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">使用示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">更新日志</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">iztro-py</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">iztro_py.data.earthly_branches</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for iztro_py.data.earthly_branches</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Earthly Branches (地支) data and properties</span>
+
+<span class="sd">Contains detailed information about the twelve earthly branches including</span>
+<span class="sd">yin-yang, five elements, clashes, soul/body stars, and health associations.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">EarthlyBranchName</span><span class="p">,</span> <span class="n">YinYang</span><span class="p">,</span> <span class="n">FiveElements</span><span class="p">,</span> <span class="n">StarName</span>
+
+
+<div class="viewcode-block" id="EarthlyBranch">
+<a class="viewcode-back" href="../../../api/data.html#iztro_py.data.earthly_branches.EarthlyBranch">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">EarthlyBranch</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;地支数据类&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">yin_yang</span><span class="p">:</span> <span class="n">YinYang</span><span class="p">,</span>
+        <span class="n">five_elements</span><span class="p">:</span> <span class="n">FiveElements</span><span class="p">,</span>
+        <span class="n">crash</span><span class="p">:</span> <span class="n">EarthlyBranchName</span><span class="p">,</span>
+        <span class="n">soul</span><span class="p">:</span> <span class="n">StarName</span><span class="p">,</span>  <span class="c1"># 命主</span>
+        <span class="n">body</span><span class="p">:</span> <span class="n">StarName</span><span class="p">,</span>  <span class="c1"># 身主</span>
+        <span class="n">inside</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>  <span class="c1"># 内脏</span>
+        <span class="n">outside</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>  <span class="c1"># 外部</span>
+        <span class="n">health_tip</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>  <span class="c1"># 健康提示</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">yin_yang</span> <span class="o">=</span> <span class="n">yin_yang</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">five_elements</span> <span class="o">=</span> <span class="n">five_elements</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">crash</span> <span class="o">=</span> <span class="n">crash</span>  <span class="c1"># 相冲的地支</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">soul</span> <span class="o">=</span> <span class="n">soul</span>  <span class="c1"># 命主星</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">body</span>  <span class="c1"># 身主星</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inside</span> <span class="o">=</span> <span class="n">inside</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outside</span> <span class="o">=</span> <span class="n">outside</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">health_tip</span> <span class="o">=</span> <span class="n">health_tip</span></div>
+
+
+
+<span class="c1"># ============================================================================</span>
+<span class="c1"># Earthly Branches Configuration</span>
+<span class="c1"># ============================================================================</span>
+
+<span class="n">EARTHLY_BRANCHES_CONFIG</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">EarthlyBranchName</span><span class="p">,</span> <span class="n">EarthlyBranch</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="c1"># 子地支</span>
+    <span class="s2">&quot;ziEarthly&quot;</span><span class="p">:</span> <span class="n">EarthlyBranch</span><span class="p">(</span>
+        <span class="n">yin_yang</span><span class="o">=</span><span class="s2">&quot;阳&quot;</span><span class="p">,</span>
+        <span class="n">five_elements</span><span class="o">=</span><span class="s2">&quot;水&quot;</span><span class="p">,</span>
+        <span class="n">crash</span><span class="o">=</span><span class="s2">&quot;wuEarthly&quot;</span><span class="p">,</span>
+        <span class="n">soul</span><span class="o">=</span><span class="s2">&quot;tanlangMaj&quot;</span><span class="p">,</span>  <span class="c1"># 贪狼</span>
+        <span class="n">body</span><span class="o">=</span><span class="s2">&quot;huoxingMin&quot;</span><span class="p">,</span>  <span class="c1"># 火星</span>
+        <span class="n">inside</span><span class="o">=</span><span class="s2">&quot;胆&quot;</span><span class="p">,</span>
+        <span class="n">outside</span><span class="o">=</span><span class="s2">&quot;下体&quot;</span><span class="p">,</span>
+        <span class="n">health_tip</span><span class="o">=</span><span class="s2">&quot;生殖系统、膀胱、尿道之疾病&quot;</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="c1"># 丑地支</span>
+    <span class="s2">&quot;chouEarthly&quot;</span><span class="p">:</span> <span class="n">EarthlyBranch</span><span class="p">(</span>
+        <span class="n">yin_yang</span><span class="o">=</span><span class="s2">&quot;阴&quot;</span><span class="p">,</span>
+        <span class="n">five_elements</span><span class="o">=</span><span class="s2">&quot;土&quot;</span><span class="p">,</span>
+        <span class="n">crash</span><span class="o">=</span><span class="s2">&quot;weiEarthly&quot;</span><span class="p">,</span>
+        <span class="n">soul</span><span class="o">=</span><span class="s2">&quot;jumenMaj&quot;</span><span class="p">,</span>  <span class="c1"># 巨门</span>
+        <span class="n">body</span><span class="o">=</span><span class="s2">&quot;tianxiangMaj&quot;</span><span class="p">,</span>  <span class="c1"># 天相</span>
+        <span class="n">inside</span><span class="o">=</span><span class="s2">&quot;肚&quot;</span><span class="p">,</span>
+        <span class="n">outside</span><span class="o">=</span><span class="s2">&quot;手足&quot;</span><span class="p">,</span>
+        <span class="n">health_tip</span><span class="o">=</span><span class="s2">&quot;脾胃、肠道之疾病&quot;</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="c1"># 寅地支</span>
+    <span class="s2">&quot;yinEarthly&quot;</span><span class="p">:</span> <span class="n">EarthlyBranch</span><span class="p">(</span>
+        <span class="n">yin_yang</span><span class="o">=</span><span class="s2">&quot;阳&quot;</span><span class="p">,</span>
+        <span class="n">five_elements</span><span class="o">=</span><span class="s2">&quot;木&quot;</span><span class="p">,</span>
+        <span class="n">crash</span><span class="o">=</span><span class="s2">&quot;shenEarthly&quot;</span><span class="p">,</span>
+        <span class="n">soul</span><span class="o">=</span><span class="s2">&quot;lucunMin&quot;</span><span class="p">,</span>  <span class="c1"># 禄存</span>
+        <span class="n">body</span><span class="o">=</span><span class="s2">&quot;tianliangMaj&quot;</span><span class="p">,</span>  <span class="c1"># 天梁</span>
+        <span class="n">inside</span><span class="o">=</span><span class="s2">&quot;肝&quot;</span><span class="p">,</span>
+        <span class="n">outside</span><span class="o">=</span><span class="s2">&quot;四肢&quot;</span><span class="p">,</span>
+        <span class="n">health_tip</span><span class="o">=</span><span class="s2">&quot;肝胆、四肢筋骨之疾病&quot;</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="c1"># 卯地支</span>
+    <span class="s2">&quot;maoEarthly&quot;</span><span class="p">:</span> <span class="n">EarthlyBranch</span><span class="p">(</span>
+        <span class="n">yin_yang</span><span class="o">=</span><span class="s2">&quot;阴&quot;</span><span class="p">,</span>
+        <span class="n">five_elements</span><span class="o">=</span><span class="s2">&quot;木&quot;</span><span class="p">,</span>
+        <span class="n">crash</span><span class="o">=</span><span class="s2">&quot;youEarthly&quot;</span><span class="p">,</span>
+        <span class="n">soul</span><span class="o">=</span><span class="s2">&quot;wenquMin&quot;</span><span class="p">,</span>  <span class="c1"># 文曲（与 iztro 保持一致）</span>
+        <span class="n">body</span><span class="o">=</span><span class="s2">&quot;tiantongMaj&quot;</span><span class="p">,</span>  <span class="c1"># 天同</span>
+        <span class="n">inside</span><span class="o">=</span><span class="s2">&quot;肝&quot;</span><span class="p">,</span>
+        <span class="n">outside</span><span class="o">=</span><span class="s2">&quot;胸背&quot;</span><span class="p">,</span>
+        <span class="n">health_tip</span><span class="o">=</span><span class="s2">&quot;肝胆、神经系统之疾病&quot;</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="c1"># 辰地支</span>
+    <span class="s2">&quot;chenEarthly&quot;</span><span class="p">:</span> <span class="n">EarthlyBranch</span><span class="p">(</span>
+        <span class="n">yin_yang</span><span class="o">=</span><span class="s2">&quot;阳&quot;</span><span class="p">,</span>
+        <span class="n">five_elements</span><span class="o">=</span><span class="s2">&quot;土&quot;</span><span class="p">,</span>
+        <span class="n">crash</span><span class="o">=</span><span class="s2">&quot;xuEarthly&quot;</span><span class="p">,</span>
+        <span class="n">soul</span><span class="o">=</span><span class="s2">&quot;lianzhenMaj&quot;</span><span class="p">,</span>  <span class="c1"># 廉贞</span>
+        <span class="n">body</span><span class="o">=</span><span class="s2">&quot;wenchangMin&quot;</span><span class="p">,</span>  <span class="c1"># 文昌</span>
+        <span class="n">inside</span><span class="o">=</span><span class="s2">&quot;胸&quot;</span><span class="p">,</span>
+        <span class="n">outside</span><span class="o">=</span><span class="s2">&quot;头面&quot;</span><span class="p">,</span>
+        <span class="n">health_tip</span><span class="o">=</span><span class="s2">&quot;脾胃、胸部、皮肤之疾病&quot;</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="c1"># 巳地支</span>
+    <span class="s2">&quot;siEarthly&quot;</span><span class="p">:</span> <span class="n">EarthlyBranch</span><span class="p">(</span>
+        <span class="n">yin_yang</span><span class="o">=</span><span class="s2">&quot;阴&quot;</span><span class="p">,</span>
+        <span class="n">five_elements</span><span class="o">=</span><span class="s2">&quot;火&quot;</span><span class="p">,</span>
+        <span class="n">crash</span><span class="o">=</span><span class="s2">&quot;haiEarthly&quot;</span><span class="p">,</span>
+        <span class="n">soul</span><span class="o">=</span><span class="s2">&quot;wuquMaj&quot;</span><span class="p">,</span>  <span class="c1"># 武曲</span>
+        <span class="n">body</span><span class="o">=</span><span class="s2">&quot;tianjiMaj&quot;</span><span class="p">,</span>  <span class="c1"># 天机</span>
+        <span class="n">inside</span><span class="o">=</span><span class="s2">&quot;心&quot;</span><span class="p">,</span>
+        <span class="n">outside</span><span class="o">=</span><span class="s2">&quot;面部&quot;</span><span class="p">,</span>
+        <span class="n">health_tip</span><span class="o">=</span><span class="s2">&quot;心脏、血液循环之疾病&quot;</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="c1"># 午地支</span>
+    <span class="s2">&quot;wuEarthly&quot;</span><span class="p">:</span> <span class="n">EarthlyBranch</span><span class="p">(</span>
+        <span class="n">yin_yang</span><span class="o">=</span><span class="s2">&quot;阳&quot;</span><span class="p">,</span>
+        <span class="n">five_elements</span><span class="o">=</span><span class="s2">&quot;火&quot;</span><span class="p">,</span>
+        <span class="n">crash</span><span class="o">=</span><span class="s2">&quot;ziEarthly&quot;</span><span class="p">,</span>
+        <span class="n">soul</span><span class="o">=</span><span class="s2">&quot;pojunMaj&quot;</span><span class="p">,</span>  <span class="c1"># 破军</span>
+        <span class="n">body</span><span class="o">=</span><span class="s2">&quot;huoxingMin&quot;</span><span class="p">,</span>  <span class="c1"># 火星</span>
+        <span class="n">inside</span><span class="o">=</span><span class="s2">&quot;心&quot;</span><span class="p">,</span>
+        <span class="n">outside</span><span class="o">=</span><span class="s2">&quot;眼目&quot;</span><span class="p">,</span>
+        <span class="n">health_tip</span><span class="o">=</span><span class="s2">&quot;心脏、眼睛、血压之疾病&quot;</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="c1"># 未地支</span>
+    <span class="s2">&quot;weiEarthly&quot;</span><span class="p">:</span> <span class="n">EarthlyBranch</span><span class="p">(</span>
+        <span class="n">yin_yang</span><span class="o">=</span><span class="s2">&quot;阴&quot;</span><span class="p">,</span>
+        <span class="n">five_elements</span><span class="o">=</span><span class="s2">&quot;土&quot;</span><span class="p">,</span>
+        <span class="n">crash</span><span class="o">=</span><span class="s2">&quot;chouEarthly&quot;</span><span class="p">,</span>
+        <span class="n">soul</span><span class="o">=</span><span class="s2">&quot;wuquMaj&quot;</span><span class="p">,</span>  <span class="c1"># 武曲</span>
+        <span class="n">body</span><span class="o">=</span><span class="s2">&quot;tianxiangMaj&quot;</span><span class="p">,</span>  <span class="c1"># 天相</span>
+        <span class="n">inside</span><span class="o">=</span><span class="s2">&quot;脾胃&quot;</span><span class="p">,</span>
+        <span class="n">outside</span><span class="o">=</span><span class="s2">&quot;颈项&quot;</span><span class="p">,</span>
+        <span class="n">health_tip</span><span class="o">=</span><span class="s2">&quot;脾胃、颈部之疾病&quot;</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="c1"># 申地支</span>
+    <span class="s2">&quot;shenEarthly&quot;</span><span class="p">:</span> <span class="n">EarthlyBranch</span><span class="p">(</span>
+        <span class="n">yin_yang</span><span class="o">=</span><span class="s2">&quot;阳&quot;</span><span class="p">,</span>
+        <span class="n">five_elements</span><span class="o">=</span><span class="s2">&quot;金&quot;</span><span class="p">,</span>
+        <span class="n">crash</span><span class="o">=</span><span class="s2">&quot;yinEarthly&quot;</span><span class="p">,</span>
+        <span class="n">soul</span><span class="o">=</span><span class="s2">&quot;lianzhenMaj&quot;</span><span class="p">,</span>  <span class="c1"># 廉贞</span>
+        <span class="n">body</span><span class="o">=</span><span class="s2">&quot;tianliangMaj&quot;</span><span class="p">,</span>  <span class="c1"># 天梁</span>
+        <span class="n">inside</span><span class="o">=</span><span class="s2">&quot;肺&quot;</span><span class="p">,</span>
+        <span class="n">outside</span><span class="o">=</span><span class="s2">&quot;脊柱&quot;</span><span class="p">,</span>
+        <span class="n">health_tip</span><span class="o">=</span><span class="s2">&quot;呼吸系统、脊柱之疾病&quot;</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="c1"># 酉地支</span>
+    <span class="s2">&quot;youEarthly&quot;</span><span class="p">:</span> <span class="n">EarthlyBranch</span><span class="p">(</span>
+        <span class="n">yin_yang</span><span class="o">=</span><span class="s2">&quot;阴&quot;</span><span class="p">,</span>
+        <span class="n">five_elements</span><span class="o">=</span><span class="s2">&quot;金&quot;</span><span class="p">,</span>
+        <span class="n">crash</span><span class="o">=</span><span class="s2">&quot;maoEarthly&quot;</span><span class="p">,</span>
+        <span class="n">soul</span><span class="o">=</span><span class="s2">&quot;wenquMin&quot;</span><span class="p">,</span>  <span class="c1"># 文曲</span>
+        <span class="n">body</span><span class="o">=</span><span class="s2">&quot;tiantongMaj&quot;</span><span class="p">,</span>  <span class="c1"># 天同</span>
+        <span class="n">inside</span><span class="o">=</span><span class="s2">&quot;肺&quot;</span><span class="p">,</span>
+        <span class="n">outside</span><span class="o">=</span><span class="s2">&quot;咽喉&quot;</span><span class="p">,</span>
+        <span class="n">health_tip</span><span class="o">=</span><span class="s2">&quot;呼吸系统、咽喉之疾病&quot;</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="c1"># 戌地支</span>
+    <span class="s2">&quot;xuEarthly&quot;</span><span class="p">:</span> <span class="n">EarthlyBranch</span><span class="p">(</span>
+        <span class="n">yin_yang</span><span class="o">=</span><span class="s2">&quot;阳&quot;</span><span class="p">,</span>
+        <span class="n">five_elements</span><span class="o">=</span><span class="s2">&quot;土&quot;</span><span class="p">,</span>
+        <span class="n">crash</span><span class="o">=</span><span class="s2">&quot;chenEarthly&quot;</span><span class="p">,</span>
+        <span class="n">soul</span><span class="o">=</span><span class="s2">&quot;lucunMin&quot;</span><span class="p">,</span>  <span class="c1"># 禄存</span>
+        <span class="n">body</span><span class="o">=</span><span class="s2">&quot;wenchangMin&quot;</span><span class="p">,</span>  <span class="c1"># 文昌</span>
+        <span class="n">inside</span><span class="o">=</span><span class="s2">&quot;命门&quot;</span><span class="p">,</span>
+        <span class="n">outside</span><span class="o">=</span><span class="s2">&quot;腿足&quot;</span><span class="p">,</span>
+        <span class="n">health_tip</span><span class="o">=</span><span class="s2">&quot;胃部、腿足、关节之疾病&quot;</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="c1"># 亥地支</span>
+    <span class="s2">&quot;haiEarthly&quot;</span><span class="p">:</span> <span class="n">EarthlyBranch</span><span class="p">(</span>
+        <span class="n">yin_yang</span><span class="o">=</span><span class="s2">&quot;阴&quot;</span><span class="p">,</span>
+        <span class="n">five_elements</span><span class="o">=</span><span class="s2">&quot;水&quot;</span><span class="p">,</span>
+        <span class="n">crash</span><span class="o">=</span><span class="s2">&quot;siEarthly&quot;</span><span class="p">,</span>
+        <span class="n">soul</span><span class="o">=</span><span class="s2">&quot;jumenMaj&quot;</span><span class="p">,</span>  <span class="c1"># 巨门</span>
+        <span class="n">body</span><span class="o">=</span><span class="s2">&quot;tianjiMaj&quot;</span><span class="p">,</span>  <span class="c1"># 天机</span>
+        <span class="n">inside</span><span class="o">=</span><span class="s2">&quot;肾&quot;</span><span class="p">,</span>
+        <span class="n">outside</span><span class="o">=</span><span class="s2">&quot;头面&quot;</span><span class="p">,</span>
+        <span class="n">health_tip</span><span class="o">=</span><span class="s2">&quot;肾脏、泌尿系统之疾病&quot;</span><span class="p">,</span>
+    <span class="p">),</span>
+<span class="p">}</span>
+
+
+<span class="c1"># ============================================================================</span>
+<span class="c1"># Helper Functions</span>
+<span class="c1"># ============================================================================</span>
+
+
+<div class="viewcode-block" id="get_soul_star">
+<a class="viewcode-back" href="../../../api/data.html#iztro_py.data.earthly_branches.get_soul_star">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_soul_star</span><span class="p">(</span><span class="n">earthly_branch</span><span class="p">:</span> <span class="n">EarthlyBranchName</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StarName</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    获取地支对应的命主星</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        earthly_branch: 地支名称</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        命主星名称</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">EARTHLY_BRANCHES_CONFIG</span><span class="p">[</span><span class="n">earthly_branch</span><span class="p">]</span><span class="o">.</span><span class="n">soul</span></div>
+
+
+
+<div class="viewcode-block" id="get_body_star">
+<a class="viewcode-back" href="../../../api/data.html#iztro_py.data.earthly_branches.get_body_star">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_body_star</span><span class="p">(</span><span class="n">earthly_branch</span><span class="p">:</span> <span class="n">EarthlyBranchName</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StarName</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    获取地支对应的身主星</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        earthly_branch: 地支名称</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        身主星名称</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">EARTHLY_BRANCHES_CONFIG</span><span class="p">[</span><span class="n">earthly_branch</span><span class="p">]</span><span class="o">.</span><span class="n">body</span></div>
+
+
+
+<div class="viewcode-block" id="get_yin_yang">
+<a class="viewcode-back" href="../../../api/data.html#iztro_py.data.earthly_branches.get_yin_yang">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_yin_yang</span><span class="p">(</span><span class="n">earthly_branch</span><span class="p">:</span> <span class="n">EarthlyBranchName</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">YinYang</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    获取地支的阴阳属性</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        earthly_branch: 地支名称</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        阴阳属性</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">EARTHLY_BRANCHES_CONFIG</span><span class="p">[</span><span class="n">earthly_branch</span><span class="p">]</span><span class="o">.</span><span class="n">yin_yang</span></div>
+
+
+
+<div class="viewcode-block" id="get_five_elements">
+<a class="viewcode-back" href="../../../api/data.html#iztro_py.data.earthly_branches.get_five_elements">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_five_elements</span><span class="p">(</span><span class="n">earthly_branch</span><span class="p">:</span> <span class="n">EarthlyBranchName</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FiveElements</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    获取地支的五行属性</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        earthly_branch: 地支名称</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        五行属性</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">EARTHLY_BRANCHES_CONFIG</span><span class="p">[</span><span class="n">earthly_branch</span><span class="p">]</span><span class="o">.</span><span class="n">five_elements</span></div>
+
+
+
+<div class="viewcode-block" id="get_crash">
+<a class="viewcode-back" href="../../../api/data.html#iztro_py.data.earthly_branches.get_crash">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_crash</span><span class="p">(</span><span class="n">earthly_branch</span><span class="p">:</span> <span class="n">EarthlyBranchName</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EarthlyBranchName</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    获取相冲的地支</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        earthly_branch: 地支名称</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        相冲的地支名称</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">EARTHLY_BRANCHES_CONFIG</span><span class="p">[</span><span class="n">earthly_branch</span><span class="p">]</span><span class="o">.</span><span class="n">crash</span></div>
+
+
+
+<div class="viewcode-block" id="get_health_info">
+<a class="viewcode-back" href="../../../api/data.html#iztro_py.data.earthly_branches.get_health_info">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_health_info</span><span class="p">(</span><span class="n">earthly_branch</span><span class="p">:</span> <span class="n">EarthlyBranchName</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    获取地支相关的健康信息</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        earthly_branch: 地支名称</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        包含 inside, outside, health_tip 的字典</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">EARTHLY_BRANCHES_CONFIG</span><span class="p">[</span><span class="n">earthly_branch</span><span class="p">]</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;inside&quot;</span><span class="p">:</span> <span class="n">config</span><span class="o">.</span><span class="n">inside</span><span class="p">,</span> <span class="s2">&quot;outside&quot;</span><span class="p">:</span> <span class="n">config</span><span class="o">.</span><span class="n">outside</span><span class="p">,</span> <span class="s2">&quot;health_tip&quot;</span><span class="p">:</span> <span class="n">config</span><span class="o">.</span><span class="n">health_tip</span><span class="p">}</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, iztro-py Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

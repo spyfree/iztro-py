@@ -1,0 +1,245 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>i18n 模块 &mdash; iztro-py 0.3.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=d5a15cff"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="使用示例" href="../examples.html" />
+    <link rel="prev" title="utils 模块" href="utils.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            iztro-py
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">内容目录:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">安装</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">快速开始</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API 参考</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#id1">主要模块</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="astro.html">astro 模块</a></li>
+<li class="toctree-l3"><a class="reference internal" href="data.html">data 模块</a></li>
+<li class="toctree-l3"><a class="reference internal" href="star.html">star 模块</a></li>
+<li class="toctree-l3"><a class="reference internal" href="utils.html">utils 模块</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">i18n 模块</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#module-iztro_py.i18n">i18n</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2">支持的语言</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id3">使用示例</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#module-iztro_py.astro.astro">核心函数</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#id3">主要类</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#module-iztro_py.data.types">数据类型</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">使用示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">更新日志</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">iztro-py</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">API 参考</a></li>
+      <li class="breadcrumb-item active">i18n 模块</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/i18n.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="i18n">
+<h1>i18n 模块<a class="headerlink" href="#i18n" title="Link to this heading"></a></h1>
+<p>国际化支持。</p>
+<section id="module-iztro_py.i18n">
+<span id="id1"></span><h2>i18n<a class="headerlink" href="#module-iztro_py.i18n" title="Link to this heading"></a></h2>
+<p>国际化 (i18n) 模块</p>
+<p>提供多语言支持，默认语言为简体中文 (zh-CN)
+支持的语言：
+- zh-CN: 简体中文
+- zh-TW: 繁體中文
+- en-US: English
+- ja-JP: 日本語
+- ko-KR: 한국어
+- vi-VN: Tiếng Việt</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="iztro_py.i18n.set_language">
+<span class="sig-prename descclassname"><span class="pre">iztro_py.i18n.</span></span><span class="sig-name descname"><span class="pre">set_language</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lang</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/iztro_py/i18n.html#set_language"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#iztro_py.i18n.set_language" title="Link to this definition"></a></dt>
+<dd><p>设置当前语言</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>lang</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – 语言代码，支持 ‘zh-CN’, ‘zh-TW’, ‘en-US’, ‘ja-JP’, ‘ko-KR’, ‘vi-VN’
+不支持的语言将降级为 ‘zh-CN’</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="iztro_py.i18n.get_language">
+<span class="sig-prename descclassname"><span class="pre">iztro_py.i18n.</span></span><span class="sig-name descname"><span class="pre">get_language</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/iztro_py/i18n.html#get_language"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#iztro_py.i18n.get_language" title="Link to this definition"></a></dt>
+<dd><p>获取当前语言</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>当前语言代码</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="iztro_py.i18n.t">
+<span class="sig-prename descclassname"><span class="pre">iztro_py.i18n.</span></span><span class="sig-name descname"><span class="pre">t</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lang</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/iztro_py/i18n.html#t"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#iztro_py.i18n.t" title="Link to this definition"></a></dt>
+<dd><p>翻译函数</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – 翻译键名（英文键）</p></li>
+<li><p><strong>lang</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span>) – 可选，指定语言。如不指定则使用当前语言</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>翻译后的文本</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="iztro_py.i18n.translate_dict">
+<span class="sig-prename descclassname"><span class="pre">iztro_py.i18n.</span></span><span class="sig-name descname"><span class="pre">translate_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lang</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/iztro_py/i18n.html#translate_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#iztro_py.i18n.translate_dict" title="Link to this definition"></a></dt>
+<dd><p>翻译字典中的值</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]</span>) – 要翻译的字典</p></li>
+<li><p><strong>lang</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span>) – 可选，指定语言</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]</span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>翻译后的字典</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="id2">
+<h2>支持的语言<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">zh-CN</span></code> - 简体中文（默认）</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">zh-TW</span></code> - 繁體中文</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">en-US</span></code> - English</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ja-JP</span></code> - 日本語</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ko-KR</span></code> - 한국어</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">vi-VN</span></code> - Tiếng Việt</p></li>
+</ul>
+</section>
+<section id="id3">
+<h2>使用示例<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py</span><span class="w"> </span><span class="kn">import</span> <span class="n">by_solar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.i18n</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_language</span><span class="p">,</span> <span class="n">t</span>
+
+<span class="c1"># 全局设置语言</span>
+<span class="n">set_language</span><span class="p">(</span><span class="s1">&#39;en-US&#39;</span><span class="p">)</span>
+
+<span class="c1"># 创建星盘</span>
+<span class="n">chart</span> <span class="o">=</span> <span class="n">by_solar</span><span class="p">(</span><span class="s1">&#39;2000-8-16&#39;</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;男&#39;</span><span class="p">)</span>
+
+<span class="c1"># 星盘也会自动使用设置的语言</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">chart</span><span class="o">.</span><span class="n">zodiac</span><span class="p">)</span>  <span class="c1"># 输出英文</span>
+
+<span class="c1"># 切换到日文</span>
+<span class="n">chart</span><span class="o">.</span><span class="n">set_language</span><span class="p">(</span><span class="s1">&#39;ja-JP&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">chart</span><span class="o">.</span><span class="n">zodiac</span><span class="p">)</span>  <span class="c1"># 输出日文</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="utils.html" class="btn btn-neutral float-left" title="utils 模块" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../examples.html" class="btn btn-neutral float-right" title="使用示例" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, iztro-py Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

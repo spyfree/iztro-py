@@ -1,0 +1,629 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>iztro_py.utils.calendar &mdash; iztro-py 0.3.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=d5a15cff"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            iztro-py
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">内容目录:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">安装</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart.html">快速开始</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">使用示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">更新日志</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">iztro-py</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">iztro_py.utils.calendar</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for iztro_py.utils.calendar</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Calendar conversion utilities for iztro-py</span>
+
+<span class="sd">Provides functions for converting between solar and lunar calendars,</span>
+<span class="sd">and calculating heavenly stems and earthly branches (天干地支).</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">date</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lunarcalendar</span><span class="w"> </span><span class="kn">import</span> <span class="n">Converter</span><span class="p">,</span> <span class="n">Solar</span><span class="p">,</span> <span class="n">Lunar</span><span class="p">,</span> <span class="n">DateNotExist</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.types</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">LunarDate</span><span class="p">,</span>
+    <span class="n">HeavenlyStemAndEarthlyBranchDate</span><span class="p">,</span>
+    <span class="n">HeavenlyStemName</span><span class="p">,</span>
+    <span class="n">EarthlyBranchName</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.constants</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">HEAVENLY_STEMS</span><span class="p">,</span>
+    <span class="n">EARTHLY_BRANCHES</span><span class="p">,</span>
+    <span class="n">TIGER_RULE</span><span class="p">,</span>
+    <span class="n">RAT_RULE</span><span class="p">,</span>
+    <span class="n">fix_index</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<span class="c1"># ============================================================================</span>
+<span class="c1"># Solar to Lunar Conversion</span>
+<span class="c1"># ============================================================================</span>
+
+
+<div class="viewcode-block" id="solar_to_lunar">
+<a class="viewcode-back" href="../../../api/utils.html#iztro_py.utils.calendar.solar_to_lunar">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">solar_to_lunar</span><span class="p">(</span><span class="n">year</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">month</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">day</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">fix_leap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LunarDate</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    阳历转农历</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        year: 阳历年</span>
+<span class="sd">        month: 阳历月</span>
+<span class="sd">        day: 阳历日</span>
+<span class="sd">        fix_leap: 是否修正闰月（如果在闰月前半月则调整为前一个月）</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        LunarDate对象</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: 如果日期无效</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">solar</span> <span class="o">=</span> <span class="n">Solar</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="p">)</span>
+        <span class="n">lunar</span> <span class="o">=</span> <span class="n">Converter</span><span class="o">.</span><span class="n">Solar2Lunar</span><span class="p">(</span><span class="n">solar</span><span class="p">)</span>
+
+        <span class="n">is_leap</span> <span class="o">=</span> <span class="n">lunar</span><span class="o">.</span><span class="n">isleap</span>
+
+        <span class="c1"># 修正闰月：如果在闰月的前半月，调整为前一个月</span>
+        <span class="k">if</span> <span class="n">fix_leap</span> <span class="ow">and</span> <span class="n">is_leap</span> <span class="ow">and</span> <span class="n">lunar</span><span class="o">.</span><span class="n">day</span> <span class="o">&lt;=</span> <span class="mi">15</span><span class="p">:</span>
+            <span class="c1"># 调整为前一个月的非闰月</span>
+            <span class="n">is_leap</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="n">LunarDate</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="n">lunar</span><span class="o">.</span><span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="n">lunar</span><span class="o">.</span><span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="n">lunar</span><span class="o">.</span><span class="n">day</span><span class="p">,</span> <span class="n">is_leap_month</span><span class="o">=</span><span class="n">is_leap</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="n">DateNotExist</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid solar date: </span><span class="si">{</span><span class="n">year</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">month</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">day</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error converting solar to lunar: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="parse_solar_date">
+<a class="viewcode-back" href="../../../api/utils.html#iztro_py.utils.calendar.parse_solar_date">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_solar_date</span><span class="p">(</span><span class="n">date_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    解析阳历日期字符串</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        date_str: 日期字符串，格式：YYYY-M-D 或 YYYY-MM-DD</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        (year, month, day) 元组</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: 如果日期格式无效</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">parts</span> <span class="o">=</span> <span class="n">date_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid date format: </span><span class="si">{</span><span class="n">date_str</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">year</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">month</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">day</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span>
+
+    <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">IndexError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid date string: </span><span class="si">{</span><span class="n">date_str</span><span class="si">}</span><span class="s2">. Expected format: YYYY-M-D&quot;</span><span class="p">)</span></div>
+
+
+
+<span class="c1"># ============================================================================</span>
+<span class="c1"># Lunar to Solar Conversion</span>
+<span class="c1"># ============================================================================</span>
+
+
+<div class="viewcode-block" id="lunar_to_solar">
+<a class="viewcode-back" href="../../../api/utils.html#iztro_py.utils.calendar.lunar_to_solar">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">lunar_to_solar</span><span class="p">(</span>
+    <span class="n">year</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">month</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">day</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">is_leap_month</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    农历转阳历</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        year: 农历年</span>
+<span class="sd">        month: 农历月</span>
+<span class="sd">        day: 农历日</span>
+<span class="sd">        is_leap_month: 是否闰月</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        (year, month, day) 元组</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: 如果日期无效</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">lunar</span> <span class="o">=</span> <span class="n">Lunar</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="p">,</span> <span class="n">isleap</span><span class="o">=</span><span class="n">is_leap_month</span><span class="p">)</span>
+        <span class="n">solar</span> <span class="o">=</span> <span class="n">Converter</span><span class="o">.</span><span class="n">Lunar2Solar</span><span class="p">(</span><span class="n">lunar</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">solar</span><span class="o">.</span><span class="n">year</span><span class="p">,</span> <span class="n">solar</span><span class="o">.</span><span class="n">month</span><span class="p">,</span> <span class="n">solar</span><span class="o">.</span><span class="n">day</span>
+
+    <span class="k">except</span> <span class="n">DateNotExist</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid lunar date: </span><span class="si">{</span><span class="n">year</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">month</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">day</span><span class="si">}</span><span class="s2"> (leap=</span><span class="si">{</span><span class="n">is_leap_month</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error converting lunar to solar: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="parse_lunar_date">
+<a class="viewcode-back" href="../../../api/utils.html#iztro_py.utils.calendar.parse_lunar_date">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_lunar_date</span><span class="p">(</span><span class="n">date_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    解析农历日期字符串</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        date_str: 日期字符串，格式：YYYY-M-D</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        (year, month, day) 元组</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: 如果日期格式无效</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">parse_solar_date</span><span class="p">(</span><span class="n">date_str</span><span class="p">)</span>  <span class="c1"># 格式相同</span></div>
+
+
+
+<span class="c1"># ============================================================================</span>
+<span class="c1"># Heavenly Stems and Earthly Branches Calculation</span>
+<span class="c1"># ============================================================================</span>
+
+
+<div class="viewcode-block" id="get_year_stem_branch">
+<a class="viewcode-back" href="../../../api/utils.html#iztro_py.utils.calendar.get_year_stem_branch">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_year_stem_branch</span><span class="p">(</span><span class="n">year</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">HeavenlyStemName</span><span class="p">,</span> <span class="n">EarthlyBranchName</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    根据年份计算年干支</span>
+
+<span class="sd">    年干 = (年份 - 4) % 10</span>
+<span class="sd">    年支 = (年份 - 4) % 12</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        year: 年份</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        (天干, 地支) 元组</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">stem_index</span> <span class="o">=</span> <span class="p">(</span><span class="n">year</span> <span class="o">-</span> <span class="mi">4</span><span class="p">)</span> <span class="o">%</span> <span class="mi">10</span>
+    <span class="n">branch_index</span> <span class="o">=</span> <span class="p">(</span><span class="n">year</span> <span class="o">-</span> <span class="mi">4</span><span class="p">)</span> <span class="o">%</span> <span class="mi">12</span>
+
+    <span class="k">return</span> <span class="n">HEAVENLY_STEMS</span><span class="p">[</span><span class="n">stem_index</span><span class="p">],</span> <span class="n">EARTHLY_BRANCHES</span><span class="p">[</span><span class="n">branch_index</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="get_month_stem_branch">
+<a class="viewcode-back" href="../../../api/utils.html#iztro_py.utils.calendar.get_month_stem_branch">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_month_stem_branch</span><span class="p">(</span>
+    <span class="n">year_stem</span><span class="p">:</span> <span class="n">HeavenlyStemName</span><span class="p">,</span> <span class="n">month</span><span class="p">:</span> <span class="nb">int</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">HeavenlyStemName</span><span class="p">,</span> <span class="n">EarthlyBranchName</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    根据年干和月份计算月干支（五虎遁）</span>
+
+<span class="sd">    五虎遁口诀：</span>
+<span class="sd">    甲己之年丙作首，乙庚之岁戊为头</span>
+<span class="sd">    丙辛之岁庚寅上，丁壬壬寅顺水流</span>
+<span class="sd">    戊癸甲寅为岁首</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        year_stem: 年干</span>
+<span class="sd">        month: 月份 (1-12)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        (天干, 地支) 元组</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># 月支固定：寅(正月)开始</span>
+    <span class="c1"># 索引：寅=2, 卯=3, ..., 丑=1</span>
+    <span class="n">branch_index</span> <span class="o">=</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">month</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># 正月从寅开始，索引2</span>
+    <span class="n">month_branch</span> <span class="o">=</span> <span class="n">EARTHLY_BRANCHES</span><span class="p">[</span><span class="n">branch_index</span><span class="p">]</span>
+
+    <span class="c1"># 根据五虎遁获取正月天干</span>
+    <span class="n">first_month_stem</span> <span class="o">=</span> <span class="n">TIGER_RULE</span><span class="p">[</span><span class="n">year_stem</span><span class="p">]</span>
+    <span class="n">first_month_stem_index</span> <span class="o">=</span> <span class="n">HEAVENLY_STEMS</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">first_month_stem</span><span class="p">)</span>
+
+    <span class="c1"># 计算本月天干</span>
+    <span class="n">month_stem_index</span> <span class="o">=</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">first_month_stem_index</span> <span class="o">+</span> <span class="n">month</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+    <span class="n">month_stem</span> <span class="o">=</span> <span class="n">HEAVENLY_STEMS</span><span class="p">[</span><span class="n">month_stem_index</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">month_stem</span><span class="p">,</span> <span class="n">month_branch</span></div>
+
+
+
+<div class="viewcode-block" id="get_day_stem_branch">
+<a class="viewcode-back" href="../../../api/utils.html#iztro_py.utils.calendar.get_day_stem_branch">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_day_stem_branch</span><span class="p">(</span><span class="n">solar_date</span><span class="p">:</span> <span class="n">date</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">HeavenlyStemName</span><span class="p">,</span> <span class="n">EarthlyBranchName</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    根据阳历日期计算日干支</span>
+
+<span class="sd">    使用公元元年1月1日为甲子日的算法</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        solar_date: 日期对象</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        (天干, 地支) 元组</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># 计算从公元元年1月1日到指定日期的天数</span>
+    <span class="c1"># 公元元年1月1日是甲子日后的第37天</span>
+    <span class="n">base_date</span> <span class="o">=</span> <span class="n">date</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">days_diff</span> <span class="o">=</span> <span class="p">(</span><span class="n">solar_date</span> <span class="o">-</span> <span class="n">base_date</span><span class="p">)</span><span class="o">.</span><span class="n">days</span>
+
+    <span class="c1"># 甲子日是第37天（索引36）</span>
+    <span class="c1"># 所以实际偏移是 days_diff - 36</span>
+    <span class="n">offset</span> <span class="o">=</span> <span class="n">days_diff</span> <span class="o">-</span> <span class="mi">36</span>
+
+    <span class="n">stem_index</span> <span class="o">=</span> <span class="n">offset</span> <span class="o">%</span> <span class="mi">10</span>
+    <span class="n">branch_index</span> <span class="o">=</span> <span class="n">offset</span> <span class="o">%</span> <span class="mi">12</span>
+
+    <span class="k">return</span> <span class="n">HEAVENLY_STEMS</span><span class="p">[</span><span class="n">stem_index</span><span class="p">],</span> <span class="n">EARTHLY_BRANCHES</span><span class="p">[</span><span class="n">branch_index</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="get_time_stem_branch">
+<a class="viewcode-back" href="../../../api/utils.html#iztro_py.utils.calendar.get_time_stem_branch">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_time_stem_branch</span><span class="p">(</span>
+    <span class="n">day_stem</span><span class="p">:</span> <span class="n">HeavenlyStemName</span><span class="p">,</span> <span class="n">time_index</span><span class="p">:</span> <span class="nb">int</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">HeavenlyStemName</span><span class="p">,</span> <span class="n">EarthlyBranchName</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    根据日干和时辰索引计算时干支（五鼠遁）</span>
+
+<span class="sd">    五鼠遁口诀：</span>
+<span class="sd">    甲己还加甲，乙庚丙作初</span>
+<span class="sd">    丙辛从戊起，丁壬庚子居</span>
+<span class="sd">    戊癸何方发，壬子是真途</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        day_stem: 日干</span>
+<span class="sd">        time_index: 时辰索引 (0-12)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        (天干, 地支) 元组</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># 时支：子=0, 丑=1, ..., 亥=11</span>
+    <span class="c1"># 特殊处理：早子时(0)和晚子时(12)都是子时</span>
+    <span class="k">if</span> <span class="n">time_index</span> <span class="o">==</span> <span class="mi">12</span><span class="p">:</span>
+        <span class="n">time_branch_index</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># 子时</span>
+    <span class="k">elif</span> <span class="n">time_index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">time_branch_index</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># 子时</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">time_branch_index</span> <span class="o">=</span> <span class="n">time_index</span>
+
+    <span class="n">time_branch</span> <span class="o">=</span> <span class="n">EARTHLY_BRANCHES</span><span class="p">[</span><span class="n">time_branch_index</span><span class="p">]</span>
+
+    <span class="c1"># 根据五鼠遁获取子时天干</span>
+    <span class="n">zi_hour_stem</span> <span class="o">=</span> <span class="n">RAT_RULE</span><span class="p">[</span><span class="n">day_stem</span><span class="p">]</span>
+    <span class="n">zi_hour_stem_index</span> <span class="o">=</span> <span class="n">HEAVENLY_STEMS</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">zi_hour_stem</span><span class="p">)</span>
+
+    <span class="c1"># 计算本时辰天干</span>
+    <span class="n">time_stem_index</span> <span class="o">=</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">zi_hour_stem_index</span> <span class="o">+</span> <span class="n">time_branch_index</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+    <span class="n">time_stem</span> <span class="o">=</span> <span class="n">HEAVENLY_STEMS</span><span class="p">[</span><span class="n">time_stem_index</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">time_stem</span><span class="p">,</span> <span class="n">time_branch</span></div>
+
+
+
+<div class="viewcode-block" id="get_heavenly_stem_and_earthly_branch_date">
+<a class="viewcode-back" href="../../../api/utils.html#iztro_py.utils.calendar.get_heavenly_stem_and_earthly_branch_date">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_heavenly_stem_and_earthly_branch_date</span><span class="p">(</span>
+    <span class="n">year</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">month</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">day</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">time_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">lunar_month</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HeavenlyStemAndEarthlyBranchDate</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    获取完整的四柱（年月日时的天干地支）</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        year: 阳历年</span>
+<span class="sd">        month: 阳历月</span>
+<span class="sd">        day: 阳历日</span>
+<span class="sd">        time_index: 时辰索引 (0-12)</span>
+<span class="sd">        lunar_month: 农历月（用于月干支计算）</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        HeavenlyStemAndEarthlyBranchDate对象</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># 年干支</span>
+    <span class="n">year_stem</span><span class="p">,</span> <span class="n">year_branch</span> <span class="o">=</span> <span class="n">get_year_stem_branch</span><span class="p">(</span><span class="n">year</span><span class="p">)</span>
+
+    <span class="c1"># 月干支（使用农历月）</span>
+    <span class="k">if</span> <span class="n">lunar_month</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">lunar_date</span> <span class="o">=</span> <span class="n">solar_to_lunar</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="p">)</span>
+        <span class="n">lunar_month</span> <span class="o">=</span> <span class="n">lunar_date</span><span class="o">.</span><span class="n">month</span>
+
+    <span class="n">month_stem</span><span class="p">,</span> <span class="n">month_branch</span> <span class="o">=</span> <span class="n">get_month_stem_branch</span><span class="p">(</span><span class="n">year_stem</span><span class="p">,</span> <span class="n">lunar_month</span><span class="p">)</span>
+
+    <span class="c1"># 日干支</span>
+    <span class="n">solar_date</span> <span class="o">=</span> <span class="n">date</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="p">)</span>
+    <span class="n">day_stem</span><span class="p">,</span> <span class="n">day_branch</span> <span class="o">=</span> <span class="n">get_day_stem_branch</span><span class="p">(</span><span class="n">solar_date</span><span class="p">)</span>
+
+    <span class="c1"># 时干支</span>
+    <span class="n">time_stem</span><span class="p">,</span> <span class="n">time_branch</span> <span class="o">=</span> <span class="n">get_time_stem_branch</span><span class="p">(</span><span class="n">day_stem</span><span class="p">,</span> <span class="n">time_index</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">HeavenlyStemAndEarthlyBranchDate</span><span class="p">(</span>
+        <span class="n">year_stem</span><span class="o">=</span><span class="n">year_stem</span><span class="p">,</span>
+        <span class="n">year_branch</span><span class="o">=</span><span class="n">year_branch</span><span class="p">,</span>
+        <span class="n">month_stem</span><span class="o">=</span><span class="n">month_stem</span><span class="p">,</span>
+        <span class="n">month_branch</span><span class="o">=</span><span class="n">month_branch</span><span class="p">,</span>
+        <span class="n">day_stem</span><span class="o">=</span><span class="n">day_stem</span><span class="p">,</span>
+        <span class="n">day_branch</span><span class="o">=</span><span class="n">day_branch</span><span class="p">,</span>
+        <span class="n">time_stem</span><span class="o">=</span><span class="n">time_stem</span><span class="p">,</span>
+        <span class="n">time_branch</span><span class="o">=</span><span class="n">time_branch</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="c1"># ============================================================================</span>
+<span class="c1"># Zodiac and Sign Calculation</span>
+<span class="c1"># ============================================================================</span>
+
+<span class="c1"># 生肖对应地支</span>
+<span class="n">ZODIAC_NAMES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;ziEarthly&quot;</span><span class="p">:</span> <span class="s2">&quot;鼠&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;chouEarthly&quot;</span><span class="p">:</span> <span class="s2">&quot;牛&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;yinEarthly&quot;</span><span class="p">:</span> <span class="s2">&quot;虎&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;maoEarthly&quot;</span><span class="p">:</span> <span class="s2">&quot;兔&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;chenEarthly&quot;</span><span class="p">:</span> <span class="s2">&quot;龙&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;siEarthly&quot;</span><span class="p">:</span> <span class="s2">&quot;蛇&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;wuEarthly&quot;</span><span class="p">:</span> <span class="s2">&quot;马&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;weiEarthly&quot;</span><span class="p">:</span> <span class="s2">&quot;羊&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;shenEarthly&quot;</span><span class="p">:</span> <span class="s2">&quot;猴&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;youEarthly&quot;</span><span class="p">:</span> <span class="s2">&quot;鸡&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;xuEarthly&quot;</span><span class="p">:</span> <span class="s2">&quot;狗&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;haiEarthly&quot;</span><span class="p">:</span> <span class="s2">&quot;猪&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="c1"># 星座日期范围 (月, 日)</span>
+<span class="n">SIGN_DATES</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">21</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">19</span><span class="p">),</span> <span class="s2">&quot;白羊座&quot;</span><span class="p">),</span>  <span class="c1"># Aries</span>
+    <span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="s2">&quot;金牛座&quot;</span><span class="p">),</span>  <span class="c1"># Taurus</span>
+    <span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">21</span><span class="p">),</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">21</span><span class="p">),</span> <span class="s2">&quot;双子座&quot;</span><span class="p">),</span>  <span class="c1"># Gemini</span>
+    <span class="p">((</span><span class="mi">6</span><span class="p">,</span> <span class="mi">22</span><span class="p">),</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">22</span><span class="p">),</span> <span class="s2">&quot;巨蟹座&quot;</span><span class="p">),</span>  <span class="c1"># Cancer</span>
+    <span class="p">((</span><span class="mi">7</span><span class="p">,</span> <span class="mi">23</span><span class="p">),</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">22</span><span class="p">),</span> <span class="s2">&quot;狮子座&quot;</span><span class="p">),</span>  <span class="c1"># Leo</span>
+    <span class="p">((</span><span class="mi">8</span><span class="p">,</span> <span class="mi">23</span><span class="p">),</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">22</span><span class="p">),</span> <span class="s2">&quot;处女座&quot;</span><span class="p">),</span>  <span class="c1"># Virgo</span>
+    <span class="p">((</span><span class="mi">9</span><span class="p">,</span> <span class="mi">23</span><span class="p">),</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">23</span><span class="p">),</span> <span class="s2">&quot;天秤座&quot;</span><span class="p">),</span>  <span class="c1"># Libra</span>
+    <span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">24</span><span class="p">),</span> <span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">22</span><span class="p">),</span> <span class="s2">&quot;天蝎座&quot;</span><span class="p">),</span>  <span class="c1"># Scorpio</span>
+    <span class="p">((</span><span class="mi">11</span><span class="p">,</span> <span class="mi">23</span><span class="p">),</span> <span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">21</span><span class="p">),</span> <span class="s2">&quot;射手座&quot;</span><span class="p">),</span>  <span class="c1"># Sagittarius</span>
+    <span class="p">((</span><span class="mi">12</span><span class="p">,</span> <span class="mi">22</span><span class="p">),</span> <span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">31</span><span class="p">),</span> <span class="s2">&quot;摩羯座&quot;</span><span class="p">),</span>  <span class="c1"># Capricorn</span>
+    <span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">19</span><span class="p">),</span> <span class="s2">&quot;摩羯座&quot;</span><span class="p">),</span>  <span class="c1"># Capricorn (continued)</span>
+    <span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">18</span><span class="p">),</span> <span class="s2">&quot;水瓶座&quot;</span><span class="p">),</span>  <span class="c1"># Aquarius</span>
+    <span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">19</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="s2">&quot;双鱼座&quot;</span><span class="p">),</span>  <span class="c1"># Pisces</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="get_zodiac">
+<a class="viewcode-back" href="../../../api/utils.html#iztro_py.utils.calendar.get_zodiac">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_zodiac</span><span class="p">(</span><span class="n">year_branch</span><span class="p">:</span> <span class="n">EarthlyBranchName</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    根据年支获取生肖</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        year_branch: 年支</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        生肖名称</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ZODIAC_NAMES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">year_branch</span><span class="p">,</span> <span class="s2">&quot;未知&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_sign">
+<a class="viewcode-back" href="../../../api/utils.html#iztro_py.utils.calendar.get_sign">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_sign</span><span class="p">(</span><span class="n">month</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">day</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    根据阳历月日获取星座</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        month: 月份 (1-12)</span>
+<span class="sd">        day: 日期 (1-31)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        星座名称</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">sign_name</span> <span class="ow">in</span> <span class="n">SIGN_DATES</span><span class="p">:</span>
+        <span class="n">start_month</span><span class="p">,</span> <span class="n">start_day</span> <span class="o">=</span> <span class="n">start</span>
+        <span class="n">end_month</span><span class="p">,</span> <span class="n">end_day</span> <span class="o">=</span> <span class="n">end</span>
+
+        <span class="k">if</span> <span class="n">start_month</span> <span class="o">==</span> <span class="n">end_month</span><span class="p">:</span>
+            <span class="c1"># 同一个月内</span>
+            <span class="k">if</span> <span class="n">month</span> <span class="o">==</span> <span class="n">start_month</span> <span class="ow">and</span> <span class="n">start_day</span> <span class="o">&lt;=</span> <span class="n">day</span> <span class="o">&lt;=</span> <span class="n">end_day</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">sign_name</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># 跨月</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">month</span> <span class="o">==</span> <span class="n">start_month</span> <span class="ow">and</span> <span class="n">day</span> <span class="o">&gt;=</span> <span class="n">start_day</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+                <span class="n">month</span> <span class="o">==</span> <span class="n">end_month</span> <span class="ow">and</span> <span class="n">day</span> <span class="o">&lt;=</span> <span class="n">end_day</span>
+            <span class="p">):</span>
+                <span class="k">return</span> <span class="n">sign_name</span>
+
+    <span class="k">return</span> <span class="s2">&quot;未知&quot;</span></div>
+
+
+
+<span class="c1"># ============================================================================</span>
+<span class="c1"># Format Functions</span>
+<span class="c1"># ============================================================================</span>
+
+
+<div class="viewcode-block" id="format_lunar_date">
+<a class="viewcode-back" href="../../../api/utils.html#iztro_py.utils.calendar.format_lunar_date">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">format_lunar_date</span><span class="p">(</span><span class="n">lunar_date</span><span class="p">:</span> <span class="n">LunarDate</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    格式化农历日期为中文字符串</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        lunar_date: 农历日期对象</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        格式化后的字符串，如 &quot;2000年七月十八&quot; 或 &quot;2000年闰七月十八&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># 数字转中文</span>
+    <span class="n">chinese_numbers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;〇&quot;</span><span class="p">,</span> <span class="s2">&quot;一&quot;</span><span class="p">,</span> <span class="s2">&quot;二&quot;</span><span class="p">,</span> <span class="s2">&quot;三&quot;</span><span class="p">,</span> <span class="s2">&quot;四&quot;</span><span class="p">,</span> <span class="s2">&quot;五&quot;</span><span class="p">,</span> <span class="s2">&quot;六&quot;</span><span class="p">,</span> <span class="s2">&quot;七&quot;</span><span class="p">,</span> <span class="s2">&quot;八&quot;</span><span class="p">,</span> <span class="s2">&quot;九&quot;</span><span class="p">,</span> <span class="s2">&quot;十&quot;</span><span class="p">]</span>
+    <span class="n">months</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;正&quot;</span><span class="p">,</span> <span class="s2">&quot;二&quot;</span><span class="p">,</span> <span class="s2">&quot;三&quot;</span><span class="p">,</span> <span class="s2">&quot;四&quot;</span><span class="p">,</span> <span class="s2">&quot;五&quot;</span><span class="p">,</span> <span class="s2">&quot;六&quot;</span><span class="p">,</span> <span class="s2">&quot;七&quot;</span><span class="p">,</span> <span class="s2">&quot;八&quot;</span><span class="p">,</span> <span class="s2">&quot;九&quot;</span><span class="p">,</span> <span class="s2">&quot;十&quot;</span><span class="p">,</span> <span class="s2">&quot;冬&quot;</span><span class="p">,</span> <span class="s2">&quot;腊&quot;</span><span class="p">]</span>
+
+    <span class="c1"># 月份</span>
+    <span class="k">if</span> <span class="n">lunar_date</span><span class="o">.</span><span class="n">month</span> <span class="o">&lt;=</span> <span class="mi">12</span><span class="p">:</span>
+        <span class="n">month_str</span> <span class="o">=</span> <span class="n">months</span><span class="p">[</span><span class="n">lunar_date</span><span class="o">.</span><span class="n">month</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">month_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">lunar_date</span><span class="o">.</span><span class="n">month</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">lunar_date</span><span class="o">.</span><span class="n">is_leap_month</span><span class="p">:</span>
+        <span class="n">month_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;闰</span><span class="si">{</span><span class="n">month_str</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="c1"># 日期</span>
+    <span class="k">if</span> <span class="n">lunar_date</span><span class="o">.</span><span class="n">day</span> <span class="o">&lt;=</span> <span class="mi">10</span><span class="p">:</span>
+        <span class="n">day_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;初</span><span class="si">{</span><span class="n">chinese_numbers</span><span class="p">[</span><span class="n">lunar_date</span><span class="o">.</span><span class="n">day</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">elif</span> <span class="n">lunar_date</span><span class="o">.</span><span class="n">day</span> <span class="o">&lt;</span> <span class="mi">20</span><span class="p">:</span>
+        <span class="n">day_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;十</span><span class="si">{</span><span class="n">chinese_numbers</span><span class="p">[</span><span class="n">lunar_date</span><span class="o">.</span><span class="n">day</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">10</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">elif</span> <span class="n">lunar_date</span><span class="o">.</span><span class="n">day</span> <span class="o">==</span> <span class="mi">20</span><span class="p">:</span>
+        <span class="n">day_str</span> <span class="o">=</span> <span class="s2">&quot;二十&quot;</span>
+    <span class="k">elif</span> <span class="n">lunar_date</span><span class="o">.</span><span class="n">day</span> <span class="o">&lt;</span> <span class="mi">30</span><span class="p">:</span>
+        <span class="n">day_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;廿</span><span class="si">{</span><span class="n">chinese_numbers</span><span class="p">[</span><span class="n">lunar_date</span><span class="o">.</span><span class="n">day</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">20</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">elif</span> <span class="n">lunar_date</span><span class="o">.</span><span class="n">day</span> <span class="o">==</span> <span class="mi">30</span><span class="p">:</span>
+        <span class="n">day_str</span> <span class="o">=</span> <span class="s2">&quot;三十&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">day_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">lunar_date</span><span class="o">.</span><span class="n">day</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">lunar_date</span><span class="o">.</span><span class="n">year</span><span class="si">}</span><span class="s2">年</span><span class="si">{</span><span class="n">month_str</span><span class="si">}</span><span class="s2">月</span><span class="si">{</span><span class="n">day_str</span><span class="si">}</span><span class="s2">&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="format_chinese_date">
+<a class="viewcode-back" href="../../../api/utils.html#iztro_py.utils.calendar.format_chinese_date">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">format_chinese_date</span><span class="p">(</span><span class="n">chinese_date</span><span class="p">:</span> <span class="n">HeavenlyStemAndEarthlyBranchDate</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    格式化干支日期为中文字符串</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        chinese_date: 干支日期对象</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        格式化后的字符串，如 &quot;庚辰年七月十八 午时&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># 天干地支中文映射</span>
+    <span class="n">stem_names</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;jiaHeavenly&quot;</span><span class="p">:</span> <span class="s2">&quot;甲&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;yiHeavenly&quot;</span><span class="p">:</span> <span class="s2">&quot;乙&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;bingHeavenly&quot;</span><span class="p">:</span> <span class="s2">&quot;丙&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dingHeavenly&quot;</span><span class="p">:</span> <span class="s2">&quot;丁&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;wuHeavenly&quot;</span><span class="p">:</span> <span class="s2">&quot;戊&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;jiHeavenly&quot;</span><span class="p">:</span> <span class="s2">&quot;己&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;gengHeavenly&quot;</span><span class="p">:</span> <span class="s2">&quot;庚&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;xinHeavenly&quot;</span><span class="p">:</span> <span class="s2">&quot;辛&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;renHeavenly&quot;</span><span class="p">:</span> <span class="s2">&quot;壬&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;guiHeavenly&quot;</span><span class="p">:</span> <span class="s2">&quot;癸&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="n">branch_names</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;ziEarthly&quot;</span><span class="p">:</span> <span class="s2">&quot;子&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;chouEarthly&quot;</span><span class="p">:</span> <span class="s2">&quot;丑&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;yinEarthly&quot;</span><span class="p">:</span> <span class="s2">&quot;寅&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;maoEarthly&quot;</span><span class="p">:</span> <span class="s2">&quot;卯&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;chenEarthly&quot;</span><span class="p">:</span> <span class="s2">&quot;辰&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;siEarthly&quot;</span><span class="p">:</span> <span class="s2">&quot;巳&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;wuEarthly&quot;</span><span class="p">:</span> <span class="s2">&quot;午&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;weiEarthly&quot;</span><span class="p">:</span> <span class="s2">&quot;未&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;shenEarthly&quot;</span><span class="p">:</span> <span class="s2">&quot;申&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;youEarthly&quot;</span><span class="p">:</span> <span class="s2">&quot;酉&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;xuEarthly&quot;</span><span class="p">:</span> <span class="s2">&quot;戌&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;haiEarthly&quot;</span><span class="p">:</span> <span class="s2">&quot;亥&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="n">year_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">stem_names</span><span class="p">[</span><span class="n">chinese_date</span><span class="o">.</span><span class="n">year_stem</span><span class="p">]</span><span class="si">}{</span><span class="n">branch_names</span><span class="p">[</span><span class="n">chinese_date</span><span class="o">.</span><span class="n">year_branch</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">month_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">stem_names</span><span class="p">[</span><span class="n">chinese_date</span><span class="o">.</span><span class="n">month_stem</span><span class="p">]</span><span class="si">}{</span><span class="n">branch_names</span><span class="p">[</span><span class="n">chinese_date</span><span class="o">.</span><span class="n">month_branch</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">day_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">stem_names</span><span class="p">[</span><span class="n">chinese_date</span><span class="o">.</span><span class="n">day_stem</span><span class="p">]</span><span class="si">}{</span><span class="n">branch_names</span><span class="p">[</span><span class="n">chinese_date</span><span class="o">.</span><span class="n">day_branch</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">time_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">stem_names</span><span class="p">[</span><span class="n">chinese_date</span><span class="o">.</span><span class="n">time_stem</span><span class="p">]</span><span class="si">}{</span><span class="n">branch_names</span><span class="p">[</span><span class="n">chinese_date</span><span class="o">.</span><span class="n">time_branch</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">year_str</span><span class="si">}</span><span class="s2">年</span><span class="si">{</span><span class="n">month_str</span><span class="si">}</span><span class="s2">月</span><span class="si">{</span><span class="n">day_str</span><span class="si">}</span><span class="s2">日 </span><span class="si">{</span><span class="n">time_str</span><span class="si">}</span><span class="s2">时&quot;</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, iztro-py Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

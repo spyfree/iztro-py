@@ -1,0 +1,552 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>iztro_py.star.location &mdash; iztro-py 0.3.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=d5a15cff"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            iztro-py
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">内容目录:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">安装</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart.html">快速开始</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">使用示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">更新日志</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">iztro-py</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">iztro_py.star.location</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for iztro_py.star.location</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Star positioning algorithms for iztro-py</span>
+
+<span class="sd">Contains core algorithms for calculating positions of major stars,</span>
+<span class="sd">especially Ziwei (紫微) and Tianfu (天府).</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tuple</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">date</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">FiveElementsClass</span><span class="p">,</span> <span class="n">HeavenlyStemName</span><span class="p">,</span> <span class="n">EarthlyBranchName</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">fix_index</span><span class="p">,</span> <span class="n">ZIWEI_START_POSITIONS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.utils.calendar</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_solar_date</span><span class="p">,</span> <span class="n">solar_to_lunar</span>
+
+
+<div class="viewcode-block" id="get_ziwei_index">
+<a class="viewcode-back" href="../../../api/star.html#iztro_py.star.location.get_ziwei_index">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_ziwei_index</span><span class="p">(</span><span class="n">five_elements_class</span><span class="p">:</span> <span class="n">FiveElementsClass</span><span class="p">,</span> <span class="n">lunar_day</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    计算紫微星所在宫位索引</span>
+
+<span class="sd">    口诀：六五四三二，酉午亥辰丑</span>
+
+<span class="sd">    算法：</span>
+<span class="sd">    1. 根据五行局确定起始宫位</span>
+<span class="sd">       - 水二局：从酉宫(9)起</span>
+<span class="sd">       - 木三局：从午宫(6)起</span>
+<span class="sd">       - 金四局：从亥宫(11)起</span>
+<span class="sd">       - 土五局：从辰宫(4)起</span>
+<span class="sd">       - 火六局：从丑宫(1)起</span>
+
+<span class="sd">    2. 从起始宫位开始，按照五行局数值为一个循环</span>
+<span class="sd">       每个循环对应一定天数的农历日期</span>
+
+<span class="sd">    3. 循环计算直到找到包含农历日的范围</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        five_elements_class: 五行局</span>
+<span class="sd">        lunar_day: 农历日 (1-30)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        紫微星所在宫位索引 (0-11)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># 五行局数值</span>
+    <span class="n">class_value</span> <span class="o">=</span> <span class="n">five_elements_class</span><span class="o">.</span><span class="n">value</span>  <span class="c1"># 2, 3, 4, 5, or 6</span>
+
+    <span class="c1"># 起始宫位索引</span>
+    <span class="c1"># 水2-&gt;酉9, 木3-&gt;午6, 金4-&gt;亥11, 土5-&gt;辰4, 火6-&gt;丑1</span>
+    <span class="n">start_positions</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="mi">2</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span>  <span class="c1"># 水二局：酉宫</span>
+        <span class="mi">3</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>  <span class="c1"># 木三局：午宫</span>
+        <span class="mi">4</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span>  <span class="c1"># 金四局：亥宫</span>
+        <span class="mi">5</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>  <span class="c1"># 土五局：辰宫</span>
+        <span class="mi">6</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># 火六局：丑宫</span>
+    <span class="p">}</span>
+
+    <span class="n">start_pos</span> <span class="o">=</span> <span class="n">start_positions</span><span class="p">[</span><span class="n">class_value</span><span class="p">]</span>
+
+    <span class="c1"># 计算紫微星位置</span>
+    <span class="c1"># 算法：(农历日期 - 1) // 五行局数值 = 循环次数</span>
+    <span class="c1"># 每个循环移动一个宫位</span>
+    <span class="n">cycles</span> <span class="o">=</span> <span class="p">(</span><span class="n">lunar_day</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="n">class_value</span>
+    <span class="c1"># 与原版 iztro 不完全一致的简化算法，已被 get_start_indices 替代</span>
+    <span class="n">ziwei_index</span> <span class="o">=</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">start_pos</span> <span class="o">+</span> <span class="n">cycles</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">ziwei_index</span></div>
+
+
+
+<div class="viewcode-block" id="get_tianfu_index">
+<a class="viewcode-back" href="../../../api/star.html#iztro_py.star.location.get_tianfu_index">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_tianfu_index</span><span class="p">(</span><span class="n">ziwei_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    根据紫微星位置计算天府星位置</span>
+
+<span class="sd">    天府星与紫微星的关系：</span>
+<span class="sd">    紫微在寅，天府在申（相对）</span>
+<span class="sd">    规律：天府索引 = 对宫 = (紫微索引 + 6) % 12</span>
+
+<span class="sd">    实际上天府的计算是：</span>
+<span class="sd">    寅宫(紫微) -&gt; 申宫(天府)</span>
+<span class="sd">    如果紫微在寅(2)，天府在子(0): 12 - 2 = 10, 不对</span>
+
+<span class="sd">    正确规律：</span>
+<span class="sd">    紫微寅(2) -&gt; 天府子(0)</span>
+<span class="sd">    紫微卯(3) -&gt; 天府亥(11)</span>
+<span class="sd">    紫微辰(4) -&gt; 天府戌(10)</span>
+<span class="sd">    ...</span>
+
+<span class="sd">    实际公式：天府索引 = (12 - 紫微索引) % 12</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ziwei_index: 紫微星宫位索引</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        天府星宫位索引</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># 修正后的公式</span>
+    <span class="n">tianfu_index</span> <span class="o">=</span> <span class="n">fix_index</span><span class="p">(</span><span class="mi">12</span> <span class="o">-</span> <span class="n">ziwei_index</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">tianfu_index</span></div>
+
+
+
+<span class="c1"># Backward-compat helper to satisfy existing tests/imports</span>
+<div class="viewcode-block" id="get_star_indices">
+<a class="viewcode-back" href="../../../api/star.html#iztro_py.star.location.get_star_indices">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_star_indices</span><span class="p">(</span><span class="n">five_elements_class</span><span class="p">:</span> <span class="n">FiveElementsClass</span><span class="p">,</span> <span class="n">lunar_day</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    兼容旧接口：根据五行局与农历日返回紫微与天府索引</span>
+
+<span class="sd">    注意：该算法为简化版，生产使用请改用 get_start_indices。</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ziwei_index</span> <span class="o">=</span> <span class="n">get_ziwei_index</span><span class="p">(</span><span class="n">five_elements_class</span><span class="p">,</span> <span class="n">lunar_day</span><span class="p">)</span>
+    <span class="n">tianfu_index</span> <span class="o">=</span> <span class="n">get_tianfu_index</span><span class="p">(</span><span class="n">ziwei_index</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ziwei_index</span><span class="p">,</span> <span class="n">tianfu_index</span></div>
+
+
+
+<div class="viewcode-block" id="get_start_indices">
+<a class="viewcode-back" href="../../../api/star.html#iztro_py.star.location.get_start_indices">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_start_indices</span><span class="p">(</span>
+    <span class="n">solar_date_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">time_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">fix_leap</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="n">heavenly_stem_of_soul</span><span class="p">:</span> <span class="n">HeavenlyStemName</span><span class="p">,</span>
+    <span class="n">earthly_branch_of_soul</span><span class="p">:</span> <span class="n">EarthlyBranchName</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    计算紫微与天府起始索引（与原生 iztro 对齐）</span>
+
+<span class="sd">    对应 iztro/lib/star/location.getStartIndex 的 Python 实现。</span>
+
+<span class="sd">    规则要点：</span>
+<span class="sd">    - “六五四三二，酉午亥辰丑；局数除日数，商数宫前走；若见数无余，便要起虎口，日数小于局，还直宫中守。”</span>
+<span class="sd">    - 晚子时（time_index==12）按次日处理（跨月则顺延到下一月初一）</span>
+<span class="sd">    - 五行局按命宫干支起局</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        (紫微索引, 天府索引)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># 解析阳历日期并获取当日农历</span>
+    <span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span> <span class="o">=</span> <span class="n">parse_solar_date</span><span class="p">(</span><span class="n">solar_date_str</span><span class="p">)</span>
+
+    <span class="c1"># 晚子时按次日计算农历日</span>
+    <span class="k">if</span> <span class="n">time_index</span> <span class="o">==</span> <span class="mi">12</span><span class="p">:</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">date</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="p">)</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">lunar</span> <span class="o">=</span> <span class="n">solar_to_lunar</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">year</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">month</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">day</span><span class="p">,</span> <span class="n">fix_leap</span><span class="p">)</span>
+        <span class="n">lunar_day</span> <span class="o">=</span> <span class="n">lunar</span><span class="o">.</span><span class="n">day</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">lunar</span> <span class="o">=</span> <span class="n">solar_to_lunar</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="p">,</span> <span class="n">fix_leap</span><span class="p">)</span>
+        <span class="n">lunar_day</span> <span class="o">=</span> <span class="n">lunar</span><span class="o">.</span><span class="n">day</span>
+
+    <span class="c1"># 五行局数值</span>
+    <span class="c1"># 直接使用传入的命宫干支计算的五行局数值</span>
+    <span class="c1"># 复用已有查表逻辑</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.utils.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_five_elements_class</span>
+
+    <span class="n">five_cls</span> <span class="o">=</span> <span class="n">get_five_elements_class</span><span class="p">(</span><span class="n">heavenly_stem_of_soul</span><span class="p">,</span> <span class="n">earthly_branch_of_soul</span><span class="p">)</span>
+    <span class="n">class_value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">five_cls</span><span class="o">.</span><span class="n">value</span>
+
+    <span class="c1"># 寻找最小 offset 使 (lunar_day + offset) 能被 class_value 整除</span>
+    <span class="n">offset</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">remainder</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="k">while</span> <span class="n">remainder</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">offset</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">divisor</span> <span class="o">=</span> <span class="n">lunar_day</span> <span class="o">+</span> <span class="n">offset</span>
+        <span class="n">remainder</span> <span class="o">=</span> <span class="n">divisor</span> <span class="o">%</span> <span class="n">class_value</span>
+        <span class="n">quotient</span> <span class="o">=</span> <span class="n">divisor</span> <span class="o">//</span> <span class="n">class_value</span>
+
+    <span class="c1"># 商对 12 取模（以寅为0的坐标系）</span>
+    <span class="n">quotient</span> <span class="o">%=</span> <span class="mi">12</span>
+
+    <span class="c1"># 起始紫微索引（寅为0坐标系）</span>
+    <span class="n">node_ziwei_index</span> <span class="o">=</span> <span class="n">quotient</span> <span class="o">-</span> <span class="mi">1</span>
+
+    <span class="c1"># 循环次数为偶数：逆时针加 offset；奇数：顺时针减 offset</span>
+    <span class="k">if</span> <span class="n">offset</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">node_ziwei_index</span> <span class="o">+=</span> <span class="n">offset</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">node_ziwei_index</span> <span class="o">-=</span> <span class="n">offset</span>
+    <span class="n">node_ziwei_index</span> <span class="o">=</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">node_ziwei_index</span><span class="p">)</span>
+
+    <span class="c1"># 天府星位置与紫微星相对（同一坐标系下）</span>
+    <span class="n">node_tianfu_index</span> <span class="o">=</span> <span class="n">fix_index</span><span class="p">(</span><span class="mi">12</span> <span class="o">-</span> <span class="n">node_ziwei_index</span><span class="p">)</span>
+
+    <span class="c1"># iztro 的索引以寅宫为0，而本库以子宫为0，需要转换：ours = (iztro + 2) % 12</span>
+    <span class="n">ziwei_index</span> <span class="o">=</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">node_ziwei_index</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">tianfu_index</span> <span class="o">=</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">node_tianfu_index</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ziwei_index</span><span class="p">,</span> <span class="n">tianfu_index</span></div>
+
+
+
+<div class="viewcode-block" id="get_major_star_positions">
+<a class="viewcode-back" href="../../../api/star.html#iztro_py.star.location.get_major_star_positions">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_major_star_positions</span><span class="p">(</span><span class="n">ziwei_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">tianfu_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    根据紫微和天府星位置，计算其他主星位置</span>
+
+<span class="sd">    紫微星系（逆行）：紫微、天机、太阳、武曲、天同、廉贞</span>
+<span class="sd">    天府星系（顺行）：天府、太阴、贪狼、巨门、天相、天梁、七杀、破军</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ziwei_index: 紫微星宫位索引</span>
+<span class="sd">        tianfu_index: 天府星宫位索引</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        星曜名称到宫位索引的映射字典</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">ZIWEI_GROUP</span><span class="p">,</span> <span class="n">TIANFU_GROUP</span>
+
+    <span class="n">positions</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># 紫微星系（逆行）</span>
+    <span class="c1"># 紫微、天机、(空)、太阳、武曲、天同、(空)、(空)、廉贞</span>
+    <span class="k">for</span> <span class="n">offset</span><span class="p">,</span> <span class="n">star_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ZIWEI_GROUP</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">star_name</span><span class="p">:</span>  <span class="c1"># 跳过空位</span>
+            <span class="c1"># 逆行：索引递减</span>
+            <span class="n">star_index</span> <span class="o">=</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">ziwei_index</span> <span class="o">-</span> <span class="n">offset</span><span class="p">)</span>
+            <span class="n">positions</span><span class="p">[</span><span class="n">star_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">star_index</span>
+
+    <span class="c1"># 天府星系（顺行）</span>
+    <span class="c1"># 天府、太阴、贪狼、巨门、天相、天梁、七杀、(空)、(空)、(空)、破军</span>
+    <span class="k">for</span> <span class="n">offset</span><span class="p">,</span> <span class="n">star_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">TIANFU_GROUP</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">star_name</span><span class="p">:</span>  <span class="c1"># 跳过空位</span>
+            <span class="c1"># 顺行：索引递增</span>
+            <span class="n">star_index</span> <span class="o">=</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">tianfu_index</span> <span class="o">+</span> <span class="n">offset</span><span class="p">)</span>
+            <span class="n">positions</span><span class="p">[</span><span class="n">star_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">star_index</span>
+
+    <span class="k">return</span> <span class="n">positions</span></div>
+
+
+
+<div class="viewcode-block" id="get_minor_star_position_zuofu">
+<a class="viewcode-back" href="../../../api/star.html#iztro_py.star.location.get_minor_star_position_zuofu">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_minor_star_position_zuofu</span><span class="p">(</span><span class="n">lunar_month</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    计算左辅星位置（按农历月）</span>
+
+<span class="sd">    口诀：正月起辰宫，顺行十二宫</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        lunar_month: 农历月 (1-12)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        左辅星宫位索引</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># 正月在辰宫(4)</span>
+    <span class="k">return</span> <span class="n">fix_index</span><span class="p">(</span><span class="mi">4</span> <span class="o">+</span> <span class="n">lunar_month</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_minor_star_position_youbi">
+<a class="viewcode-back" href="../../../api/star.html#iztro_py.star.location.get_minor_star_position_youbi">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_minor_star_position_youbi</span><span class="p">(</span><span class="n">lunar_month</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    计算右弼星位置（按农历月）</span>
+
+<span class="sd">    口诀：正月起戌宫，逆行十二宫</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        lunar_month: 农历月 (1-12)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        右弼星宫位索引</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># 正月在戌宫(10)</span>
+    <span class="k">return</span> <span class="n">fix_index</span><span class="p">(</span><span class="mi">10</span> <span class="o">-</span> <span class="p">(</span><span class="n">lunar_month</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="get_minor_star_position_wenchang">
+<a class="viewcode-back" href="../../../api/star.html#iztro_py.star.location.get_minor_star_position_wenchang">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_minor_star_position_wenchang</span><span class="p">(</span><span class="n">time_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    计算文昌星位置（按时辰）</span>
+
+<span class="sd">    口诀：子时起戌宫，逆行十二宫</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        time_index: 时辰索引 (0-12)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        文昌星宫位索引</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># 处理早子时和晚子时</span>
+    <span class="n">actual_time_index</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">time_index</span> <span class="o">==</span> <span class="mi">12</span> <span class="k">else</span> <span class="n">time_index</span>
+
+    <span class="c1"># 子时在戌宫(10)，逆行</span>
+    <span class="k">return</span> <span class="n">fix_index</span><span class="p">(</span><span class="mi">10</span> <span class="o">-</span> <span class="n">actual_time_index</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_minor_star_position_wenqu">
+<a class="viewcode-back" href="../../../api/star.html#iztro_py.star.location.get_minor_star_position_wenqu">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_minor_star_position_wenqu</span><span class="p">(</span><span class="n">time_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    计算文曲星位置（按时辰）</span>
+
+<span class="sd">    口诀：子时起辰宫，顺行十二宫</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        time_index: 时辰索引 (0-12)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        文曲星宫位索引</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># 处理早子时和晚子时</span>
+    <span class="n">actual_time_index</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">time_index</span> <span class="o">==</span> <span class="mi">12</span> <span class="k">else</span> <span class="n">time_index</span>
+
+    <span class="c1"># 子时在辰宫(4)，顺行</span>
+    <span class="k">return</span> <span class="n">fix_index</span><span class="p">(</span><span class="mi">4</span> <span class="o">+</span> <span class="n">actual_time_index</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_minor_star_positions_kuiyue">
+<a class="viewcode-back" href="../../../api/star.html#iztro_py.star.location.get_minor_star_positions_kuiyue">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_minor_star_positions_kuiyue</span><span class="p">(</span><span class="n">year_stem_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    计算天魁天钺星位置（按年干）</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        year_stem_index: 年干索引 (0-9)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        (天魁星索引, 天钺星索引) 元组</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># 天魁位置（按年干）</span>
+    <span class="c1"># 甲戊庚在丑寅, 乙己在子申, 丙丁在亥酉, 辛在午寅, 壬在卯巳, 癸在卯巳</span>
+    <span class="n">kuai_positions</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>  <span class="c1"># 索引对应甲-癸</span>
+
+    <span class="c1"># 天钺位置（按年干）</span>
+    <span class="n">yue_positions</span> <span class="o">=</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>  <span class="c1"># 索引对应甲-癸</span>
+
+    <span class="k">return</span> <span class="n">kuai_positions</span><span class="p">[</span><span class="n">year_stem_index</span><span class="p">],</span> <span class="n">yue_positions</span><span class="p">[</span><span class="n">year_stem_index</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="get_minor_star_positions_huoling">
+<a class="viewcode-back" href="../../../api/star.html#iztro_py.star.location.get_minor_star_positions_huoling">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_minor_star_positions_huoling</span><span class="p">(</span><span class="n">year_branch_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">time_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    计算火星铃星位置（按年支和时辰）</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        year_branch_index: 年支索引 (0-11)</span>
+<span class="sd">        time_index: 时辰索引 (0-12)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        (火星索引, 铃星索引) 元组</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># 处理早子时和晚子时</span>
+    <span class="n">actual_time_index</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">time_index</span> <span class="o">==</span> <span class="mi">12</span> <span class="k">else</span> <span class="n">time_index</span>
+
+    <span class="c1"># 火星位置（寅午戌年起寅，申子辰年起申，巳酉丑年起亥，亥卯未年起巳）</span>
+    <span class="c1"># 年支分组</span>
+    <span class="k">if</span> <span class="n">year_branch_index</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">10</span><span class="p">]:</span>  <span class="c1"># 寅午戌</span>
+        <span class="n">huo_base</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># 寅</span>
+    <span class="k">elif</span> <span class="n">year_branch_index</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">]:</span>  <span class="c1"># 申子辰</span>
+        <span class="n">huo_base</span> <span class="o">=</span> <span class="mi">8</span>  <span class="c1"># 申</span>
+    <span class="k">elif</span> <span class="n">year_branch_index</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">1</span><span class="p">]:</span>  <span class="c1"># 巳酉丑</span>
+        <span class="n">huo_base</span> <span class="o">=</span> <span class="mi">11</span>  <span class="c1"># 亥</span>
+    <span class="k">else</span><span class="p">:</span>  <span class="c1"># 亥卯未 [11, 3, 7]</span>
+        <span class="n">huo_base</span> <span class="o">=</span> <span class="mi">5</span>  <span class="c1"># 巳</span>
+
+    <span class="n">huo_index</span> <span class="o">=</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">huo_base</span> <span class="o">+</span> <span class="n">actual_time_index</span><span class="p">)</span>
+
+    <span class="c1"># 铃星位置（卯酉年起卯，寅午戌年起寅...）</span>
+    <span class="k">if</span> <span class="n">year_branch_index</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">9</span><span class="p">]:</span>  <span class="c1"># 卯酉</span>
+        <span class="n">ling_base</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># 卯</span>
+    <span class="k">elif</span> <span class="n">year_branch_index</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">10</span><span class="p">]:</span>  <span class="c1"># 寅午戌</span>
+        <span class="n">ling_base</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># 寅</span>
+    <span class="k">elif</span> <span class="n">year_branch_index</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">]:</span>  <span class="c1"># 申子辰</span>
+        <span class="n">ling_base</span> <span class="o">=</span> <span class="mi">8</span>  <span class="c1"># 申</span>
+    <span class="k">else</span><span class="p">:</span>  <span class="c1"># 巳酉丑、亥卯未</span>
+        <span class="n">ling_base</span> <span class="o">=</span> <span class="mi">5</span>  <span class="c1"># 巳</span>
+
+    <span class="n">ling_index</span> <span class="o">=</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">ling_base</span> <span class="o">+</span> <span class="n">actual_time_index</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">huo_index</span><span class="p">,</span> <span class="n">ling_index</span></div>
+
+
+
+<div class="viewcode-block" id="get_minor_star_positions_kongjie">
+<a class="viewcode-back" href="../../../api/star.html#iztro_py.star.location.get_minor_star_positions_kongjie">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_minor_star_positions_kongjie</span><span class="p">(</span><span class="n">time_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    计算地空地劫星位置（按时辰）</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        time_index: 时辰索引 (0-12)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        (地空索引, 地劫索引) 元组</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># 处理早子时和晚子时</span>
+    <span class="n">actual_time_index</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">time_index</span> <span class="o">==</span> <span class="mi">12</span> <span class="k">else</span> <span class="n">time_index</span>
+
+    <span class="c1"># 地空：子时在亥，逆行</span>
+    <span class="n">kong_index</span> <span class="o">=</span> <span class="n">fix_index</span><span class="p">(</span><span class="mi">11</span> <span class="o">-</span> <span class="n">actual_time_index</span><span class="p">)</span>
+
+    <span class="c1"># 地劫：子时在亥，顺行</span>
+    <span class="n">jie_index</span> <span class="o">=</span> <span class="n">fix_index</span><span class="p">(</span><span class="mi">11</span> <span class="o">+</span> <span class="n">actual_time_index</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">kong_index</span><span class="p">,</span> <span class="n">jie_index</span></div>
+
+
+
+<div class="viewcode-block" id="get_minor_star_positions_lucun_yangtuo_tianma">
+<a class="viewcode-back" href="../../../api/star.html#iztro_py.star.location.get_minor_star_positions_lucun_yangtuo_tianma">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_minor_star_positions_lucun_yangtuo_tianma</span><span class="p">(</span>
+    <span class="n">year_stem_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">year_branch_index</span><span class="p">:</span> <span class="nb">int</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    计算禄存、擎羊、陀罗、天马星位置（按年干支）</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        year_stem_index: 年干索引 (0-9)</span>
+<span class="sd">        year_branch_index: 年支索引 (0-11)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        (禄存索引, 擎羊索引, 陀罗索引, 天马索引) 元组</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># 禄存位置（按年干，对应地支）</span>
+    <span class="c1"># 甲禄在寅、乙禄在卯、丙戊禄在巳、丁己禄在午、庚禄在申、辛禄在酉、壬禄在亥、癸禄在子</span>
+    <span class="n">lucun_positions</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">lucun_index</span> <span class="o">=</span> <span class="n">lucun_positions</span><span class="p">[</span><span class="n">year_stem_index</span><span class="p">]</span>
+
+    <span class="c1"># 擎羊：禄存的下一宫</span>
+    <span class="n">yang_index</span> <span class="o">=</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">lucun_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># 陀罗：禄存的上一宫</span>
+    <span class="n">tuo_index</span> <span class="o">=</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">lucun_index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># 天马位置（按年支）</span>
+    <span class="c1"># 寅午戌年在申、申子辰年在寅、巳酉丑年在亥、亥卯未年在巳</span>
+    <span class="k">if</span> <span class="n">year_branch_index</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">10</span><span class="p">]:</span>  <span class="c1"># 寅午戌</span>
+        <span class="n">tianma_index</span> <span class="o">=</span> <span class="mi">8</span>  <span class="c1"># 申</span>
+    <span class="k">elif</span> <span class="n">year_branch_index</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">]:</span>  <span class="c1"># 申子辰</span>
+        <span class="n">tianma_index</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># 寅</span>
+    <span class="k">elif</span> <span class="n">year_branch_index</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">1</span><span class="p">]:</span>  <span class="c1"># 巳酉丑</span>
+        <span class="n">tianma_index</span> <span class="o">=</span> <span class="mi">11</span>  <span class="c1"># 亥</span>
+    <span class="k">else</span><span class="p">:</span>  <span class="c1"># 亥卯未</span>
+        <span class="n">tianma_index</span> <span class="o">=</span> <span class="mi">5</span>  <span class="c1"># 巳</span>
+
+    <span class="k">return</span> <span class="n">lucun_index</span><span class="p">,</span> <span class="n">yang_index</span><span class="p">,</span> <span class="n">tuo_index</span><span class="p">,</span> <span class="n">tianma_index</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, iztro-py Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

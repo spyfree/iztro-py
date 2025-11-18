@@ -1,0 +1,273 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>iztro_py.i18n &mdash; iztro-py 0.3.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=d5a15cff"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            iztro-py
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">内容目录:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">安装</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">快速开始</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">使用示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">更新日志</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">iztro-py</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">iztro_py.i18n</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for iztro_py.i18n</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">国际化 (i18n) 模块</span>
+
+<span class="sd">提供多语言支持，默认语言为简体中文 (zh-CN)</span>
+<span class="sd">支持的语言：</span>
+<span class="sd">- zh-CN: 简体中文</span>
+<span class="sd">- zh-TW: 繁體中文</span>
+<span class="sd">- en-US: English</span>
+<span class="sd">- ja-JP: 日本語</span>
+<span class="sd">- ko-KR: 한국어</span>
+<span class="sd">- vi-VN: Tiếng Việt</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="c1"># 当前语言设置</span>
+<span class="n">_current_language</span> <span class="o">=</span> <span class="s2">&quot;zh-CN&quot;</span>
+
+<span class="c1"># 语言资源缓存</span>
+<span class="n">_locales</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+
+
+<div class="viewcode-block" id="set_language">
+<a class="viewcode-back" href="../../api/i18n.html#iztro_py.i18n.set_language">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">set_language</span><span class="p">(</span><span class="n">lang</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    设置当前语言</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        lang: 语言代码，支持 &#39;zh-CN&#39;, &#39;zh-TW&#39;, &#39;en-US&#39;, &#39;ja-JP&#39;, &#39;ko-KR&#39;, &#39;vi-VN&#39;</span>
+<span class="sd">              不支持的语言将降级为 &#39;zh-CN&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">_current_language</span>
+    <span class="n">supported</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;zh-CN&quot;</span><span class="p">,</span> <span class="s2">&quot;zh-TW&quot;</span><span class="p">,</span> <span class="s2">&quot;en-US&quot;</span><span class="p">,</span> <span class="s2">&quot;ja-JP&quot;</span><span class="p">,</span> <span class="s2">&quot;ko-KR&quot;</span><span class="p">,</span> <span class="s2">&quot;vi-VN&quot;</span><span class="p">]</span>
+
+    <span class="c1"># 如果语言不支持，降级到中文，但不报错</span>
+    <span class="k">if</span> <span class="n">lang</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">supported</span><span class="p">:</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Language &#39;</span><span class="si">{</span><span class="n">lang</span><span class="si">}</span><span class="s2">&#39; is not fully supported yet. Falling back to &#39;zh-CN&#39;. Supported: </span><span class="si">{</span><span class="n">supported</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="ne">UserWarning</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">lang</span> <span class="o">=</span> <span class="s2">&quot;zh-CN&quot;</span>
+
+    <span class="n">_current_language</span> <span class="o">=</span> <span class="n">lang</span>
+    <span class="n">_load_locale</span><span class="p">(</span><span class="n">lang</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_language">
+<a class="viewcode-back" href="../../api/i18n.html#iztro_py.i18n.get_language">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_language</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    获取当前语言</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        当前语言代码</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_current_language</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_load_locale</span><span class="p">(</span><span class="n">lang</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    加载语言资源文件</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        lang: 语言代码</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">lang</span> <span class="ow">in</span> <span class="n">_locales</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">lang</span> <span class="o">==</span> <span class="s2">&quot;zh-CN&quot;</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">.locales</span><span class="w"> </span><span class="kn">import</span> <span class="n">zh_CN</span>
+
+            <span class="n">_locales</span><span class="p">[</span><span class="n">lang</span><span class="p">]</span> <span class="o">=</span> <span class="n">zh_CN</span><span class="o">.</span><span class="n">translations</span>
+        <span class="k">elif</span> <span class="n">lang</span> <span class="o">==</span> <span class="s2">&quot;zh-TW&quot;</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">.locales</span><span class="w"> </span><span class="kn">import</span> <span class="n">zh_TW</span>
+
+            <span class="n">_locales</span><span class="p">[</span><span class="n">lang</span><span class="p">]</span> <span class="o">=</span> <span class="n">zh_TW</span><span class="o">.</span><span class="n">translations</span>
+        <span class="k">elif</span> <span class="n">lang</span> <span class="o">==</span> <span class="s2">&quot;en-US&quot;</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">.locales</span><span class="w"> </span><span class="kn">import</span> <span class="n">en_US</span>
+
+            <span class="n">_locales</span><span class="p">[</span><span class="n">lang</span><span class="p">]</span> <span class="o">=</span> <span class="n">en_US</span><span class="o">.</span><span class="n">translations</span>
+        <span class="k">elif</span> <span class="n">lang</span> <span class="o">==</span> <span class="s2">&quot;ja-JP&quot;</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">.locales</span><span class="w"> </span><span class="kn">import</span> <span class="n">ja_JP</span>
+
+            <span class="n">_locales</span><span class="p">[</span><span class="n">lang</span><span class="p">]</span> <span class="o">=</span> <span class="n">ja_JP</span><span class="o">.</span><span class="n">translations</span>
+        <span class="k">elif</span> <span class="n">lang</span> <span class="o">==</span> <span class="s2">&quot;ko-KR&quot;</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">.locales</span><span class="w"> </span><span class="kn">import</span> <span class="n">ko_KR</span>
+
+            <span class="n">_locales</span><span class="p">[</span><span class="n">lang</span><span class="p">]</span> <span class="o">=</span> <span class="n">ko_KR</span><span class="o">.</span><span class="n">translations</span>
+        <span class="k">elif</span> <span class="n">lang</span> <span class="o">==</span> <span class="s2">&quot;vi-VN&quot;</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">.locales</span><span class="w"> </span><span class="kn">import</span> <span class="n">vi_VN</span>
+
+            <span class="n">_locales</span><span class="p">[</span><span class="n">lang</span><span class="p">]</span> <span class="o">=</span> <span class="n">vi_VN</span><span class="o">.</span><span class="n">translations</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Language resource not found: </span><span class="si">{</span><span class="n">lang</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="t">
+<a class="viewcode-back" href="../../api/i18n.html#iztro_py.i18n.t">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">t</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">lang</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    翻译函数</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        key: 翻译键名（英文键）</span>
+<span class="sd">        lang: 可选，指定语言。如不指定则使用当前语言</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        翻译后的文本</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">target_lang</span> <span class="o">=</span> <span class="n">lang</span> <span class="ow">or</span> <span class="n">_current_language</span>
+
+    <span class="c1"># 确保语言资源已加载</span>
+    <span class="k">if</span> <span class="n">target_lang</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_locales</span><span class="p">:</span>
+        <span class="n">_load_locale</span><span class="p">(</span><span class="n">target_lang</span><span class="p">)</span>
+
+    <span class="n">locale</span> <span class="o">=</span> <span class="n">_locales</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">target_lang</span><span class="p">,</span> <span class="p">{})</span>
+
+    <span class="c1"># 支持嵌套键，如 &#39;palaces.soulPalace&#39;</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">locale</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">key</span>
+
+    <span class="k">return</span> <span class="n">value</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">key</span></div>
+
+
+
+<div class="viewcode-block" id="translate_dict">
+<a class="viewcode-back" href="../../api/i18n.html#iztro_py.i18n.translate_dict">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">translate_dict</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">lang</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    翻译字典中的值</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        data: 要翻译的字典</span>
+<span class="sd">        lang: 可选，指定语言</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        翻译后的字典</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">result</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">lang</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">translate_dict</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">lang</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">lang</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+
+<span class="c1"># 默认加载中文</span>
+<span class="n">_load_locale</span><span class="p">(</span><span class="s2">&quot;zh-CN&quot;</span><span class="p">)</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;set_language&quot;</span><span class="p">,</span> <span class="s2">&quot;get_language&quot;</span><span class="p">,</span> <span class="s2">&quot;t&quot;</span><span class="p">,</span> <span class="s2">&quot;translate_dict&quot;</span><span class="p">]</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, iztro-py Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

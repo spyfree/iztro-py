@@ -1,0 +1,383 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>iztro_py.astro.astro &mdash; iztro-py 0.3.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=d5a15cff"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            iztro-py
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">内容目录:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">安装</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart.html">快速开始</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">使用示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">更新日志</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">iztro-py</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">iztro_py.astro.astro</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for iztro_py.astro.astro</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Main API for iztro-py</span>
+
+<span class="sd">Provides high-level functions for creating astrolabes.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">date</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.types</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">GenderName</span><span class="p">,</span>
+    <span class="n">Language</span><span class="p">,</span>
+    <span class="n">Astrolabe</span><span class="p">,</span>
+    <span class="n">LunarDate</span><span class="p">,</span>
+    <span class="n">HeavenlyStemAndEarthlyBranchDate</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.astro.functional_astrolabe</span><span class="w"> </span><span class="kn">import</span> <span class="n">FunctionalAstrolabe</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.astro.palace</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_soul_and_body</span><span class="p">,</span> <span class="n">initialize_palaces</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.star.major_star</span><span class="w"> </span><span class="kn">import</span> <span class="n">place_major_stars</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.star.minor_star</span><span class="w"> </span><span class="kn">import</span> <span class="n">place_minor_stars</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.star.mutagen</span><span class="w"> </span><span class="kn">import</span> <span class="n">apply_mutagen_to_palaces</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.brightness</span><span class="w"> </span><span class="kn">import</span> <span class="n">apply_brightness_to_palaces</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.earthly_branches</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_soul_star</span><span class="p">,</span> <span class="n">get_body_star</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.star.location</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_start_indices</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.utils.calendar</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">parse_solar_date</span><span class="p">,</span>
+    <span class="n">solar_to_lunar</span><span class="p">,</span>
+    <span class="n">lunar_to_solar</span><span class="p">,</span>
+    <span class="n">get_heavenly_stem_and_earthly_branch_date</span><span class="p">,</span>
+    <span class="n">get_zodiac</span><span class="p">,</span>
+    <span class="n">get_sign</span><span class="p">,</span>
+    <span class="n">format_lunar_date</span><span class="p">,</span>
+    <span class="n">format_chinese_date</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.utils.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">get_five_elements_class</span><span class="p">,</span>
+    <span class="n">get_five_elements_class_name</span><span class="p">,</span>
+    <span class="n">get_time_name</span><span class="p">,</span>
+    <span class="n">get_time_range</span><span class="p">,</span>
+    <span class="n">hour_to_time_index</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="by_solar">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.astro.astro.by_solar">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">by_solar</span><span class="p">(</span>
+    <span class="n">solar_date</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">time_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">gender</span><span class="p">:</span> <span class="n">GenderName</span><span class="p">,</span>
+    <span class="n">fix_leap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">language</span><span class="p">:</span> <span class="n">Language</span> <span class="o">=</span> <span class="s2">&quot;zh-CN&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FunctionalAstrolabe</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    通过阳历日期获取紫微斗数星盘</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        solar_date: 阳历日期字符串，格式 &#39;YYYY-M-D&#39; 或 &#39;YYYY-MM-DD&#39;</span>
+<span class="sd">        time_index: 时辰索引 (0-12)</span>
+<span class="sd">            0: 早子时 00:00~01:00</span>
+<span class="sd">            1: 丑时 01:00~03:00</span>
+<span class="sd">            ...</span>
+<span class="sd">            12: 晚子时 23:00~00:00</span>
+<span class="sd">        gender: 性别 (&#39;男&#39; 或 &#39;女&#39;)</span>
+<span class="sd">        fix_leap: 是否修正闰月（默认True）</span>
+<span class="sd">        language: 输出语言（默认&#39;zh-CN&#39;）</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        FunctionalAstrolabe对象</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; from iztro_py import astro</span>
+<span class="sd">        &gt;&gt;&gt; chart = astro.by_solar(&#39;2000-8-16&#39;, 6, &#39;男&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; print(chart.get_soul_palace())</span>
+<span class="sd">        &gt;&gt;&gt; print(chart.star(&#39;紫微&#39;))</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># 设置语言</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.i18n</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_language</span>
+
+    <span class="n">set_language</span><span class="p">(</span><span class="n">language</span><span class="p">)</span>
+
+    <span class="c1"># 1. 解析阳历日期</span>
+    <span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span> <span class="o">=</span> <span class="n">parse_solar_date</span><span class="p">(</span><span class="n">solar_date</span><span class="p">)</span>
+
+    <span class="c1"># 2. 阳历转农历</span>
+    <span class="n">lunar_date</span> <span class="o">=</span> <span class="n">solar_to_lunar</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="p">,</span> <span class="n">fix_leap</span><span class="p">)</span>
+
+    <span class="c1"># 3. 计算四柱</span>
+    <span class="n">chinese_date</span> <span class="o">=</span> <span class="n">get_heavenly_stem_and_earthly_branch_date</span><span class="p">(</span>
+        <span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="p">,</span> <span class="n">time_index</span><span class="p">,</span> <span class="n">lunar_date</span><span class="o">.</span><span class="n">month</span>
+    <span class="p">)</span>
+
+    <span class="c1"># 4. 生肖星座</span>
+    <span class="n">zodiac</span> <span class="o">=</span> <span class="n">get_zodiac</span><span class="p">(</span><span class="n">chinese_date</span><span class="o">.</span><span class="n">year_branch</span><span class="p">)</span>
+    <span class="n">sign</span> <span class="o">=</span> <span class="n">get_sign</span><span class="p">(</span><span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="p">)</span>
+
+    <span class="c1"># 5. 计算命宫身宫</span>
+    <span class="n">soul_and_body</span> <span class="o">=</span> <span class="n">get_soul_and_body</span><span class="p">(</span><span class="n">lunar_date</span><span class="o">.</span><span class="n">month</span><span class="p">,</span> <span class="n">time_index</span><span class="p">,</span> <span class="n">chinese_date</span><span class="o">.</span><span class="n">year_stem</span><span class="p">)</span>
+
+    <span class="c1"># 6. 计算五行局</span>
+    <span class="n">five_class</span> <span class="o">=</span> <span class="n">get_five_elements_class</span><span class="p">(</span>
+        <span class="n">soul_and_body</span><span class="o">.</span><span class="n">heavenly_stem_of_soul</span><span class="p">,</span> <span class="n">soul_and_body</span><span class="o">.</span><span class="n">earthly_branch_of_soul</span>
+    <span class="p">)</span>
+
+    <span class="c1"># 7. 命主身主</span>
+    <span class="n">soul_star</span> <span class="o">=</span> <span class="n">get_soul_star</span><span class="p">(</span><span class="n">soul_and_body</span><span class="o">.</span><span class="n">earthly_branch_of_soul</span><span class="p">)</span>
+    <span class="n">body_star</span> <span class="o">=</span> <span class="n">get_body_star</span><span class="p">(</span><span class="n">chinese_date</span><span class="o">.</span><span class="n">year_branch</span><span class="p">)</span>
+
+    <span class="c1"># 8. 初始化十二宫</span>
+    <span class="n">palaces</span> <span class="o">=</span> <span class="n">initialize_palaces</span><span class="p">(</span><span class="n">soul_and_body</span><span class="p">)</span>
+
+    <span class="c1"># 9. 安置主星（与原生 iztro 对齐的紫微/天府起局算法）</span>
+    <span class="n">ziwei_idx</span><span class="p">,</span> <span class="n">tianfu_idx</span> <span class="o">=</span> <span class="n">get_start_indices</span><span class="p">(</span>
+        <span class="n">solar_date</span><span class="p">,</span>
+        <span class="n">time_index</span><span class="p">,</span>
+        <span class="n">fix_leap</span><span class="p">,</span>
+        <span class="n">soul_and_body</span><span class="o">.</span><span class="n">heavenly_stem_of_soul</span><span class="p">,</span>
+        <span class="n">soul_and_body</span><span class="o">.</span><span class="n">earthly_branch_of_soul</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">place_major_stars</span><span class="p">(</span><span class="n">palaces</span><span class="p">,</span> <span class="n">ziwei_idx</span><span class="p">,</span> <span class="n">tianfu_idx</span><span class="p">)</span>
+
+    <span class="c1"># 10. 安置辅星</span>
+    <span class="n">place_minor_stars</span><span class="p">(</span>
+        <span class="n">palaces</span><span class="p">,</span> <span class="n">lunar_date</span><span class="o">.</span><span class="n">month</span><span class="p">,</span> <span class="n">time_index</span><span class="p">,</span> <span class="n">chinese_date</span><span class="o">.</span><span class="n">year_stem</span><span class="p">,</span> <span class="n">chinese_date</span><span class="o">.</span><span class="n">year_branch</span>
+    <span class="p">)</span>
+
+    <span class="c1"># 11. 应用四化</span>
+    <span class="n">apply_mutagen_to_palaces</span><span class="p">(</span><span class="n">palaces</span><span class="p">,</span> <span class="n">chinese_date</span><span class="o">.</span><span class="n">year_stem</span><span class="p">)</span>
+
+    <span class="c1"># 12. 应用亮度</span>
+    <span class="n">apply_brightness_to_palaces</span><span class="p">(</span><span class="n">palaces</span><span class="p">)</span>
+
+    <span class="c1"># 13. 创建Astrolabe对象</span>
+    <span class="c1"># 计算身宫地支（以身宫所在宫位的地支为准）</span>
+    <span class="n">body_palace_rel_index</span> <span class="o">=</span> <span class="p">(</span><span class="n">soul_and_body</span><span class="o">.</span><span class="n">body_index</span> <span class="o">-</span> <span class="n">soul_and_body</span><span class="o">.</span><span class="n">soul_index</span><span class="p">)</span> <span class="o">%</span> <span class="mi">12</span>
+    <span class="n">body_palace_branch</span> <span class="o">=</span> <span class="n">palaces</span><span class="p">[</span><span class="n">body_palace_rel_index</span><span class="p">][</span><span class="s2">&quot;earthly_branch&quot;</span><span class="p">]</span>
+
+    <span class="n">astrolabe</span> <span class="o">=</span> <span class="n">Astrolabe</span><span class="p">(</span>
+        <span class="n">gender</span><span class="o">=</span><span class="n">gender</span><span class="p">,</span>
+        <span class="n">solar_date</span><span class="o">=</span><span class="n">solar_date</span><span class="p">,</span>
+        <span class="n">lunar_date</span><span class="o">=</span><span class="n">format_lunar_date</span><span class="p">(</span><span class="n">lunar_date</span><span class="p">),</span>
+        <span class="n">chinese_date</span><span class="o">=</span><span class="n">format_chinese_date</span><span class="p">(</span><span class="n">chinese_date</span><span class="p">),</span>
+        <span class="n">time</span><span class="o">=</span><span class="n">get_time_name</span><span class="p">(</span><span class="n">time_index</span><span class="p">),</span>
+        <span class="n">time_range</span><span class="o">=</span><span class="n">get_time_range</span><span class="p">(</span><span class="n">time_index</span><span class="p">),</span>
+        <span class="n">sign</span><span class="o">=</span><span class="n">sign</span><span class="p">,</span>
+        <span class="n">zodiac</span><span class="o">=</span><span class="n">zodiac</span><span class="p">,</span>
+        <span class="n">earthly_branch_of_soul_palace</span><span class="o">=</span><span class="n">soul_and_body</span><span class="o">.</span><span class="n">earthly_branch_of_soul</span><span class="p">,</span>
+        <span class="n">earthly_branch_of_body_palace</span><span class="o">=</span><span class="n">body_palace_branch</span><span class="p">,</span>
+        <span class="n">soul</span><span class="o">=</span><span class="n">soul_star</span><span class="p">,</span>
+        <span class="n">body</span><span class="o">=</span><span class="n">body_star</span><span class="p">,</span>
+        <span class="n">five_elements_class</span><span class="o">=</span><span class="n">get_five_elements_class_name</span><span class="p">(</span><span class="n">five_class</span><span class="p">),</span>
+        <span class="n">palaces</span><span class="o">=</span><span class="n">palaces</span><span class="p">,</span>
+        <span class="n">language</span><span class="o">=</span><span class="n">language</span><span class="p">,</span>
+        <span class="n">raw_lunar_date</span><span class="o">=</span><span class="n">lunar_date</span><span class="p">,</span>
+        <span class="n">raw_chinese_date</span><span class="o">=</span><span class="n">chinese_date</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># 14. 转换为FunctionalAstrolabe</span>
+    <span class="k">return</span> <span class="n">FunctionalAstrolabe</span><span class="p">(</span><span class="n">astrolabe</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="by_solar_hour">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.astro.astro.by_solar_hour">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">by_solar_hour</span><span class="p">(</span>
+    <span class="n">solar_date</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">hour</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">gender</span><span class="p">:</span> <span class="n">GenderName</span><span class="p">,</span>
+    <span class="n">fix_leap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">language</span><span class="p">:</span> <span class="n">Language</span> <span class="o">=</span> <span class="s2">&quot;zh-CN&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FunctionalAstrolabe</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    通过阳历日期和小时数(0-23)获取星盘（便捷包装）</span>
+
+<span class="sd">    将小时映射为时辰索引，以与 iztro 一致：</span>
+<span class="sd">    - 23点为晚子时 (time_index=12)，0点为早子时 (time_index=0)</span>
+<span class="sd">    - 其他小时按每2小时一个时辰</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ti</span> <span class="o">=</span> <span class="n">hour_to_time_index</span><span class="p">(</span><span class="n">hour</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">by_solar</span><span class="p">(</span><span class="n">solar_date</span><span class="p">,</span> <span class="n">ti</span><span class="p">,</span> <span class="n">gender</span><span class="p">,</span> <span class="n">fix_leap</span><span class="p">,</span> <span class="n">language</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="by_lunar">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.astro.astro.by_lunar">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">by_lunar</span><span class="p">(</span>
+    <span class="n">lunar_date</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">time_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">gender</span><span class="p">:</span> <span class="n">GenderName</span><span class="p">,</span>
+    <span class="n">is_leap_month</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">fix_leap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">language</span><span class="p">:</span> <span class="n">Language</span> <span class="o">=</span> <span class="s2">&quot;zh-CN&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FunctionalAstrolabe</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    通过农历日期获取紫微斗数星盘</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        lunar_date: 农历日期字符串，格式 &#39;YYYY-M-D&#39;</span>
+<span class="sd">        time_index: 时辰索引 (0-12)</span>
+<span class="sd">        gender: 性别 (&#39;男&#39; 或 &#39;女&#39;)</span>
+<span class="sd">        is_leap_month: 是否闰月（默认False）</span>
+<span class="sd">        fix_leap: 是否修正闰月（默认True）</span>
+<span class="sd">        language: 输出语言（默认&#39;zh-CN&#39;）</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        FunctionalAstrolabe对象</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; from iztro_py import astro</span>
+<span class="sd">        &gt;&gt;&gt; chart = astro.by_lunar(&#39;2000-7-17&#39;, 6, &#39;男&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; print(chart)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># 1. 解析农历日期</span>
+    <span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span> <span class="o">=</span> <span class="n">parse_solar_date</span><span class="p">(</span><span class="n">lunar_date</span><span class="p">)</span>  <span class="c1"># 格式相同</span>
+
+    <span class="c1"># 2. 农历转阳历</span>
+    <span class="n">solar_year</span><span class="p">,</span> <span class="n">solar_month</span><span class="p">,</span> <span class="n">solar_day</span> <span class="o">=</span> <span class="n">lunar_to_solar</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="p">,</span> <span class="n">is_leap_month</span><span class="p">)</span>
+
+    <span class="c1"># 3. 构造阳历日期字符串</span>
+    <span class="n">solar_date_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">solar_year</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">solar_month</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">solar_day</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="c1"># 4. 调用by_solar</span>
+    <span class="k">return</span> <span class="n">by_solar</span><span class="p">(</span><span class="n">solar_date_str</span><span class="p">,</span> <span class="n">time_index</span><span class="p">,</span> <span class="n">gender</span><span class="p">,</span> <span class="n">fix_leap</span><span class="p">,</span> <span class="n">language</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="by_lunar_hour">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.astro.astro.by_lunar_hour">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">by_lunar_hour</span><span class="p">(</span>
+    <span class="n">lunar_date</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">hour</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">gender</span><span class="p">:</span> <span class="n">GenderName</span><span class="p">,</span>
+    <span class="n">is_leap_month</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">fix_leap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">language</span><span class="p">:</span> <span class="n">Language</span> <span class="o">=</span> <span class="s2">&quot;zh-CN&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FunctionalAstrolabe</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    通过农历日期和小时数(0-23)获取星盘（便捷包装）</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ti</span> <span class="o">=</span> <span class="n">hour_to_time_index</span><span class="p">(</span><span class="n">hour</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">by_lunar</span><span class="p">(</span><span class="n">lunar_date</span><span class="p">,</span> <span class="n">ti</span><span class="p">,</span> <span class="n">gender</span><span class="p">,</span> <span class="n">is_leap_month</span><span class="p">,</span> <span class="n">fix_leap</span><span class="p">,</span> <span class="n">language</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_zodiac_by_solar_date">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.astro.astro.get_zodiac_by_solar_date">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_zodiac_by_solar_date</span><span class="p">(</span><span class="n">solar_date</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">language</span><span class="p">:</span> <span class="n">Language</span> <span class="o">=</span> <span class="s2">&quot;zh-CN&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    根据阳历日期获取生肖</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        solar_date: 阳历日期字符串</span>
+<span class="sd">        language: 语言（默认&#39;zh-CN&#39;）</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        生肖名称</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span> <span class="o">=</span> <span class="n">parse_solar_date</span><span class="p">(</span><span class="n">solar_date</span><span class="p">)</span>
+    <span class="n">chinese_date</span> <span class="o">=</span> <span class="n">get_heavenly_stem_and_earthly_branch_date</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">get_zodiac</span><span class="p">(</span><span class="n">chinese_date</span><span class="o">.</span><span class="n">year_branch</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_sign_by_solar_date">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.astro.astro.get_sign_by_solar_date">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_sign_by_solar_date</span><span class="p">(</span><span class="n">solar_date</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">language</span><span class="p">:</span> <span class="n">Language</span> <span class="o">=</span> <span class="s2">&quot;zh-CN&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    根据阳历日期获取星座</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        solar_date: 阳历日期字符串</span>
+<span class="sd">        language: 语言（默认&#39;zh-CN&#39;）</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        星座名称</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span> <span class="o">=</span> <span class="n">parse_solar_date</span><span class="p">(</span><span class="n">solar_date</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">get_sign</span><span class="p">(</span><span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, iztro-py Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

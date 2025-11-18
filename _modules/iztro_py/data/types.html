@@ -1,0 +1,684 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>iztro_py.data.types &mdash; iztro-py 0.3.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=d5a15cff"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            iztro-py
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">内容目录:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">安装</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart.html">快速开始</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">使用示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">更新日志</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">iztro-py</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">iztro_py.data.types</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for iztro_py.data.types</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Core type definitions for iztro-py</span>
+
+<span class="sd">This module defines all the type aliases, enums, and data structures used throughout the library.</span>
+<span class="sd">Based on the original TypeScript definitions from iztro.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span><span class="p">,</span> <span class="n">ConfigDict</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_translate_name</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">lang</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    翻译名称的辅助函数</span>
+<span class="sd">    延迟导入 i18n 模块以避免循环依赖</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.i18n</span><span class="w"> </span><span class="kn">import</span> <span class="n">t</span>
+
+    <span class="c1"># 尝试多个可能的键</span>
+    <span class="c1"># 1. 直接作为星曜名称</span>
+    <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span>
+        <span class="s2">&quot;ziweiMaj&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tianjiMaj&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;taiyangMaj&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;wuquMaj&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tiantongMaj&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;lianzhenMaj&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tianfuMaj&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;taiyinMaj&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tanlangMaj&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;jumenMaj&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tianxiangMaj&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tianliangMaj&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;qishaMaj&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;pojunMaj&quot;</span><span class="p">,</span>
+    <span class="p">]:</span>
+        <span class="k">return</span> <span class="n">t</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;stars.major.</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">lang</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span>
+        <span class="s2">&quot;zuofuMin&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;youbiMin&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;wenchangMin&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;wenquMin&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tiankuiMin&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tianyueMin&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;huoxingMin&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;lingxingMin&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dikongMin&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dijieMin&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;lucunMin&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;qingyangMin&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tuoluoMin&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tianmaMin&quot;</span><span class="p">,</span>
+    <span class="p">]:</span>
+        <span class="k">return</span> <span class="n">t</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;stars.minor.</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">lang</span><span class="p">)</span>
+
+    <span class="c1"># 2. 作为宫位名称</span>
+    <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span>
+        <span class="s2">&quot;soulPalace&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;parentsPalace&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;spiritPalace&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;propertyPalace&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;careerPalace&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;friendsPalace&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;surfacePalace&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;healthPalace&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;wealthPalace&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;childrenPalace&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;spousePalace&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;siblingsPalace&quot;</span><span class="p">,</span>
+    <span class="p">]:</span>
+        <span class="k">return</span> <span class="n">t</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;palaces.</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">lang</span><span class="p">)</span>
+
+    <span class="c1"># 3. 作为天干</span>
+    <span class="k">if</span> <span class="s2">&quot;Heavenly&quot;</span> <span class="ow">in</span> <span class="n">key</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">t</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;heavenlyStem.</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">lang</span><span class="p">)</span>
+
+    <span class="c1"># 4. 作为地支</span>
+    <span class="k">if</span> <span class="s2">&quot;Earthly&quot;</span> <span class="ow">in</span> <span class="n">key</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">t</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;earthlyBranch.</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">lang</span><span class="p">)</span>
+
+    <span class="c1"># 5. 作为时辰</span>
+    <span class="k">if</span> <span class="s2">&quot;Hour&quot;</span> <span class="ow">in</span> <span class="n">key</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">t</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;time.</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">lang</span><span class="p">)</span>
+
+    <span class="c1"># 默认返回原值</span>
+    <span class="k">return</span> <span class="n">t</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">lang</span><span class="p">)</span>
+
+
+<span class="c1"># ============================================================================</span>
+<span class="c1"># Basic Type Aliases</span>
+<span class="c1"># ============================================================================</span>
+
+<span class="n">Language</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;en-US&quot;</span><span class="p">,</span> <span class="s2">&quot;ja-JP&quot;</span><span class="p">,</span> <span class="s2">&quot;ko-KR&quot;</span><span class="p">,</span> <span class="s2">&quot;zh-CN&quot;</span><span class="p">,</span> <span class="s2">&quot;zh-TW&quot;</span><span class="p">,</span> <span class="s2">&quot;vi-VN&quot;</span><span class="p">]</span>
+<span class="n">YinYang</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;阴&quot;</span><span class="p">,</span> <span class="s2">&quot;阳&quot;</span><span class="p">]</span>
+<span class="n">FiveElements</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;木&quot;</span><span class="p">,</span> <span class="s2">&quot;金&quot;</span><span class="p">,</span> <span class="s2">&quot;水&quot;</span><span class="p">,</span> <span class="s2">&quot;火&quot;</span><span class="p">,</span> <span class="s2">&quot;土&quot;</span><span class="p">]</span>
+<span class="n">GenderName</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;男&quot;</span><span class="p">,</span> <span class="s2">&quot;女&quot;</span><span class="p">]</span>
+<span class="n">Mutagen</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;禄&quot;</span><span class="p">,</span> <span class="s2">&quot;权&quot;</span><span class="p">,</span> <span class="s2">&quot;科&quot;</span><span class="p">,</span> <span class="s2">&quot;忌&quot;</span><span class="p">]</span>
+<span class="n">Brightness</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;庙&quot;</span><span class="p">,</span> <span class="s2">&quot;旺&quot;</span><span class="p">,</span> <span class="s2">&quot;得&quot;</span><span class="p">,</span> <span class="s2">&quot;利&quot;</span><span class="p">,</span> <span class="s2">&quot;平&quot;</span><span class="p">,</span> <span class="s2">&quot;不&quot;</span><span class="p">,</span> <span class="s2">&quot;陷&quot;</span><span class="p">]</span>
+<span class="n">Scope</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;origin&quot;</span><span class="p">,</span> <span class="s2">&quot;decadal&quot;</span><span class="p">,</span> <span class="s2">&quot;yearly&quot;</span><span class="p">,</span> <span class="s2">&quot;monthly&quot;</span><span class="p">,</span> <span class="s2">&quot;daily&quot;</span><span class="p">,</span> <span class="s2">&quot;hourly&quot;</span><span class="p">]</span>
+<span class="n">StarType</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;major&quot;</span><span class="p">,</span> <span class="s2">&quot;soft&quot;</span><span class="p">,</span> <span class="s2">&quot;tough&quot;</span><span class="p">,</span> <span class="s2">&quot;adjective&quot;</span><span class="p">,</span> <span class="s2">&quot;flower&quot;</span><span class="p">,</span> <span class="s2">&quot;helper&quot;</span><span class="p">,</span> <span class="s2">&quot;lucun&quot;</span><span class="p">,</span> <span class="s2">&quot;tianma&quot;</span><span class="p">]</span>
+
+
+<span class="c1"># ============================================================================</span>
+<span class="c1"># Chinese Time (时辰)</span>
+<span class="c1"># ============================================================================</span>
+
+<span class="n">ChineseTime</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span>
+    <span class="s2">&quot;earlyRatHour&quot;</span><span class="p">,</span>  <span class="c1"># 早子时 00:00~01:00</span>
+    <span class="s2">&quot;oxHour&quot;</span><span class="p">,</span>  <span class="c1"># 丑时 01:00~03:00</span>
+    <span class="s2">&quot;tigerHour&quot;</span><span class="p">,</span>  <span class="c1"># 寅时 03:00~05:00</span>
+    <span class="s2">&quot;rabbitHour&quot;</span><span class="p">,</span>  <span class="c1"># 卯时 05:00~07:00</span>
+    <span class="s2">&quot;dragonHour&quot;</span><span class="p">,</span>  <span class="c1"># 辰时 07:00~09:00</span>
+    <span class="s2">&quot;snakeHour&quot;</span><span class="p">,</span>  <span class="c1"># 巳时 09:00~11:00</span>
+    <span class="s2">&quot;horseHour&quot;</span><span class="p">,</span>  <span class="c1"># 午时 11:00~13:00</span>
+    <span class="s2">&quot;goatHour&quot;</span><span class="p">,</span>  <span class="c1"># 未时 13:00~15:00</span>
+    <span class="s2">&quot;monkeyHour&quot;</span><span class="p">,</span>  <span class="c1"># 申时 15:00~17:00</span>
+    <span class="s2">&quot;roosterHour&quot;</span><span class="p">,</span>  <span class="c1"># 酉时 17:00~19:00</span>
+    <span class="s2">&quot;dogHour&quot;</span><span class="p">,</span>  <span class="c1"># 戌时 19:00~21:00</span>
+    <span class="s2">&quot;pigHour&quot;</span><span class="p">,</span>  <span class="c1"># 亥时 21:00~23:00</span>
+    <span class="s2">&quot;lateRatHour&quot;</span><span class="p">,</span>  <span class="c1"># 晚子时 23:00~00:00</span>
+<span class="p">]</span>
+
+
+<span class="c1"># ============================================================================</span>
+<span class="c1"># Heavenly Stems (天干)</span>
+<span class="c1"># ============================================================================</span>
+
+<span class="n">HeavenlyStemName</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span>
+    <span class="s2">&quot;jiaHeavenly&quot;</span><span class="p">,</span>  <span class="c1"># 甲</span>
+    <span class="s2">&quot;yiHeavenly&quot;</span><span class="p">,</span>  <span class="c1"># 乙</span>
+    <span class="s2">&quot;bingHeavenly&quot;</span><span class="p">,</span>  <span class="c1"># 丙</span>
+    <span class="s2">&quot;dingHeavenly&quot;</span><span class="p">,</span>  <span class="c1"># 丁</span>
+    <span class="s2">&quot;wuHeavenly&quot;</span><span class="p">,</span>  <span class="c1"># 戊</span>
+    <span class="s2">&quot;jiHeavenly&quot;</span><span class="p">,</span>  <span class="c1"># 己</span>
+    <span class="s2">&quot;gengHeavenly&quot;</span><span class="p">,</span>  <span class="c1"># 庚</span>
+    <span class="s2">&quot;xinHeavenly&quot;</span><span class="p">,</span>  <span class="c1"># 辛</span>
+    <span class="s2">&quot;renHeavenly&quot;</span><span class="p">,</span>  <span class="c1"># 壬</span>
+    <span class="s2">&quot;guiHeavenly&quot;</span><span class="p">,</span>  <span class="c1"># 癸</span>
+<span class="p">]</span>
+
+
+<span class="c1"># ============================================================================</span>
+<span class="c1"># Earthly Branches (地支)</span>
+<span class="c1"># ============================================================================</span>
+
+<span class="n">EarthlyBranchName</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span>
+    <span class="s2">&quot;ziEarthly&quot;</span><span class="p">,</span>  <span class="c1"># 子</span>
+    <span class="s2">&quot;chouEarthly&quot;</span><span class="p">,</span>  <span class="c1"># 丑</span>
+    <span class="s2">&quot;yinEarthly&quot;</span><span class="p">,</span>  <span class="c1"># 寅</span>
+    <span class="s2">&quot;maoEarthly&quot;</span><span class="p">,</span>  <span class="c1"># 卯</span>
+    <span class="s2">&quot;chenEarthly&quot;</span><span class="p">,</span>  <span class="c1"># 辰</span>
+    <span class="s2">&quot;siEarthly&quot;</span><span class="p">,</span>  <span class="c1"># 巳</span>
+    <span class="s2">&quot;wuEarthly&quot;</span><span class="p">,</span>  <span class="c1"># 午</span>
+    <span class="s2">&quot;weiEarthly&quot;</span><span class="p">,</span>  <span class="c1"># 未</span>
+    <span class="s2">&quot;shenEarthly&quot;</span><span class="p">,</span>  <span class="c1"># 申</span>
+    <span class="s2">&quot;youEarthly&quot;</span><span class="p">,</span>  <span class="c1"># 酉</span>
+    <span class="s2">&quot;xuEarthly&quot;</span><span class="p">,</span>  <span class="c1"># 戌</span>
+    <span class="s2">&quot;haiEarthly&quot;</span><span class="p">,</span>  <span class="c1"># 亥</span>
+<span class="p">]</span>
+
+
+<span class="c1"># ============================================================================</span>
+<span class="c1"># Palace Names (宫位名称)</span>
+<span class="c1"># ============================================================================</span>
+
+<span class="n">PalaceName</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span>
+    <span class="s2">&quot;soulPalace&quot;</span><span class="p">,</span>  <span class="c1"># 命宫</span>
+    <span class="s2">&quot;parentsPalace&quot;</span><span class="p">,</span>  <span class="c1"># 父母宫</span>
+    <span class="s2">&quot;spiritPalace&quot;</span><span class="p">,</span>  <span class="c1"># 福德宫</span>
+    <span class="s2">&quot;propertyPalace&quot;</span><span class="p">,</span>  <span class="c1"># 田宅宫</span>
+    <span class="s2">&quot;careerPalace&quot;</span><span class="p">,</span>  <span class="c1"># 官禄宫</span>
+    <span class="s2">&quot;friendsPalace&quot;</span><span class="p">,</span>  <span class="c1"># 奴仆宫（交友宫）</span>
+    <span class="s2">&quot;surfacePalace&quot;</span><span class="p">,</span>  <span class="c1"># 迁移宫</span>
+    <span class="s2">&quot;healthPalace&quot;</span><span class="p">,</span>  <span class="c1"># 疾厄宫</span>
+    <span class="s2">&quot;wealthPalace&quot;</span><span class="p">,</span>  <span class="c1"># 财帛宫</span>
+    <span class="s2">&quot;childrenPalace&quot;</span><span class="p">,</span>  <span class="c1"># 子女宫</span>
+    <span class="s2">&quot;spousePalace&quot;</span><span class="p">,</span>  <span class="c1"># 夫妻宫</span>
+    <span class="s2">&quot;siblingsPalace&quot;</span><span class="p">,</span>  <span class="c1"># 兄弟宫</span>
+<span class="p">]</span>
+
+
+<span class="c1"># ============================================================================</span>
+<span class="c1"># Star Names (星曜名称)</span>
+<span class="c1"># ============================================================================</span>
+
+<span class="c1"># Major stars (14 main stars)</span>
+<span class="n">MajorStarName</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span>
+    <span class="s2">&quot;ziweiMaj&quot;</span><span class="p">,</span>  <span class="c1"># 紫微</span>
+    <span class="s2">&quot;tianjiMaj&quot;</span><span class="p">,</span>  <span class="c1"># 天机</span>
+    <span class="s2">&quot;taiyangMaj&quot;</span><span class="p">,</span>  <span class="c1"># 太阳</span>
+    <span class="s2">&quot;wuquMaj&quot;</span><span class="p">,</span>  <span class="c1"># 武曲</span>
+    <span class="s2">&quot;tiantongMaj&quot;</span><span class="p">,</span>  <span class="c1"># 天同</span>
+    <span class="s2">&quot;lianzhenMaj&quot;</span><span class="p">,</span>  <span class="c1"># 廉贞</span>
+    <span class="s2">&quot;tianfuMaj&quot;</span><span class="p">,</span>  <span class="c1"># 天府</span>
+    <span class="s2">&quot;taiyinMaj&quot;</span><span class="p">,</span>  <span class="c1"># 太阴</span>
+    <span class="s2">&quot;tanlangMaj&quot;</span><span class="p">,</span>  <span class="c1"># 贪狼</span>
+    <span class="s2">&quot;jumenMaj&quot;</span><span class="p">,</span>  <span class="c1"># 巨门</span>
+    <span class="s2">&quot;tianxiangMaj&quot;</span><span class="p">,</span>  <span class="c1"># 天相</span>
+    <span class="s2">&quot;tianliangMaj&quot;</span><span class="p">,</span>  <span class="c1"># 天梁</span>
+    <span class="s2">&quot;qishaMaj&quot;</span><span class="p">,</span>  <span class="c1"># 七杀</span>
+    <span class="s2">&quot;pojunMaj&quot;</span><span class="p">,</span>  <span class="c1"># 破军</span>
+<span class="p">]</span>
+
+<span class="c1"># Minor stars (auxiliary stars)</span>
+<span class="n">MinorStarName</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span>
+    <span class="s2">&quot;zuofuMin&quot;</span><span class="p">,</span>  <span class="c1"># 左辅</span>
+    <span class="s2">&quot;youbiMin&quot;</span><span class="p">,</span>  <span class="c1"># 右弼</span>
+    <span class="s2">&quot;wenchangMin&quot;</span><span class="p">,</span>  <span class="c1"># 文昌</span>
+    <span class="s2">&quot;wenquMin&quot;</span><span class="p">,</span>  <span class="c1"># 文曲</span>
+    <span class="s2">&quot;tiankuiMin&quot;</span><span class="p">,</span>  <span class="c1"># 天魁</span>
+    <span class="s2">&quot;tianyueMin&quot;</span><span class="p">,</span>  <span class="c1"># 天钺</span>
+    <span class="s2">&quot;huoxingMin&quot;</span><span class="p">,</span>  <span class="c1"># 火星</span>
+    <span class="s2">&quot;lingxingMin&quot;</span><span class="p">,</span>  <span class="c1"># 铃星</span>
+    <span class="s2">&quot;dikongMin&quot;</span><span class="p">,</span>  <span class="c1"># 地空</span>
+    <span class="s2">&quot;dijieMin&quot;</span><span class="p">,</span>  <span class="c1"># 地劫</span>
+    <span class="s2">&quot;lucunMin&quot;</span><span class="p">,</span>  <span class="c1"># 禄存</span>
+    <span class="s2">&quot;qingyangMin&quot;</span><span class="p">,</span>  <span class="c1"># 擎羊</span>
+    <span class="s2">&quot;tuoluoMin&quot;</span><span class="p">,</span>  <span class="c1"># 陀罗</span>
+    <span class="s2">&quot;tianmaMin&quot;</span><span class="p">,</span>  <span class="c1"># 天马</span>
+<span class="p">]</span>
+
+<span class="c1"># Adjective stars (杂耀)</span>
+<span class="n">AdjectiveStarName</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span>
+    <span class="c1"># 长生12神</span>
+    <span class="s2">&quot;changsheng12&quot;</span><span class="p">,</span>
+    <span class="c1"># 博士12神</span>
+    <span class="s2">&quot;boshi12&quot;</span><span class="p">,</span>
+    <span class="c1"># 流年将前12神</span>
+    <span class="s2">&quot;jiangqian12&quot;</span><span class="p">,</span>
+    <span class="c1"># 流年岁前12神</span>
+    <span class="s2">&quot;suiqian12&quot;</span><span class="p">,</span>
+    <span class="c1"># 其他杂耀</span>
+    <span class="s2">&quot;huagaiAdj&quot;</span><span class="p">,</span>  <span class="c1"># 华盖</span>
+    <span class="s2">&quot;xianchiAdj&quot;</span><span class="p">,</span>  <span class="c1"># 咸池</span>
+    <span class="s2">&quot;guchenAdj&quot;</span><span class="p">,</span>  <span class="c1"># 孤辰</span>
+    <span class="s2">&quot;guasuAdj&quot;</span><span class="p">,</span>  <span class="c1"># 寡宿</span>
+    <span class="s2">&quot;tiancaiAdj&quot;</span><span class="p">,</span>  <span class="c1"># 天才</span>
+    <span class="s2">&quot;tianshouAdj&quot;</span><span class="p">,</span>  <span class="c1"># 天寿</span>
+    <span class="s2">&quot;hongluan&quot;</span><span class="p">,</span>  <span class="c1"># 红鸾</span>
+    <span class="s2">&quot;tianxi&quot;</span><span class="p">,</span>  <span class="c1"># 天喜</span>
+    <span class="s2">&quot;tianxing&quot;</span><span class="p">,</span>  <span class="c1"># 天刑</span>
+    <span class="s2">&quot;tianyao&quot;</span><span class="p">,</span>  <span class="c1"># 天姚</span>
+    <span class="s2">&quot;jieshen&quot;</span><span class="p">,</span>  <span class="c1"># 解神</span>
+    <span class="s2">&quot;yinsha&quot;</span><span class="p">,</span>  <span class="c1"># 阴煞</span>
+    <span class="s2">&quot;tianguan&quot;</span><span class="p">,</span>  <span class="c1"># 天官</span>
+    <span class="s2">&quot;tianfu2&quot;</span><span class="p">,</span>  <span class="c1"># 天福</span>
+    <span class="s2">&quot;tianku&quot;</span><span class="p">,</span>  <span class="c1"># 天哭</span>
+    <span class="s2">&quot;tianxu&quot;</span><span class="p">,</span>  <span class="c1"># 天虚</span>
+    <span class="s2">&quot;longchi&quot;</span><span class="p">,</span>  <span class="c1"># 龙池</span>
+    <span class="s2">&quot;fengge&quot;</span><span class="p">,</span>  <span class="c1"># 凤阁</span>
+    <span class="s2">&quot;hongluan&quot;</span><span class="p">,</span>  <span class="c1"># 红鸾</span>
+    <span class="s2">&quot;tianxi&quot;</span><span class="p">,</span>  <span class="c1"># 天喜</span>
+    <span class="s2">&quot;guchen&quot;</span><span class="p">,</span>  <span class="c1"># 孤辰</span>
+    <span class="s2">&quot;guasu&quot;</span><span class="p">,</span>  <span class="c1"># 寡宿</span>
+    <span class="s2">&quot;feilian&quot;</span><span class="p">,</span>  <span class="c1"># 蜚廉</span>
+    <span class="s2">&quot;posui&quot;</span><span class="p">,</span>  <span class="c1"># 破碎</span>
+    <span class="s2">&quot;tianchu&quot;</span><span class="p">,</span>  <span class="c1"># 天厨</span>
+<span class="p">]</span>
+
+<span class="c1"># All star names</span>
+<span class="n">StarName</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">MajorStarName</span><span class="p">,</span> <span class="n">MinorStarName</span><span class="p">,</span> <span class="n">AdjectiveStarName</span><span class="p">]</span>
+
+
+<span class="c1"># ============================================================================</span>
+<span class="c1"># Five Elements Class (五行局)</span>
+<span class="c1"># ============================================================================</span>
+
+
+<div class="viewcode-block" id="FiveElementsClass">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.data.types.FiveElementsClass">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FiveElementsClass</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;五行局枚举&quot;&quot;&quot;</span>
+
+    <span class="n">WATER_2</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># 水二局</span>
+    <span class="n">WOOD_3</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># 木三局</span>
+    <span class="n">METAL_4</span> <span class="o">=</span> <span class="mi">4</span>  <span class="c1"># 金四局</span>
+    <span class="n">EARTH_5</span> <span class="o">=</span> <span class="mi">5</span>  <span class="c1"># 土五局</span>
+    <span class="n">FIRE_6</span> <span class="o">=</span> <span class="mi">6</span>  <span class="c1"># 火六局</span></div>
+
+
+
+<span class="c1"># ============================================================================</span>
+<span class="c1"># Data Models</span>
+<span class="c1"># ============================================================================</span>
+
+
+<div class="viewcode-block" id="Star">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.data.types.Star">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Star</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;星耀数据结构&quot;&quot;&quot;</span>
+
+    <span class="n">name</span><span class="p">:</span> <span class="n">StarName</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="n">StarType</span>
+    <span class="n">scope</span><span class="p">:</span> <span class="n">Scope</span>
+    <span class="n">brightness</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Brightness</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">mutagen</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Mutagen</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">model_config</span> <span class="o">=</span> <span class="n">ConfigDict</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># Allow modification for mutagen/brightness</span>
+
+<div class="viewcode-block" id="Star.translate_name">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.data.types.Star.translate_name">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">translate_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lang</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        翻译星曜名称</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            lang: 目标语言代码，如不指定则使用当前语言</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            翻译后的星曜名称</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_translate_name</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">lang</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Star.translate_brightness">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.data.types.Star.translate_brightness">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">translate_brightness</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lang</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        翻译亮度</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            lang: 目标语言代码</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            翻译后的亮度，如无亮度则返回 None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">brightness</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.i18n</span><span class="w"> </span><span class="kn">import</span> <span class="n">t</span>
+
+        <span class="c1"># 亮度直接就是中文，需要映射到英文键</span>
+        <span class="n">brightness_map</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;庙&quot;</span><span class="p">:</span> <span class="s2">&quot;miao&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;旺&quot;</span><span class="p">:</span> <span class="s2">&quot;wang&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;得&quot;</span><span class="p">:</span> <span class="s2">&quot;de&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;利&quot;</span><span class="p">:</span> <span class="s2">&quot;li&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;平&quot;</span><span class="p">:</span> <span class="s2">&quot;ping&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;不&quot;</span><span class="p">:</span> <span class="s2">&quot;bu&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;陷&quot;</span><span class="p">:</span> <span class="s2">&quot;xian&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">brightness_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">brightness</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">brightness</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">t</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;brightness.</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">lang</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Decadal">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.data.types.Decadal">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Decadal</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;大限数据结构&quot;&quot;&quot;</span>
+
+    <span class="nb">range</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>  <span class="c1"># [起始年龄, 截止年龄]</span>
+    <span class="n">heavenly_stem</span><span class="p">:</span> <span class="n">HeavenlyStemName</span>
+    <span class="n">earthly_branch</span><span class="p">:</span> <span class="n">EarthlyBranchName</span></div>
+
+
+
+<div class="viewcode-block" id="Palace">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.data.types.Palace">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Palace</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;宫位数据结构&quot;&quot;&quot;</span>
+
+    <span class="n">index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>  <span class="c1"># 宫位索引 0-11</span>
+    <span class="n">name</span><span class="p">:</span> <span class="n">PalaceName</span>
+    <span class="n">is_body_palace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">is_original_palace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">heavenly_stem</span><span class="p">:</span> <span class="n">HeavenlyStemName</span>
+    <span class="n">earthly_branch</span><span class="p">:</span> <span class="n">EarthlyBranchName</span>
+    <span class="n">major_stars</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Star</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+    <span class="n">minor_stars</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Star</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+    <span class="n">adjective_stars</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Star</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+    <span class="n">changsheng12</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">StarName</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">boshi12</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">StarName</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">jiangqian12</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">StarName</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">suiqian12</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">StarName</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">decadal</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Decadal</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">ages</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>  <span class="c1"># 小限年龄数组</span>
+
+    <span class="n">model_config</span> <span class="o">=</span> <span class="n">ConfigDict</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Palace.translate_name">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.data.types.Palace.translate_name">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">translate_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lang</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        翻译宫位名称</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            lang: 目标语言代码</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            翻译后的宫位名称</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_translate_name</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">lang</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Palace.translate_heavenly_stem">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.data.types.Palace.translate_heavenly_stem">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">translate_heavenly_stem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lang</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;翻译天干&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_translate_name</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">heavenly_stem</span><span class="p">,</span> <span class="n">lang</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Palace.translate_earthly_branch">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.data.types.Palace.translate_earthly_branch">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">translate_earthly_branch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lang</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;翻译地支&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_translate_name</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">earthly_branch</span><span class="p">,</span> <span class="n">lang</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="SoulAndBody">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.data.types.SoulAndBody">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SoulAndBody</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;命身宫定位数据&quot;&quot;&quot;</span>
+
+    <span class="n">soul_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>  <span class="c1"># 命宫索引</span>
+    <span class="n">body_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>  <span class="c1"># 身宫索引</span>
+    <span class="n">heavenly_stem_of_soul</span><span class="p">:</span> <span class="n">HeavenlyStemName</span>
+    <span class="n">earthly_branch_of_soul</span><span class="p">:</span> <span class="n">EarthlyBranchName</span></div>
+
+
+
+<div class="viewcode-block" id="LunarDate">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.data.types.LunarDate">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">LunarDate</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;农历日期&quot;&quot;&quot;</span>
+
+    <span class="n">year</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">month</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">day</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">is_leap_month</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+
+<div class="viewcode-block" id="HeavenlyStemAndEarthlyBranchDate">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.data.types.HeavenlyStemAndEarthlyBranchDate">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">HeavenlyStemAndEarthlyBranchDate</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;干支日期（四柱）&quot;&quot;&quot;</span>
+
+    <span class="n">year_stem</span><span class="p">:</span> <span class="n">HeavenlyStemName</span>
+    <span class="n">year_branch</span><span class="p">:</span> <span class="n">EarthlyBranchName</span>
+    <span class="n">month_stem</span><span class="p">:</span> <span class="n">HeavenlyStemName</span>
+    <span class="n">month_branch</span><span class="p">:</span> <span class="n">EarthlyBranchName</span>
+    <span class="n">day_stem</span><span class="p">:</span> <span class="n">HeavenlyStemName</span>
+    <span class="n">day_branch</span><span class="p">:</span> <span class="n">EarthlyBranchName</span>
+    <span class="n">time_stem</span><span class="p">:</span> <span class="n">HeavenlyStemName</span>
+    <span class="n">time_branch</span><span class="p">:</span> <span class="n">EarthlyBranchName</span></div>
+
+
+
+<div class="viewcode-block" id="Astrolabe">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.data.types.Astrolabe">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Astrolabe</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;星盘数据结构（基础版，不含方法）&quot;&quot;&quot;</span>
+
+    <span class="n">gender</span><span class="p">:</span> <span class="n">GenderName</span>
+    <span class="n">solar_date</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># YYYY-MM-DD</span>
+    <span class="n">lunar_date</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># 农历日期字符串</span>
+    <span class="n">chinese_date</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># 干支日期字符串</span>
+    <span class="n">time</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># 时辰中文名</span>
+    <span class="n">time_range</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># 时间范围 如 &#39;11:00~13:00&#39;</span>
+    <span class="n">sign</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># 星座</span>
+    <span class="n">zodiac</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># 生肖</span>
+    <span class="n">earthly_branch_of_soul_palace</span><span class="p">:</span> <span class="n">EarthlyBranchName</span>
+    <span class="n">earthly_branch_of_body_palace</span><span class="p">:</span> <span class="n">EarthlyBranchName</span>
+    <span class="n">soul</span><span class="p">:</span> <span class="n">StarName</span>  <span class="c1"># 命主</span>
+    <span class="n">body</span><span class="p">:</span> <span class="n">StarName</span>  <span class="c1"># 身主</span>
+    <span class="n">five_elements_class</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># 五行局</span>
+    <span class="n">palaces</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Palace</span><span class="p">]</span>
+
+    <span class="c1"># Language setting</span>
+    <span class="n">language</span><span class="p">:</span> <span class="n">Language</span> <span class="o">=</span> <span class="s2">&quot;zh-CN&quot;</span>
+
+    <span class="c1"># Raw dates for internal use</span>
+    <span class="n">raw_lunar_date</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">LunarDate</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">raw_chinese_date</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">HeavenlyStemAndEarthlyBranchDate</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">model_config</span> <span class="o">=</span> <span class="n">ConfigDict</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Astrolabe.set_language">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.data.types.Astrolabe.set_language">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_language</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lang</span><span class="p">:</span> <span class="n">Language</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        设置星盘语言</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            lang: 目标语言代码</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.i18n</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_language</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">language</span> <span class="o">=</span> <span class="n">lang</span>
+        <span class="n">set_language</span><span class="p">(</span><span class="n">lang</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="SurroundedPalaces">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.data.types.SurroundedPalaces">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SurroundedPalaces</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;三方四正宫位（本宫、对宫、财帛、官禄）&quot;&quot;&quot;</span>
+
+    <span class="n">target</span><span class="p">:</span> <span class="n">Palace</span>  <span class="c1"># 本宫</span>
+    <span class="n">opposite</span><span class="p">:</span> <span class="n">Palace</span>  <span class="c1"># 对宫</span>
+    <span class="n">wealth</span><span class="p">:</span> <span class="n">Palace</span>  <span class="c1"># 财帛位（相隔8宫）</span>
+    <span class="n">career</span><span class="p">:</span> <span class="n">Palace</span>  <span class="c1"># 官禄位（相隔4宫）</span>
+
+    <span class="n">model_config</span> <span class="o">=</span> <span class="n">ConfigDict</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="HoroscopeItem">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.data.types.HoroscopeItem">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">HoroscopeItem</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;运限项&quot;&quot;&quot;</span>
+
+    <span class="n">index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">heavenly_stem</span><span class="p">:</span> <span class="n">HeavenlyStemName</span>
+    <span class="n">earthly_branch</span><span class="p">:</span> <span class="n">EarthlyBranchName</span>
+    <span class="n">palace_names</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">PalaceName</span><span class="p">]</span>
+    <span class="n">mutagen</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">StarName</span><span class="p">]</span>
+    <span class="n">stars</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Star</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># 流耀</span></div>
+
+
+
+<div class="viewcode-block" id="Horoscope">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.data.types.Horoscope">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Horoscope</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;运限数据结构&quot;&quot;&quot;</span>
+
+    <span class="n">solar_date</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">lunar_date</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">decadal</span><span class="p">:</span> <span class="n">HoroscopeItem</span>  <span class="c1"># 大限</span>
+    <span class="n">age</span><span class="p">:</span> <span class="n">HoroscopeItem</span>  <span class="c1"># 小限 (包含nominal_age)</span>
+    <span class="n">yearly</span><span class="p">:</span> <span class="n">HoroscopeItem</span>  <span class="c1"># 流年</span>
+    <span class="n">monthly</span><span class="p">:</span> <span class="n">HoroscopeItem</span>  <span class="c1"># 流月</span>
+    <span class="n">daily</span><span class="p">:</span> <span class="n">HoroscopeItem</span>  <span class="c1"># 流日</span>
+    <span class="n">hourly</span><span class="p">:</span> <span class="n">HoroscopeItem</span>  <span class="c1"># 流时</span>
+    <span class="n">nominal_age</span><span class="p">:</span> <span class="nb">int</span>  <span class="c1"># 虚岁</span></div>
+
+
+
+<span class="c1"># ============================================================================</span>
+<span class="c1"># Configuration Types</span>
+<span class="c1"># ============================================================================</span>
+
+
+<div class="viewcode-block" id="Config">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.data.types.Config">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Config</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;全局配置&quot;&quot;&quot;</span>
+
+    <span class="n">mutagens</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># 四化配置</span>
+    <span class="n">brightness</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># 亮度配置</span>
+    <span class="n">year_divide</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;normal&quot;</span><span class="p">,</span> <span class="s2">&quot;exact&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;normal&quot;</span>  <span class="c1"># 年分割点</span>
+    <span class="n">horoscope_divide</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;normal&quot;</span><span class="p">,</span> <span class="s2">&quot;exact&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;normal&quot;</span>  <span class="c1"># 运限分割点</span>
+    <span class="n">age_divide</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;normal&quot;</span><span class="p">,</span> <span class="s2">&quot;birthday&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;normal&quot;</span>  <span class="c1"># 小限分割点</span>
+    <span class="n">day_divide</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;current&quot;</span><span class="p">,</span> <span class="s2">&quot;forward&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;current&quot;</span>  <span class="c1"># 晚子时分割</span>
+    <span class="n">algorithm</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">,</span> <span class="s2">&quot;zhongzhou&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;default&quot;</span>  <span class="c1"># 安星算法</span></div>
+
+
+
+<div class="viewcode-block" id="AstrolabeOptions">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.data.types.AstrolabeOptions">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AstrolabeOptions</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;星盘生成选项&quot;&quot;&quot;</span>
+
+    <span class="nb">type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;solar&quot;</span><span class="p">,</span> <span class="s2">&quot;lunar&quot;</span><span class="p">]</span>
+    <span class="n">date_str</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">time_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+    <span class="n">gender</span><span class="p">:</span> <span class="n">GenderName</span>
+    <span class="n">is_leap_month</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">fix_leap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">language</span><span class="p">:</span> <span class="n">Language</span> <span class="o">=</span> <span class="s2">&quot;zh-CN&quot;</span>
+    <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Config</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, iztro-py Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

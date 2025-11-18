@@ -1,0 +1,609 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>iztro_py.astro.horoscope &mdash; iztro-py 0.3.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=d5a15cff"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            iztro-py
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">内容目录:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">安装</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart.html">快速开始</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">使用示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">更新日志</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">iztro-py</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">iztro_py.astro.horoscope</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for iztro_py.astro.horoscope</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Horoscope calculation module - 运势系统</span>
+
+<span class="sd">Implements decadal (大限), yearly (流年), monthly (流月),</span>
+<span class="sd">daily (流日), and hourly (流时) horoscope calculations.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.types</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Horoscope</span><span class="p">,</span>
+    <span class="n">HoroscopeItem</span><span class="p">,</span>
+    <span class="n">PalaceName</span><span class="p">,</span>
+    <span class="n">StarName</span><span class="p">,</span>
+    <span class="n">HeavenlyStemName</span><span class="p">,</span>
+    <span class="n">EarthlyBranchName</span><span class="p">,</span>
+    <span class="n">FiveElementsClass</span><span class="p">,</span>
+    <span class="n">Palace</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.utils.calendar</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">solar_to_lunar</span><span class="p">,</span>
+    <span class="n">get_heavenly_stem_and_earthly_branch_date</span><span class="p">,</span>
+    <span class="n">format_lunar_date</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.utils.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">get_decadal_palace_index</span><span class="p">,</span>
+    <span class="n">get_decadal_range</span><span class="p">,</span>
+    <span class="n">calculate_nominal_age</span><span class="p">,</span>
+    <span class="n">fix_index</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">HEAVENLY_STEMS</span><span class="p">,</span> <span class="n">EARTHLY_BRANCHES</span><span class="p">,</span> <span class="n">fix_index</span> <span class="k">as</span> <span class="n">const_fix_index</span>
+
+
+<div class="viewcode-block" id="get_horoscope">
+<a class="viewcode-back" href="../../../api/astro.html#iztro_py.astro.horoscope.get_horoscope">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_horoscope</span><span class="p">(</span>
+    <span class="n">solar_date_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">time_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">palaces</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Palace</span><span class="p">],</span>
+    <span class="n">soul_palace_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">five_elements_class</span><span class="p">:</span> <span class="n">FiveElementsClass</span><span class="p">,</span>
+    <span class="n">gender</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">year_branch_yin_yang</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">birth_year</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Horoscope</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    获取指定日期的运势信息</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        solar_date_str: 阳历日期 (YYYY-M-D or YYYY-MM-DD)</span>
+<span class="sd">        time_index: 时辰索引 (0-12)</span>
+<span class="sd">        palaces: 宫位列表</span>
+<span class="sd">        soul_palace_index: 命宫索引</span>
+<span class="sd">        five_elements_class: 五行局</span>
+<span class="sd">        gender: 性别</span>
+<span class="sd">        year_branch_yin_yang: 出生年支阴阳</span>
+<span class="sd">        birth_year: 出生年份</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        完整的运势信息</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># 解析日期</span>
+    <span class="n">parts</span> <span class="o">=</span> <span class="n">solar_date_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)</span>
+    <span class="n">year</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">month</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">day</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="k">else</span> <span class="mi">1</span>
+
+    <span class="c1"># 转换为农历</span>
+    <span class="n">lunar_info</span> <span class="o">=</span> <span class="n">solar_to_lunar</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="p">)</span>
+    <span class="n">lunar_date</span> <span class="o">=</span> <span class="n">format_lunar_date</span><span class="p">(</span><span class="n">lunar_info</span><span class="p">)</span>
+
+    <span class="c1"># 获取四柱</span>
+    <span class="n">stems_branches</span> <span class="o">=</span> <span class="n">get_heavenly_stem_and_earthly_branch_date</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="p">,</span> <span class="n">time_index</span><span class="p">)</span>
+    <span class="n">year_stem</span> <span class="o">=</span> <span class="n">stems_branches</span><span class="o">.</span><span class="n">year_stem</span>
+    <span class="n">year_branch</span> <span class="o">=</span> <span class="n">stems_branches</span><span class="o">.</span><span class="n">year_branch</span>
+    <span class="n">month_stem</span> <span class="o">=</span> <span class="n">stems_branches</span><span class="o">.</span><span class="n">month_stem</span>
+    <span class="n">month_branch</span> <span class="o">=</span> <span class="n">stems_branches</span><span class="o">.</span><span class="n">month_branch</span>
+    <span class="n">day_stem</span> <span class="o">=</span> <span class="n">stems_branches</span><span class="o">.</span><span class="n">day_stem</span>
+    <span class="n">day_branch</span> <span class="o">=</span> <span class="n">stems_branches</span><span class="o">.</span><span class="n">day_branch</span>
+    <span class="n">hour_stem</span> <span class="o">=</span> <span class="n">stems_branches</span><span class="o">.</span><span class="n">time_stem</span>
+    <span class="n">hour_branch</span> <span class="o">=</span> <span class="n">stems_branches</span><span class="o">.</span><span class="n">time_branch</span>
+
+    <span class="c1"># 计算虚岁</span>
+    <span class="n">nominal_age</span> <span class="o">=</span> <span class="n">calculate_nominal_age</span><span class="p">(</span><span class="n">birth_year</span><span class="p">,</span> <span class="n">year</span><span class="p">)</span>
+
+    <span class="c1"># 大限</span>
+    <span class="n">decadal</span> <span class="o">=</span> <span class="n">get_decadal_horoscope</span><span class="p">(</span>
+        <span class="n">nominal_age</span><span class="p">,</span>
+        <span class="n">five_elements_class</span><span class="p">,</span>
+        <span class="n">soul_palace_index</span><span class="p">,</span>
+        <span class="n">gender</span><span class="p">,</span>
+        <span class="n">year_branch_yin_yang</span><span class="p">,</span>
+        <span class="n">palaces</span><span class="p">,</span>
+        <span class="n">year_stem</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># 小限</span>
+    <span class="n">age_horoscope</span> <span class="o">=</span> <span class="n">get_age_horoscope</span><span class="p">(</span><span class="n">nominal_age</span><span class="p">,</span> <span class="n">soul_palace_index</span><span class="p">,</span> <span class="n">gender</span><span class="p">,</span> <span class="n">palaces</span><span class="p">,</span> <span class="n">year_stem</span><span class="p">)</span>
+
+    <span class="c1"># 流年</span>
+    <span class="n">yearly</span> <span class="o">=</span> <span class="n">get_yearly_horoscope</span><span class="p">(</span><span class="n">year_branch</span><span class="p">,</span> <span class="n">year_stem</span><span class="p">,</span> <span class="n">palaces</span><span class="p">,</span> <span class="n">year_stem</span><span class="p">)</span>
+
+    <span class="c1"># 流月</span>
+    <span class="n">monthly</span> <span class="o">=</span> <span class="n">get_monthly_horoscope</span><span class="p">(</span><span class="n">month_branch</span><span class="p">,</span> <span class="n">month_stem</span><span class="p">,</span> <span class="n">palaces</span><span class="p">,</span> <span class="n">year_stem</span><span class="p">)</span>
+
+    <span class="c1"># 流日</span>
+    <span class="n">daily</span> <span class="o">=</span> <span class="n">get_daily_horoscope</span><span class="p">(</span><span class="n">day_branch</span><span class="p">,</span> <span class="n">day_stem</span><span class="p">,</span> <span class="n">palaces</span><span class="p">,</span> <span class="n">year_stem</span><span class="p">)</span>
+
+    <span class="c1"># 流时</span>
+    <span class="n">hourly</span> <span class="o">=</span> <span class="n">get_hourly_horoscope</span><span class="p">(</span><span class="n">hour_branch</span><span class="p">,</span> <span class="n">hour_stem</span><span class="p">,</span> <span class="n">palaces</span><span class="p">,</span> <span class="n">year_stem</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">Horoscope</span><span class="p">(</span>
+        <span class="n">solar_date</span><span class="o">=</span><span class="n">solar_date_str</span><span class="p">,</span>
+        <span class="n">lunar_date</span><span class="o">=</span><span class="n">lunar_date</span><span class="p">,</span>
+        <span class="n">decadal</span><span class="o">=</span><span class="n">decadal</span><span class="p">,</span>
+        <span class="n">age</span><span class="o">=</span><span class="n">age_horoscope</span><span class="p">,</span>
+        <span class="n">yearly</span><span class="o">=</span><span class="n">yearly</span><span class="p">,</span>
+        <span class="n">monthly</span><span class="o">=</span><span class="n">monthly</span><span class="p">,</span>
+        <span class="n">daily</span><span class="o">=</span><span class="n">daily</span><span class="p">,</span>
+        <span class="n">hourly</span><span class="o">=</span><span class="n">hourly</span><span class="p">,</span>
+        <span class="n">nominal_age</span><span class="o">=</span><span class="n">nominal_age</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_decadal_horoscope">
+<a class="viewcode-back" href="../../../api/astro.html#iztro_py.astro.horoscope.get_decadal_horoscope">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_decadal_horoscope</span><span class="p">(</span>
+    <span class="n">age</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">five_elements_class</span><span class="p">:</span> <span class="n">FiveElementsClass</span><span class="p">,</span>
+    <span class="n">soul_palace_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">gender</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">year_branch_yin_yang</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">palaces</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Palace</span><span class="p">],</span>
+    <span class="n">year_stem</span><span class="p">:</span> <span class="n">HeavenlyStemName</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HoroscopeItem</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    获取大限信息</span>
+
+<span class="sd">    大限从命宫开始，每个宫位管10年</span>
+<span class="sd">    男阳女阴顺行，男阴女阳逆行</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        age: 虚岁</span>
+<span class="sd">        five_elements_class: 五行局</span>
+<span class="sd">        soul_palace_index: 命宫索引</span>
+<span class="sd">        gender: 性别</span>
+<span class="sd">        year_branch_yin_yang: 年支阴阳</span>
+<span class="sd">        palaces: 宫位列表</span>
+<span class="sd">        year_stem: 流年天干（用于计算四化）</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        大限运势项</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># 获取大限宫位索引</span>
+    <span class="n">palace_index</span> <span class="o">=</span> <span class="n">get_decadal_palace_index</span><span class="p">(</span>
+        <span class="n">age</span><span class="p">,</span> <span class="n">five_elements_class</span><span class="p">,</span> <span class="n">soul_palace_index</span><span class="p">,</span> <span class="n">gender</span><span class="p">,</span> <span class="n">year_branch_yin_yang</span>
+    <span class="p">)</span>
+
+    <span class="c1"># 获取大限年龄范围</span>
+    <span class="n">age_range</span> <span class="o">=</span> <span class="n">get_decadal_range</span><span class="p">(</span>
+        <span class="n">five_elements_class</span><span class="p">,</span> <span class="n">palace_index</span><span class="p">,</span> <span class="n">gender</span><span class="p">,</span> <span class="n">soul_palace_index</span><span class="p">,</span> <span class="n">year_branch_yin_yang</span>
+    <span class="p">)</span>
+
+    <span class="c1"># 获取宫位信息</span>
+    <span class="n">palace</span> <span class="o">=</span> <span class="n">palaces</span><span class="p">[</span><span class="n">palace_index</span><span class="p">]</span>
+
+    <span class="c1"># 获取大限四化（使用大限宫的天干）</span>
+    <span class="n">decadal_mutagen</span> <span class="o">=</span> <span class="n">_get_mutagen_stars</span><span class="p">(</span><span class="n">palace</span><span class="o">.</span><span class="n">heavenly_stem</span><span class="p">)</span>
+
+    <span class="c1"># 获取大限所在的宫位名称列表（大限宫本身）</span>
+    <span class="n">palace_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">palace</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">HoroscopeItem</span><span class="p">(</span>
+        <span class="n">index</span><span class="o">=</span><span class="n">palace_index</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">age_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">age_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">岁&quot;</span><span class="p">,</span>
+        <span class="n">heavenly_stem</span><span class="o">=</span><span class="n">palace</span><span class="o">.</span><span class="n">heavenly_stem</span><span class="p">,</span>
+        <span class="n">earthly_branch</span><span class="o">=</span><span class="n">palace</span><span class="o">.</span><span class="n">earthly_branch</span><span class="p">,</span>
+        <span class="n">palace_names</span><span class="o">=</span><span class="n">palace_names</span><span class="p">,</span>
+        <span class="n">mutagen</span><span class="o">=</span><span class="n">decadal_mutagen</span><span class="p">,</span>
+        <span class="n">stars</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># 大限不安流耀</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_age_horoscope">
+<a class="viewcode-back" href="../../../api/astro.html#iztro_py.astro.horoscope.get_age_horoscope">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_age_horoscope</span><span class="p">(</span>
+    <span class="n">age</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">soul_palace_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">gender</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">palaces</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Palace</span><span class="p">],</span>
+    <span class="n">year_stem</span><span class="p">:</span> <span class="n">HeavenlyStemName</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HoroscopeItem</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    获取小限信息</span>
+
+<span class="sd">    小限从命宫起，男顺女逆，每年走一宫</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        age: 虚岁</span>
+<span class="sd">        soul_palace_index: 命宫索引</span>
+<span class="sd">        gender: 性别</span>
+<span class="sd">        palaces: 宫位列表</span>
+<span class="sd">        year_stem: 流年天干</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        小限运势项</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># 小限从1岁开始</span>
+    <span class="c1"># 男命顺行，女命逆行</span>
+    <span class="k">if</span> <span class="n">gender</span> <span class="o">==</span> <span class="s2">&quot;男&quot;</span><span class="p">:</span>
+        <span class="n">palace_index</span> <span class="o">=</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">soul_palace_index</span> <span class="o">+</span> <span class="n">age</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">palace_index</span> <span class="o">=</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">soul_palace_index</span> <span class="o">-</span> <span class="n">age</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">palace</span> <span class="o">=</span> <span class="n">palaces</span><span class="p">[</span><span class="n">palace_index</span><span class="p">]</span>
+
+    <span class="c1"># 小限四化（使用小限宫的天干）</span>
+    <span class="n">age_mutagen</span> <span class="o">=</span> <span class="n">_get_mutagen_stars</span><span class="p">(</span><span class="n">palace</span><span class="o">.</span><span class="n">heavenly_stem</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">HoroscopeItem</span><span class="p">(</span>
+        <span class="n">index</span><span class="o">=</span><span class="n">palace_index</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">age</span><span class="si">}</span><span class="s2">岁&quot;</span><span class="p">,</span>
+        <span class="n">heavenly_stem</span><span class="o">=</span><span class="n">palace</span><span class="o">.</span><span class="n">heavenly_stem</span><span class="p">,</span>
+        <span class="n">earthly_branch</span><span class="o">=</span><span class="n">palace</span><span class="o">.</span><span class="n">earthly_branch</span><span class="p">,</span>
+        <span class="n">palace_names</span><span class="o">=</span><span class="p">[</span><span class="n">palace</span><span class="o">.</span><span class="n">name</span><span class="p">],</span>
+        <span class="n">mutagen</span><span class="o">=</span><span class="n">age_mutagen</span><span class="p">,</span>
+        <span class="n">stars</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_yearly_horoscope">
+<a class="viewcode-back" href="../../../api/astro.html#iztro_py.astro.horoscope.get_yearly_horoscope">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_yearly_horoscope</span><span class="p">(</span>
+    <span class="n">year_branch</span><span class="p">:</span> <span class="n">EarthlyBranchName</span><span class="p">,</span>
+    <span class="n">year_stem</span><span class="p">:</span> <span class="n">HeavenlyStemName</span><span class="p">,</span>
+    <span class="n">palaces</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Palace</span><span class="p">],</span>
+    <span class="n">birth_year_stem</span><span class="p">:</span> <span class="n">HeavenlyStemName</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HoroscopeItem</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    获取流年信息</span>
+
+<span class="sd">    流年从年支地支位置开始安命宫</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        year_branch: 流年地支</span>
+<span class="sd">        year_stem: 流年天干</span>
+<span class="sd">        palaces: 宫位列表</span>
+<span class="sd">        birth_year_stem: 出生年天干</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        流年运势项</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># 流年命宫在年支所在的地支位置</span>
+    <span class="n">branch_index</span> <span class="o">=</span> <span class="n">_get_branch_index</span><span class="p">(</span><span class="n">year_branch</span><span class="p">)</span>
+
+    <span class="c1"># 找到该地支对应的宫位</span>
+    <span class="n">palace_index</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">palace</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">palaces</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">_get_branch_index</span><span class="p">(</span><span class="n">palace</span><span class="o">.</span><span class="n">earthly_branch</span><span class="p">)</span> <span class="o">==</span> <span class="n">branch_index</span><span class="p">:</span>
+            <span class="n">palace_index</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="k">break</span>
+
+    <span class="k">if</span> <span class="n">palace_index</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">palace_index</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># fallback</span>
+
+    <span class="n">palace</span> <span class="o">=</span> <span class="n">palaces</span><span class="p">[</span><span class="n">palace_index</span><span class="p">]</span>
+
+    <span class="c1"># 流年四化（使用流年天干）</span>
+    <span class="n">yearly_mutagen</span> <span class="o">=</span> <span class="n">_get_mutagen_stars</span><span class="p">(</span><span class="n">year_stem</span><span class="p">)</span>
+
+    <span class="c1"># 流年宫位名称（流年命宫在本命哪个宫）</span>
+    <span class="n">palace_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">palace</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">HoroscopeItem</span><span class="p">(</span>
+        <span class="n">index</span><span class="o">=</span><span class="n">palace_index</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_get_stem_name</span><span class="p">(</span><span class="n">year_stem</span><span class="p">)</span><span class="si">}{</span><span class="n">_get_branch_name</span><span class="p">(</span><span class="n">year_branch</span><span class="p">)</span><span class="si">}</span><span class="s2">年&quot;</span><span class="p">,</span>
+        <span class="n">heavenly_stem</span><span class="o">=</span><span class="n">year_stem</span><span class="p">,</span>
+        <span class="n">earthly_branch</span><span class="o">=</span><span class="n">year_branch</span><span class="p">,</span>
+        <span class="n">palace_names</span><span class="o">=</span><span class="n">palace_names</span><span class="p">,</span>
+        <span class="n">mutagen</span><span class="o">=</span><span class="n">yearly_mutagen</span><span class="p">,</span>
+        <span class="n">stars</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># 可以扩展添加流年星</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_monthly_horoscope">
+<a class="viewcode-back" href="../../../api/astro.html#iztro_py.astro.horoscope.get_monthly_horoscope">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_monthly_horoscope</span><span class="p">(</span>
+    <span class="n">month_branch</span><span class="p">:</span> <span class="n">EarthlyBranchName</span><span class="p">,</span>
+    <span class="n">month_stem</span><span class="p">:</span> <span class="n">HeavenlyStemName</span><span class="p">,</span>
+    <span class="n">palaces</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Palace</span><span class="p">],</span>
+    <span class="n">year_stem</span><span class="p">:</span> <span class="n">HeavenlyStemName</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HoroscopeItem</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    获取流月信息</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        month_branch: 流月地支</span>
+<span class="sd">        month_stem: 流月天干</span>
+<span class="sd">        palaces: 宫位列表</span>
+<span class="sd">        year_stem: 流年天干</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        流月运势项</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">branch_index</span> <span class="o">=</span> <span class="n">_get_branch_index</span><span class="p">(</span><span class="n">month_branch</span><span class="p">)</span>
+
+    <span class="n">palace_index</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">palace</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">palaces</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">_get_branch_index</span><span class="p">(</span><span class="n">palace</span><span class="o">.</span><span class="n">earthly_branch</span><span class="p">)</span> <span class="o">==</span> <span class="n">branch_index</span><span class="p">:</span>
+            <span class="n">palace_index</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="k">break</span>
+
+    <span class="k">if</span> <span class="n">palace_index</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">palace_index</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">palace</span> <span class="o">=</span> <span class="n">palaces</span><span class="p">[</span><span class="n">palace_index</span><span class="p">]</span>
+    <span class="n">monthly_mutagen</span> <span class="o">=</span> <span class="n">_get_mutagen_stars</span><span class="p">(</span><span class="n">month_stem</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">HoroscopeItem</span><span class="p">(</span>
+        <span class="n">index</span><span class="o">=</span><span class="n">palace_index</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_get_stem_name</span><span class="p">(</span><span class="n">month_stem</span><span class="p">)</span><span class="si">}{</span><span class="n">_get_branch_name</span><span class="p">(</span><span class="n">month_branch</span><span class="p">)</span><span class="si">}</span><span class="s2">月&quot;</span><span class="p">,</span>
+        <span class="n">heavenly_stem</span><span class="o">=</span><span class="n">month_stem</span><span class="p">,</span>
+        <span class="n">earthly_branch</span><span class="o">=</span><span class="n">month_branch</span><span class="p">,</span>
+        <span class="n">palace_names</span><span class="o">=</span><span class="p">[</span><span class="n">palace</span><span class="o">.</span><span class="n">name</span><span class="p">],</span>
+        <span class="n">mutagen</span><span class="o">=</span><span class="n">monthly_mutagen</span><span class="p">,</span>
+        <span class="n">stars</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_daily_horoscope">
+<a class="viewcode-back" href="../../../api/astro.html#iztro_py.astro.horoscope.get_daily_horoscope">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_daily_horoscope</span><span class="p">(</span>
+    <span class="n">day_branch</span><span class="p">:</span> <span class="n">EarthlyBranchName</span><span class="p">,</span>
+    <span class="n">day_stem</span><span class="p">:</span> <span class="n">HeavenlyStemName</span><span class="p">,</span>
+    <span class="n">palaces</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Palace</span><span class="p">],</span>
+    <span class="n">year_stem</span><span class="p">:</span> <span class="n">HeavenlyStemName</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HoroscopeItem</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    获取流日信息</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        day_branch: 流日地支</span>
+<span class="sd">        day_stem: 流日天干</span>
+<span class="sd">        palaces: 宫位列表</span>
+<span class="sd">        year_stem: 流年天干</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        流日运势项</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">branch_index</span> <span class="o">=</span> <span class="n">_get_branch_index</span><span class="p">(</span><span class="n">day_branch</span><span class="p">)</span>
+
+    <span class="n">palace_index</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">palace</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">palaces</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">_get_branch_index</span><span class="p">(</span><span class="n">palace</span><span class="o">.</span><span class="n">earthly_branch</span><span class="p">)</span> <span class="o">==</span> <span class="n">branch_index</span><span class="p">:</span>
+            <span class="n">palace_index</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="k">break</span>
+
+    <span class="k">if</span> <span class="n">palace_index</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">palace_index</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">palace</span> <span class="o">=</span> <span class="n">palaces</span><span class="p">[</span><span class="n">palace_index</span><span class="p">]</span>
+    <span class="n">daily_mutagen</span> <span class="o">=</span> <span class="n">_get_mutagen_stars</span><span class="p">(</span><span class="n">day_stem</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">HoroscopeItem</span><span class="p">(</span>
+        <span class="n">index</span><span class="o">=</span><span class="n">palace_index</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_get_stem_name</span><span class="p">(</span><span class="n">day_stem</span><span class="p">)</span><span class="si">}{</span><span class="n">_get_branch_name</span><span class="p">(</span><span class="n">day_branch</span><span class="p">)</span><span class="si">}</span><span class="s2">日&quot;</span><span class="p">,</span>
+        <span class="n">heavenly_stem</span><span class="o">=</span><span class="n">day_stem</span><span class="p">,</span>
+        <span class="n">earthly_branch</span><span class="o">=</span><span class="n">day_branch</span><span class="p">,</span>
+        <span class="n">palace_names</span><span class="o">=</span><span class="p">[</span><span class="n">palace</span><span class="o">.</span><span class="n">name</span><span class="p">],</span>
+        <span class="n">mutagen</span><span class="o">=</span><span class="n">daily_mutagen</span><span class="p">,</span>
+        <span class="n">stars</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_hourly_horoscope">
+<a class="viewcode-back" href="../../../api/astro.html#iztro_py.astro.horoscope.get_hourly_horoscope">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_hourly_horoscope</span><span class="p">(</span>
+    <span class="n">hour_branch</span><span class="p">:</span> <span class="n">EarthlyBranchName</span><span class="p">,</span>
+    <span class="n">hour_stem</span><span class="p">:</span> <span class="n">HeavenlyStemName</span><span class="p">,</span>
+    <span class="n">palaces</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Palace</span><span class="p">],</span>
+    <span class="n">year_stem</span><span class="p">:</span> <span class="n">HeavenlyStemName</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HoroscopeItem</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    获取流时信息</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        hour_branch: 流时地支</span>
+<span class="sd">        hour_stem: 流时天干</span>
+<span class="sd">        palaces: 宫位列表</span>
+<span class="sd">        year_stem: 流年天干</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        流时运势项</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">branch_index</span> <span class="o">=</span> <span class="n">_get_branch_index</span><span class="p">(</span><span class="n">hour_branch</span><span class="p">)</span>
+
+    <span class="n">palace_index</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">palace</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">palaces</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">_get_branch_index</span><span class="p">(</span><span class="n">palace</span><span class="o">.</span><span class="n">earthly_branch</span><span class="p">)</span> <span class="o">==</span> <span class="n">branch_index</span><span class="p">:</span>
+            <span class="n">palace_index</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="k">break</span>
+
+    <span class="k">if</span> <span class="n">palace_index</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">palace_index</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">palace</span> <span class="o">=</span> <span class="n">palaces</span><span class="p">[</span><span class="n">palace_index</span><span class="p">]</span>
+    <span class="n">hourly_mutagen</span> <span class="o">=</span> <span class="n">_get_mutagen_stars</span><span class="p">(</span><span class="n">hour_stem</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">HoroscopeItem</span><span class="p">(</span>
+        <span class="n">index</span><span class="o">=</span><span class="n">palace_index</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_get_stem_name</span><span class="p">(</span><span class="n">hour_stem</span><span class="p">)</span><span class="si">}{</span><span class="n">_get_branch_name</span><span class="p">(</span><span class="n">hour_branch</span><span class="p">)</span><span class="si">}</span><span class="s2">时&quot;</span><span class="p">,</span>
+        <span class="n">heavenly_stem</span><span class="o">=</span><span class="n">hour_stem</span><span class="p">,</span>
+        <span class="n">earthly_branch</span><span class="o">=</span><span class="n">hour_branch</span><span class="p">,</span>
+        <span class="n">palace_names</span><span class="o">=</span><span class="p">[</span><span class="n">palace</span><span class="o">.</span><span class="n">name</span><span class="p">],</span>
+        <span class="n">mutagen</span><span class="o">=</span><span class="n">hourly_mutagen</span><span class="p">,</span>
+        <span class="n">stars</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="c1"># ============================================================================</span>
+<span class="c1"># Helper Functions</span>
+<span class="c1"># ============================================================================</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_mutagen_stars</span><span class="p">(</span><span class="n">stem</span><span class="p">:</span> <span class="n">HeavenlyStemName</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">StarName</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    获取指定天干的四化星</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        stem: 天干</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        四化星列表 [禄, 权, 科, 忌]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.heavenly_stems</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_mutagen</span>
+
+    <span class="k">return</span> <span class="n">get_mutagen</span><span class="p">(</span><span class="n">stem</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_branch_index</span><span class="p">(</span><span class="n">branch</span><span class="p">:</span> <span class="n">EarthlyBranchName</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;获取地支索引&quot;&quot;&quot;</span>
+    <span class="n">branch_order</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;ziEarthly&quot;</span><span class="p">,</span>  <span class="c1"># 0 - 子</span>
+        <span class="s2">&quot;chouEarthly&quot;</span><span class="p">,</span>  <span class="c1"># 1 - 丑</span>
+        <span class="s2">&quot;yinEarthly&quot;</span><span class="p">,</span>  <span class="c1"># 2 - 寅</span>
+        <span class="s2">&quot;maoEarthly&quot;</span><span class="p">,</span>  <span class="c1"># 3 - 卯</span>
+        <span class="s2">&quot;chenEarthly&quot;</span><span class="p">,</span>  <span class="c1"># 4 - 辰</span>
+        <span class="s2">&quot;siEarthly&quot;</span><span class="p">,</span>  <span class="c1"># 5 - 巳</span>
+        <span class="s2">&quot;wuEarthly&quot;</span><span class="p">,</span>  <span class="c1"># 6 - 午</span>
+        <span class="s2">&quot;weiEarthly&quot;</span><span class="p">,</span>  <span class="c1"># 7 - 未</span>
+        <span class="s2">&quot;shenEarthly&quot;</span><span class="p">,</span>  <span class="c1"># 8 - 申</span>
+        <span class="s2">&quot;youEarthly&quot;</span><span class="p">,</span>  <span class="c1"># 9 - 酉</span>
+        <span class="s2">&quot;xuEarthly&quot;</span><span class="p">,</span>  <span class="c1"># 10 - 戌</span>
+        <span class="s2">&quot;haiEarthly&quot;</span><span class="p">,</span>  <span class="c1"># 11 - 亥</span>
+    <span class="p">]</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">branch_order</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">branch</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_stem_name</span><span class="p">(</span><span class="n">stem</span><span class="p">:</span> <span class="n">HeavenlyStemName</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;获取天干中文名&quot;&quot;&quot;</span>
+    <span class="n">stem_names</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;jiaHeavenly&quot;</span><span class="p">:</span> <span class="s2">&quot;甲&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;yiHeavenly&quot;</span><span class="p">:</span> <span class="s2">&quot;乙&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;bingHeavenly&quot;</span><span class="p">:</span> <span class="s2">&quot;丙&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dingHeavenly&quot;</span><span class="p">:</span> <span class="s2">&quot;丁&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;wuHeavenly&quot;</span><span class="p">:</span> <span class="s2">&quot;戊&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;jiHeavenly&quot;</span><span class="p">:</span> <span class="s2">&quot;己&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;gengHeavenly&quot;</span><span class="p">:</span> <span class="s2">&quot;庚&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;xinHeavenly&quot;</span><span class="p">:</span> <span class="s2">&quot;辛&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;renHeavenly&quot;</span><span class="p">:</span> <span class="s2">&quot;壬&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;guiHeavenly&quot;</span><span class="p">:</span> <span class="s2">&quot;癸&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">stem_names</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">stem</span><span class="p">,</span> <span class="n">stem</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_branch_name</span><span class="p">(</span><span class="n">branch</span><span class="p">:</span> <span class="n">EarthlyBranchName</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;获取地支中文名&quot;&quot;&quot;</span>
+    <span class="n">branch_names</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;ziEarthly&quot;</span><span class="p">:</span> <span class="s2">&quot;子&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;chouEarthly&quot;</span><span class="p">:</span> <span class="s2">&quot;丑&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;yinEarthly&quot;</span><span class="p">:</span> <span class="s2">&quot;寅&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;maoEarthly&quot;</span><span class="p">:</span> <span class="s2">&quot;卯&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;chenEarthly&quot;</span><span class="p">:</span> <span class="s2">&quot;辰&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;siEarthly&quot;</span><span class="p">:</span> <span class="s2">&quot;巳&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;wuEarthly&quot;</span><span class="p">:</span> <span class="s2">&quot;午&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;weiEarthly&quot;</span><span class="p">:</span> <span class="s2">&quot;未&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;shenEarthly&quot;</span><span class="p">:</span> <span class="s2">&quot;申&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;youEarthly&quot;</span><span class="p">:</span> <span class="s2">&quot;酉&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;xuEarthly&quot;</span><span class="p">:</span> <span class="s2">&quot;戌&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;haiEarthly&quot;</span><span class="p">:</span> <span class="s2">&quot;亥&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">branch_names</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">branch</span><span class="p">,</span> <span class="n">branch</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, iztro-py Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,592 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>utils 模块 &mdash; iztro-py 0.3.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=d5a15cff"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="i18n 模块" href="i18n.html" />
+    <link rel="prev" title="star 模块" href="star.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            iztro-py
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">内容目录:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">安装</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">快速开始</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API 参考</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#id1">主要模块</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="astro.html">astro 模块</a></li>
+<li class="toctree-l3"><a class="reference internal" href="data.html">data 模块</a></li>
+<li class="toctree-l3"><a class="reference internal" href="star.html">star 模块</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">utils 模块</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#module-iztro_py.utils.calendar">utils.calendar</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-iztro_py.utils.helpers">utils.helpers</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="i18n.html">i18n 模块</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#module-iztro_py.astro.astro">核心函数</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#id3">主要类</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#module-iztro_py.data.types">数据类型</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">使用示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">更新日志</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">iztro-py</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">API 参考</a></li>
+      <li class="breadcrumb-item active">utils 模块</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/utils.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="utils">
+<h1>utils 模块<a class="headerlink" href="#utils" title="Link to this heading"></a></h1>
+<p>工具函数和辅助功能。</p>
+<section id="module-iztro_py.utils.calendar">
+<span id="utils-calendar"></span><h2>utils.calendar<a class="headerlink" href="#module-iztro_py.utils.calendar" title="Link to this heading"></a></h2>
+<p>Calendar conversion utilities for iztro-py</p>
+<p>Provides functions for converting between solar and lunar calendars,
+and calculating heavenly stems and earthly branches (天干地支).</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="iztro_py.utils.calendar.solar_to_lunar">
+<span class="sig-prename descclassname"><span class="pre">iztro_py.utils.calendar.</span></span><span class="sig-name descname"><span class="pre">solar_to_lunar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">year</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">month</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">day</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fix_leap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/iztro_py/utils/calendar.html#solar_to_lunar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#iztro_py.utils.calendar.solar_to_lunar" title="Link to this definition"></a></dt>
+<dd><p>阳历转农历</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>year</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – 阳历年</p></li>
+<li><p><strong>month</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – 阳历月</p></li>
+<li><p><strong>day</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – 阳历日</p></li>
+<li><p><strong>fix_leap</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – 是否修正闰月（如果在闰月前半月则调整为前一个月）</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="index.html#iztro_py.data.types.LunarDate" title="iztro_py.data.types.LunarDate"><code class="xref py py-class docutils literal notranslate"><span class="pre">LunarDate</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>LunarDate对象</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – 如果日期无效</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="iztro_py.utils.calendar.parse_solar_date">
+<span class="sig-prename descclassname"><span class="pre">iztro_py.utils.calendar.</span></span><span class="sig-name descname"><span class="pre">parse_solar_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date_str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/iztro_py/utils/calendar.html#parse_solar_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#iztro_py.utils.calendar.parse_solar_date" title="Link to this definition"></a></dt>
+<dd><p>解析阳历日期字符串</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>date_str</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – 日期字符串，格式：YYYY-M-D 或 YYYY-MM-DD</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]</span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(year, month, day) 元组</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – 如果日期格式无效</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="iztro_py.utils.calendar.lunar_to_solar">
+<span class="sig-prename descclassname"><span class="pre">iztro_py.utils.calendar.</span></span><span class="sig-name descname"><span class="pre">lunar_to_solar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">year</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">month</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">day</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_leap_month</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/iztro_py/utils/calendar.html#lunar_to_solar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#iztro_py.utils.calendar.lunar_to_solar" title="Link to this definition"></a></dt>
+<dd><p>农历转阳历</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>year</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – 农历年</p></li>
+<li><p><strong>month</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – 农历月</p></li>
+<li><p><strong>day</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – 农历日</p></li>
+<li><p><strong>is_leap_month</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – 是否闰月</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]</span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(year, month, day) 元组</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – 如果日期无效</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="iztro_py.utils.calendar.parse_lunar_date">
+<span class="sig-prename descclassname"><span class="pre">iztro_py.utils.calendar.</span></span><span class="sig-name descname"><span class="pre">parse_lunar_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date_str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/iztro_py/utils/calendar.html#parse_lunar_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#iztro_py.utils.calendar.parse_lunar_date" title="Link to this definition"></a></dt>
+<dd><p>解析农历日期字符串</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>date_str</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – 日期字符串，格式：YYYY-M-D</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]</span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(year, month, day) 元组</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – 如果日期格式无效</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="iztro_py.utils.calendar.get_year_stem_branch">
+<span class="sig-prename descclassname"><span class="pre">iztro_py.utils.calendar.</span></span><span class="sig-name descname"><span class="pre">get_year_stem_branch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">year</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/iztro_py/utils/calendar.html#get_year_stem_branch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#iztro_py.utils.calendar.get_year_stem_branch" title="Link to this definition"></a></dt>
+<dd><p>根据年份计算年干支</p>
+<p>年干 = (年份 - 4) % 10
+年支 = (年份 - 4) % 12</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>year</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – 年份</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code></a>[<code class="docutils literal notranslate"><span class="pre">'jiaHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'yiHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'bingHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'dingHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'wuHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'jiHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'gengHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'xinHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'renHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'guiHeavenly'</span></code>], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code></a>[<code class="docutils literal notranslate"><span class="pre">'ziEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'chouEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'yinEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'maoEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'chenEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'siEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'wuEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'weiEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'shenEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'youEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'xuEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'haiEarthly'</span></code>]]</span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(天干, 地支) 元组</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="iztro_py.utils.calendar.get_month_stem_branch">
+<span class="sig-prename descclassname"><span class="pre">iztro_py.utils.calendar.</span></span><span class="sig-name descname"><span class="pre">get_month_stem_branch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">year_stem</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">month</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/iztro_py/utils/calendar.html#get_month_stem_branch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#iztro_py.utils.calendar.get_month_stem_branch" title="Link to this definition"></a></dt>
+<dd><p>根据年干和月份计算月干支（五虎遁）</p>
+<p>五虎遁口诀：
+甲己之年丙作首，乙庚之岁戊为头
+丙辛之岁庚寅上，丁壬壬寅顺水流
+戊癸甲寅为岁首</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>year_stem</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code></a>[<code class="docutils literal notranslate"><span class="pre">'jiaHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'yiHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'bingHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'dingHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'wuHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'jiHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'gengHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'xinHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'renHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'guiHeavenly'</span></code>]</span>) – 年干</p></li>
+<li><p><strong>month</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – 月份 (1-12)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code></a>[<code class="docutils literal notranslate"><span class="pre">'jiaHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'yiHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'bingHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'dingHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'wuHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'jiHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'gengHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'xinHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'renHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'guiHeavenly'</span></code>], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code></a>[<code class="docutils literal notranslate"><span class="pre">'ziEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'chouEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'yinEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'maoEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'chenEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'siEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'wuEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'weiEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'shenEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'youEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'xuEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'haiEarthly'</span></code>]]</span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(天干, 地支) 元组</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="iztro_py.utils.calendar.get_day_stem_branch">
+<span class="sig-prename descclassname"><span class="pre">iztro_py.utils.calendar.</span></span><span class="sig-name descname"><span class="pre">get_day_stem_branch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solar_date</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/iztro_py/utils/calendar.html#get_day_stem_branch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#iztro_py.utils.calendar.get_day_stem_branch" title="Link to this definition"></a></dt>
+<dd><p>根据阳历日期计算日干支</p>
+<p>使用公元元年1月1日为甲子日的算法</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>solar_date</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">date</span></code></a></span>) – 日期对象</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code></a>[<code class="docutils literal notranslate"><span class="pre">'jiaHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'yiHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'bingHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'dingHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'wuHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'jiHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'gengHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'xinHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'renHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'guiHeavenly'</span></code>], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code></a>[<code class="docutils literal notranslate"><span class="pre">'ziEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'chouEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'yinEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'maoEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'chenEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'siEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'wuEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'weiEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'shenEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'youEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'xuEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'haiEarthly'</span></code>]]</span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(天干, 地支) 元组</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="iztro_py.utils.calendar.get_time_stem_branch">
+<span class="sig-prename descclassname"><span class="pre">iztro_py.utils.calendar.</span></span><span class="sig-name descname"><span class="pre">get_time_stem_branch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">day_stem</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/iztro_py/utils/calendar.html#get_time_stem_branch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#iztro_py.utils.calendar.get_time_stem_branch" title="Link to this definition"></a></dt>
+<dd><p>根据日干和时辰索引计算时干支（五鼠遁）</p>
+<p>五鼠遁口诀：
+甲己还加甲，乙庚丙作初
+丙辛从戊起，丁壬庚子居
+戊癸何方发，壬子是真途</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>day_stem</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code></a>[<code class="docutils literal notranslate"><span class="pre">'jiaHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'yiHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'bingHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'dingHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'wuHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'jiHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'gengHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'xinHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'renHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'guiHeavenly'</span></code>]</span>) – 日干</p></li>
+<li><p><strong>time_index</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – 时辰索引 (0-12)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code></a>[<code class="docutils literal notranslate"><span class="pre">'jiaHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'yiHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'bingHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'dingHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'wuHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'jiHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'gengHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'xinHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'renHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'guiHeavenly'</span></code>], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code></a>[<code class="docutils literal notranslate"><span class="pre">'ziEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'chouEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'yinEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'maoEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'chenEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'siEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'wuEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'weiEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'shenEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'youEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'xuEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'haiEarthly'</span></code>]]</span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(天干, 地支) 元组</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="iztro_py.utils.calendar.get_heavenly_stem_and_earthly_branch_date">
+<span class="sig-prename descclassname"><span class="pre">iztro_py.utils.calendar.</span></span><span class="sig-name descname"><span class="pre">get_heavenly_stem_and_earthly_branch_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">year</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">month</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">day</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lunar_month</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/iztro_py/utils/calendar.html#get_heavenly_stem_and_earthly_branch_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#iztro_py.utils.calendar.get_heavenly_stem_and_earthly_branch_date" title="Link to this definition"></a></dt>
+<dd><p>获取完整的四柱（年月日时的天干地支）</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>year</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – 阳历年</p></li>
+<li><p><strong>month</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – 阳历月</p></li>
+<li><p><strong>day</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – 阳历日</p></li>
+<li><p><strong>time_index</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – 时辰索引 (0-12)</p></li>
+<li><p><strong>lunar_month</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]</span>) – 农历月（用于月干支计算）</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="index.html#iztro_py.data.types.HeavenlyStemAndEarthlyBranchDate" title="iztro_py.data.types.HeavenlyStemAndEarthlyBranchDate"><code class="xref py py-class docutils literal notranslate"><span class="pre">HeavenlyStemAndEarthlyBranchDate</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>HeavenlyStemAndEarthlyBranchDate对象</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="iztro_py.utils.calendar.get_zodiac">
+<span class="sig-prename descclassname"><span class="pre">iztro_py.utils.calendar.</span></span><span class="sig-name descname"><span class="pre">get_zodiac</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">year_branch</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/iztro_py/utils/calendar.html#get_zodiac"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#iztro_py.utils.calendar.get_zodiac" title="Link to this definition"></a></dt>
+<dd><p>根据年支获取生肖</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>year_branch</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code></a>[<code class="docutils literal notranslate"><span class="pre">'ziEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'chouEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'yinEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'maoEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'chenEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'siEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'wuEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'weiEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'shenEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'youEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'xuEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'haiEarthly'</span></code>]</span>) – 年支</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>生肖名称</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="iztro_py.utils.calendar.get_sign">
+<span class="sig-prename descclassname"><span class="pre">iztro_py.utils.calendar.</span></span><span class="sig-name descname"><span class="pre">get_sign</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">month</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">day</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/iztro_py/utils/calendar.html#get_sign"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#iztro_py.utils.calendar.get_sign" title="Link to this definition"></a></dt>
+<dd><p>根据阳历月日获取星座</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>month</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – 月份 (1-12)</p></li>
+<li><p><strong>day</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – 日期 (1-31)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>星座名称</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="iztro_py.utils.calendar.format_lunar_date">
+<span class="sig-prename descclassname"><span class="pre">iztro_py.utils.calendar.</span></span><span class="sig-name descname"><span class="pre">format_lunar_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lunar_date</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/iztro_py/utils/calendar.html#format_lunar_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#iztro_py.utils.calendar.format_lunar_date" title="Link to this definition"></a></dt>
+<dd><p>格式化农历日期为中文字符串</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>lunar_date</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="index.html#iztro_py.data.types.LunarDate" title="iztro_py.data.types.LunarDate"><code class="xref py py-class docutils literal notranslate"><span class="pre">LunarDate</span></code></a></span>) – 农历日期对象</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>格式化后的字符串，如 “2000年七月十八” 或 “2000年闰七月十八”</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="iztro_py.utils.calendar.format_chinese_date">
+<span class="sig-prename descclassname"><span class="pre">iztro_py.utils.calendar.</span></span><span class="sig-name descname"><span class="pre">format_chinese_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chinese_date</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/iztro_py/utils/calendar.html#format_chinese_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#iztro_py.utils.calendar.format_chinese_date" title="Link to this definition"></a></dt>
+<dd><p>格式化干支日期为中文字符串</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>chinese_date</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="index.html#iztro_py.data.types.HeavenlyStemAndEarthlyBranchDate" title="iztro_py.data.types.HeavenlyStemAndEarthlyBranchDate"><code class="xref py py-class docutils literal notranslate"><span class="pre">HeavenlyStemAndEarthlyBranchDate</span></code></a></span>) – 干支日期对象</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>格式化后的字符串，如 “庚辰年七月十八 午时”</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-iztro_py.utils.helpers">
+<span id="utils-helpers"></span><h2>utils.helpers<a class="headerlink" href="#module-iztro_py.utils.helpers" title="Link to this heading"></a></h2>
+<p>Helper utilities for iztro-py</p>
+<p>Common utility functions used throughout the library.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="iztro_py.utils.helpers.get_five_elements_class">
+<span class="sig-prename descclassname"><span class="pre">iztro_py.utils.helpers.</span></span><span class="sig-name descname"><span class="pre">get_five_elements_class</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">heavenly_stem</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">earthly_branch</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/iztro_py/utils/helpers.html#get_five_elements_class"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#iztro_py.utils.helpers.get_five_elements_class" title="Link to this definition"></a></dt>
+<dd><p>根据命宫天干地支获取五行局</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>heavenly_stem</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code></a>[<code class="docutils literal notranslate"><span class="pre">'jiaHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'yiHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'bingHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'dingHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'wuHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'jiHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'gengHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'xinHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'renHeavenly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'guiHeavenly'</span></code>]</span>) – 命宫天干</p></li>
+<li><p><strong>earthly_branch</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code></a>[<code class="docutils literal notranslate"><span class="pre">'ziEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'chouEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'yinEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'maoEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'chenEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'siEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'wuEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'weiEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'shenEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'youEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'xuEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'haiEarthly'</span></code>]</span>) – 命宫地支</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="index.html#iztro_py.data.types.FiveElementsClass" title="iztro_py.data.types.FiveElementsClass"><code class="xref py py-class docutils literal notranslate"><span class="pre">FiveElementsClass</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>五行局枚举值</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="iztro_py.utils.helpers.get_five_elements_class_name">
+<span class="sig-prename descclassname"><span class="pre">iztro_py.utils.helpers.</span></span><span class="sig-name descname"><span class="pre">get_five_elements_class_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">five_elements_class</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/iztro_py/utils/helpers.html#get_five_elements_class_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#iztro_py.utils.helpers.get_five_elements_class_name" title="Link to this definition"></a></dt>
+<dd><p>获取五行局的中文名称</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>five_elements_class</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="index.html#iztro_py.data.types.FiveElementsClass" title="iztro_py.data.types.FiveElementsClass"><code class="xref py py-class docutils literal notranslate"><span class="pre">FiveElementsClass</span></code></a></span>) – 五行局枚举</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>中文名称，如 “水二局”</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="iztro_py.utils.helpers.get_time_range">
+<span class="sig-prename descclassname"><span class="pre">iztro_py.utils.helpers.</span></span><span class="sig-name descname"><span class="pre">get_time_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/iztro_py/utils/helpers.html#get_time_range"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#iztro_py.utils.helpers.get_time_range" title="Link to this definition"></a></dt>
+<dd><p>获取时辰的时间范围</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>time_index</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – 时辰索引 (0-12)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>00~13:00”</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>时间范围字符串，如 “11</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="iztro_py.utils.helpers.get_time_name">
+<span class="sig-prename descclassname"><span class="pre">iztro_py.utils.helpers.</span></span><span class="sig-name descname"><span class="pre">get_time_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/iztro_py/utils/helpers.html#get_time_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#iztro_py.utils.helpers.get_time_name" title="Link to this definition"></a></dt>
+<dd><p>获取时辰的中文名称</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>time_index</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – 时辰索引 (0-12)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>时辰中文名称，如 “午时”</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="iztro_py.utils.helpers.hour_to_time_index">
+<span class="sig-prename descclassname"><span class="pre">iztro_py.utils.helpers.</span></span><span class="sig-name descname"><span class="pre">hour_to_time_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hour</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/iztro_py/utils/helpers.html#hour_to_time_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#iztro_py.utils.helpers.hour_to_time_index" title="Link to this definition"></a></dt>
+<dd><p>将 24 小时制的小时数 (0-23) 映射为时辰索引 (0-12)</p>
+<p>规则与 iztro 保持一致：
+- 子时分早子时(0)与晚子时(12)：23点对应晚子时(12)，0点对应早子时(0)
+- 其他小时按每两小时一个时辰：(hour + 1) // 2</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>hour</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – 小时 (0-23)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>时辰索引 (0-12)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="iztro_py.utils.helpers.calculate_nominal_age">
+<span class="sig-prename descclassname"><span class="pre">iztro_py.utils.helpers.</span></span><span class="sig-name descname"><span class="pre">calculate_nominal_age</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">birth_year</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_year</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">age_divide</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'normal'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/iztro_py/utils/helpers.html#calculate_nominal_age"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#iztro_py.utils.helpers.calculate_nominal_age" title="Link to this definition"></a></dt>
+<dd><p>计算虚岁</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>birth_year</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – 出生年份</p></li>
+<li><p><strong>target_year</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – 目标年份</p></li>
+<li><p><strong>age_divide</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – 年龄划分方式
+- ‘normal’: 按自然年计算
+- ‘birthday’: 按生日计算（需要完整日期，此处简化处理）</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>虚岁</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="iztro_py.utils.helpers.get_palace_index_by_name">
+<span class="sig-prename descclassname"><span class="pre">iztro_py.utils.helpers.</span></span><span class="sig-name descname"><span class="pre">get_palace_index_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">palace_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/iztro_py/utils/helpers.html#get_palace_index_by_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#iztro_py.utils.helpers.get_palace_index_by_name" title="Link to this definition"></a></dt>
+<dd><p>根据宫位名称获取索引</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>palace_name</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – 宫位名称（中文或英文key）</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]</span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>宫位索引 (0-11)，如果未找到返回None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="iztro_py.utils.helpers.get_decadal_range">
+<span class="sig-prename descclassname"><span class="pre">iztro_py.utils.helpers.</span></span><span class="sig-name descname"><span class="pre">get_decadal_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">five_elements_class</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">palace_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gender</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">soul_palace_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year_branch_yin_yang</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'阳'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/iztro_py/utils/helpers.html#get_decadal_range"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#iztro_py.utils.helpers.get_decadal_range" title="Link to this definition"></a></dt>
+<dd><p>计算大限年龄范围</p>
+<p>大限从命宫开始，每个宫位管10年
+男命阳年生人、女命阴年生人：顺行
+男命阴年生人、女命阳年生人：逆行</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>five_elements_class</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="index.html#iztro_py.data.types.FiveElementsClass" title="iztro_py.data.types.FiveElementsClass"><code class="xref py py-class docutils literal notranslate"><span class="pre">FiveElementsClass</span></code></a></span>) – 五行局</p></li>
+<li><p><strong>palace_index</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – 宫位索引 (0-11)</p></li>
+<li><p><strong>gender</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – 性别 (‘男’ 或 ‘女’)</p></li>
+<li><p><strong>soul_palace_index</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – 命宫索引（默认0）</p></li>
+<li><p><strong>year_branch_yin_yang</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – 年支阴阳（默认’阳’）</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]</span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(起始年龄, 截止年龄) 元组</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="iztro_py.utils.helpers.get_decadal_palace_index">
+<span class="sig-prename descclassname"><span class="pre">iztro_py.utils.helpers.</span></span><span class="sig-name descname"><span class="pre">get_decadal_palace_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">age</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">five_elements_class</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">soul_palace_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gender</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year_branch_yin_yang</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'阳'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/iztro_py/utils/helpers.html#get_decadal_palace_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#iztro_py.utils.helpers.get_decadal_palace_index" title="Link to this definition"></a></dt>
+<dd><p>根据年龄获取大限所在的宫位索引</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>age</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – 虚岁</p></li>
+<li><p><strong>five_elements_class</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="index.html#iztro_py.data.types.FiveElementsClass" title="iztro_py.data.types.FiveElementsClass"><code class="xref py py-class docutils literal notranslate"><span class="pre">FiveElementsClass</span></code></a></span>) – 五行局</p></li>
+<li><p><strong>soul_palace_index</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – 命宫索引</p></li>
+<li><p><strong>gender</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – 性别</p></li>
+<li><p><strong>year_branch_yin_yang</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – 年支阴阳</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>大限宫位索引</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="star.html" class="btn btn-neutral float-left" title="star 模块" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="i18n.html" class="btn btn-neutral float-right" title="i18n 模块" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, iztro-py Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

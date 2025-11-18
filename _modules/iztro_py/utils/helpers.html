@@ -1,0 +1,474 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>iztro_py.utils.helpers &mdash; iztro-py 0.3.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=d5a15cff"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            iztro-py
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">内容目录:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">安装</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart.html">快速开始</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">使用示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">更新日志</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">iztro-py</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">iztro_py.utils.helpers</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for iztro_py.utils.helpers</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Helper utilities for iztro-py</span>
+
+<span class="sd">Common utility functions used throughout the library.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">HeavenlyStemName</span><span class="p">,</span> <span class="n">EarthlyBranchName</span><span class="p">,</span> <span class="n">FiveElementsClass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.constants</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">HEAVENLY_STEMS</span><span class="p">,</span>
+    <span class="n">EARTHLY_BRANCHES</span><span class="p">,</span>
+    <span class="n">FIVE_ELEMENTS_CLASS_LOOKUP</span><span class="p">,</span>
+    <span class="n">fix_index</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="get_five_elements_class">
+<a class="viewcode-back" href="../../../api/utils.html#iztro_py.utils.helpers.get_five_elements_class">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_five_elements_class</span><span class="p">(</span>
+    <span class="n">heavenly_stem</span><span class="p">:</span> <span class="n">HeavenlyStemName</span><span class="p">,</span> <span class="n">earthly_branch</span><span class="p">:</span> <span class="n">EarthlyBranchName</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FiveElementsClass</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    根据命宫天干地支获取五行局</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        heavenly_stem: 命宫天干</span>
+<span class="sd">        earthly_branch: 命宫地支</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        五行局枚举值</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">stem_index</span> <span class="o">=</span> <span class="n">HEAVENLY_STEMS</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">heavenly_stem</span><span class="p">)</span>
+    <span class="n">branch_index</span> <span class="o">=</span> <span class="n">EARTHLY_BRANCHES</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">earthly_branch</span><span class="p">)</span>
+
+    <span class="n">class_value</span> <span class="o">=</span> <span class="n">FIVE_ELEMENTS_CLASS_LOOKUP</span><span class="p">[</span><span class="n">stem_index</span><span class="p">][</span><span class="n">branch_index</span><span class="p">]</span>
+
+    <span class="c1"># 转换为枚举</span>
+    <span class="k">if</span> <span class="n">class_value</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">FiveElementsClass</span><span class="o">.</span><span class="n">WATER_2</span>
+    <span class="k">elif</span> <span class="n">class_value</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">FiveElementsClass</span><span class="o">.</span><span class="n">WOOD_3</span>
+    <span class="k">elif</span> <span class="n">class_value</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">FiveElementsClass</span><span class="o">.</span><span class="n">METAL_4</span>
+    <span class="k">elif</span> <span class="n">class_value</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">FiveElementsClass</span><span class="o">.</span><span class="n">EARTH_5</span>
+    <span class="k">elif</span> <span class="n">class_value</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">FiveElementsClass</span><span class="o">.</span><span class="n">FIRE_6</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid five elements class value: </span><span class="si">{</span><span class="n">class_value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_five_elements_class_name">
+<a class="viewcode-back" href="../../../api/utils.html#iztro_py.utils.helpers.get_five_elements_class_name">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_five_elements_class_name</span><span class="p">(</span><span class="n">five_elements_class</span><span class="p">:</span> <span class="n">FiveElementsClass</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    获取五行局的中文名称</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        five_elements_class: 五行局枚举</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        中文名称，如 &quot;水二局&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">FiveElementsClass</span><span class="o">.</span><span class="n">WATER_2</span><span class="p">:</span> <span class="s2">&quot;水二局&quot;</span><span class="p">,</span>
+        <span class="n">FiveElementsClass</span><span class="o">.</span><span class="n">WOOD_3</span><span class="p">:</span> <span class="s2">&quot;木三局&quot;</span><span class="p">,</span>
+        <span class="n">FiveElementsClass</span><span class="o">.</span><span class="n">METAL_4</span><span class="p">:</span> <span class="s2">&quot;金四局&quot;</span><span class="p">,</span>
+        <span class="n">FiveElementsClass</span><span class="o">.</span><span class="n">EARTH_5</span><span class="p">:</span> <span class="s2">&quot;土五局&quot;</span><span class="p">,</span>
+        <span class="n">FiveElementsClass</span><span class="o">.</span><span class="n">FIRE_6</span><span class="p">:</span> <span class="s2">&quot;火六局&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">names</span><span class="p">[</span><span class="n">five_elements_class</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="get_time_range">
+<a class="viewcode-back" href="../../../api/utils.html#iztro_py.utils.helpers.get_time_range">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_time_range</span><span class="p">(</span><span class="n">time_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    获取时辰的时间范围</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        time_index: 时辰索引 (0-12)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        时间范围字符串，如 &quot;11:00~13:00&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">time_ranges</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;00:00~01:00&quot;</span><span class="p">,</span>  <span class="c1"># 早子时</span>
+        <span class="s2">&quot;01:00~03:00&quot;</span><span class="p">,</span>  <span class="c1"># 丑时</span>
+        <span class="s2">&quot;03:00~05:00&quot;</span><span class="p">,</span>  <span class="c1"># 寅时</span>
+        <span class="s2">&quot;05:00~07:00&quot;</span><span class="p">,</span>  <span class="c1"># 卯时</span>
+        <span class="s2">&quot;07:00~09:00&quot;</span><span class="p">,</span>  <span class="c1"># 辰时</span>
+        <span class="s2">&quot;09:00~11:00&quot;</span><span class="p">,</span>  <span class="c1"># 巳时</span>
+        <span class="s2">&quot;11:00~13:00&quot;</span><span class="p">,</span>  <span class="c1"># 午时</span>
+        <span class="s2">&quot;13:00~15:00&quot;</span><span class="p">,</span>  <span class="c1"># 未时</span>
+        <span class="s2">&quot;15:00~17:00&quot;</span><span class="p">,</span>  <span class="c1"># 申时</span>
+        <span class="s2">&quot;17:00~19:00&quot;</span><span class="p">,</span>  <span class="c1"># 酉时</span>
+        <span class="s2">&quot;19:00~21:00&quot;</span><span class="p">,</span>  <span class="c1"># 戌时</span>
+        <span class="s2">&quot;21:00~23:00&quot;</span><span class="p">,</span>  <span class="c1"># 亥时</span>
+        <span class="s2">&quot;23:00~00:00&quot;</span><span class="p">,</span>  <span class="c1"># 晚子时</span>
+    <span class="p">]</span>
+
+    <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">time_index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">time_ranges</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">time_ranges</span><span class="p">[</span><span class="n">time_index</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid time index: </span><span class="si">{</span><span class="n">time_index</span><span class="si">}</span><span class="s2">. Must be 0-12.&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_time_name">
+<a class="viewcode-back" href="../../../api/utils.html#iztro_py.utils.helpers.get_time_name">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_time_name</span><span class="p">(</span><span class="n">time_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    获取时辰的中文名称</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        time_index: 时辰索引 (0-12)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        时辰中文名称，如 &quot;午时&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">time_names</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;子时&quot;</span><span class="p">,</span>  <span class="c1"># 0 早子时</span>
+        <span class="s2">&quot;丑时&quot;</span><span class="p">,</span>  <span class="c1"># 1</span>
+        <span class="s2">&quot;寅时&quot;</span><span class="p">,</span>  <span class="c1"># 2</span>
+        <span class="s2">&quot;卯时&quot;</span><span class="p">,</span>  <span class="c1"># 3</span>
+        <span class="s2">&quot;辰时&quot;</span><span class="p">,</span>  <span class="c1"># 4</span>
+        <span class="s2">&quot;巳时&quot;</span><span class="p">,</span>  <span class="c1"># 5</span>
+        <span class="s2">&quot;午时&quot;</span><span class="p">,</span>  <span class="c1"># 6</span>
+        <span class="s2">&quot;未时&quot;</span><span class="p">,</span>  <span class="c1"># 7</span>
+        <span class="s2">&quot;申时&quot;</span><span class="p">,</span>  <span class="c1"># 8</span>
+        <span class="s2">&quot;酉时&quot;</span><span class="p">,</span>  <span class="c1"># 9</span>
+        <span class="s2">&quot;戌时&quot;</span><span class="p">,</span>  <span class="c1"># 10</span>
+        <span class="s2">&quot;亥时&quot;</span><span class="p">,</span>  <span class="c1"># 11</span>
+        <span class="s2">&quot;子时&quot;</span><span class="p">,</span>  <span class="c1"># 12 晚子时</span>
+    <span class="p">]</span>
+
+    <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">time_index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">time_names</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">time_names</span><span class="p">[</span><span class="n">time_index</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid time index: </span><span class="si">{</span><span class="n">time_index</span><span class="si">}</span><span class="s2">. Must be 0-12.&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="hour_to_time_index">
+<a class="viewcode-back" href="../../../api/utils.html#iztro_py.utils.helpers.hour_to_time_index">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">hour_to_time_index</span><span class="p">(</span><span class="n">hour</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    将 24 小时制的小时数 (0-23) 映射为时辰索引 (0-12)</span>
+
+<span class="sd">    规则与 iztro 保持一致：</span>
+<span class="sd">    - 子时分早子时(0)与晚子时(12)：23点对应晚子时(12)，0点对应早子时(0)</span>
+<span class="sd">    - 其他小时按每两小时一个时辰：(hour + 1) // 2</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        hour: 小时 (0-23)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        时辰索引 (0-12)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">hour</span> <span class="o">&lt;=</span> <span class="mi">23</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;hour must be in 0..23, got </span><span class="si">{</span><span class="n">hour</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">hour</span> <span class="o">==</span> <span class="mi">23</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">12</span>  <span class="c1"># 晚子时</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">hour</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span></div>
+
+
+
+<div class="viewcode-block" id="calculate_nominal_age">
+<a class="viewcode-back" href="../../../api/utils.html#iztro_py.utils.helpers.calculate_nominal_age">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">calculate_nominal_age</span><span class="p">(</span><span class="n">birth_year</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">target_year</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">age_divide</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;normal&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    计算虚岁</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        birth_year: 出生年份</span>
+<span class="sd">        target_year: 目标年份</span>
+<span class="sd">        age_divide: 年龄划分方式</span>
+<span class="sd">            - &#39;normal&#39;: 按自然年计算</span>
+<span class="sd">            - &#39;birthday&#39;: 按生日计算（需要完整日期，此处简化处理）</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        虚岁</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># 虚岁 = 当前年份 - 出生年份 + 1</span>
+    <span class="k">return</span> <span class="n">target_year</span> <span class="o">-</span> <span class="n">birth_year</span> <span class="o">+</span> <span class="mi">1</span></div>
+
+
+
+<div class="viewcode-block" id="get_palace_index_by_name">
+<a class="viewcode-back" href="../../../api/utils.html#iztro_py.utils.helpers.get_palace_index_by_name">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_palace_index_by_name</span><span class="p">(</span><span class="n">palace_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    根据宫位名称获取索引</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        palace_name: 宫位名称（中文或英文key）</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        宫位索引 (0-11)，如果未找到返回None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># 中文名称映射</span>
+    <span class="n">chinese_names</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;命宫&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s2">&quot;父母宫&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="s2">&quot;福德宫&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="s2">&quot;田宅宫&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+        <span class="s2">&quot;官禄宫&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+        <span class="s2">&quot;奴仆宫&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+        <span class="s2">&quot;交友宫&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>  <span class="c1"># 奴仆宫别名</span>
+        <span class="s2">&quot;迁移宫&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+        <span class="s2">&quot;疾厄宫&quot;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span>
+        <span class="s2">&quot;财帛宫&quot;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+        <span class="s2">&quot;子女宫&quot;</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span>
+        <span class="s2">&quot;夫妻宫&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="s2">&quot;兄弟宫&quot;</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span>
+        <span class="c1"># 简化别名（不带&quot;宫&quot;）</span>
+        <span class="s2">&quot;命&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s2">&quot;父母&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="s2">&quot;福德&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="s2">&quot;田宅&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+        <span class="s2">&quot;官禄&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+        <span class="s2">&quot;事业&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>  <span class="c1"># 官禄宫别名</span>
+        <span class="s2">&quot;奴仆&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+        <span class="s2">&quot;交友&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+        <span class="s2">&quot;迁移&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+        <span class="s2">&quot;疾厄&quot;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span>
+        <span class="s2">&quot;财帛&quot;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+        <span class="s2">&quot;子女&quot;</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span>
+        <span class="s2">&quot;夫妻&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="s2">&quot;兄弟&quot;</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="c1"># 英文key映射</span>
+    <span class="n">english_keys</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;soulPalace&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s2">&quot;parentsPalace&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="s2">&quot;spiritPalace&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="s2">&quot;propertyPalace&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+        <span class="s2">&quot;careerPalace&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+        <span class="s2">&quot;friendsPalace&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+        <span class="s2">&quot;surfacePalace&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+        <span class="s2">&quot;healthPalace&quot;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span>
+        <span class="s2">&quot;wealthPalace&quot;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+        <span class="s2">&quot;childrenPalace&quot;</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span>
+        <span class="s2">&quot;spousePalace&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="s2">&quot;siblingsPalace&quot;</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span>
+        <span class="c1"># 简化别名（不带&quot;Palace&quot;）</span>
+        <span class="s2">&quot;soul&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s2">&quot;parents&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="s2">&quot;spirit&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="s2">&quot;property&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+        <span class="s2">&quot;career&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+        <span class="s2">&quot;friends&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+        <span class="s2">&quot;surface&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+        <span class="s2">&quot;health&quot;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span>
+        <span class="s2">&quot;wealth&quot;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+        <span class="s2">&quot;children&quot;</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span>
+        <span class="s2">&quot;spouse&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="s2">&quot;siblings&quot;</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="c1"># 先尝试中文</span>
+    <span class="k">if</span> <span class="n">palace_name</span> <span class="ow">in</span> <span class="n">chinese_names</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">chinese_names</span><span class="p">[</span><span class="n">palace_name</span><span class="p">]</span>
+
+    <span class="c1"># 再尝试英文</span>
+    <span class="k">if</span> <span class="n">palace_name</span> <span class="ow">in</span> <span class="n">english_keys</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">english_keys</span><span class="p">[</span><span class="n">palace_name</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="get_decadal_range">
+<a class="viewcode-back" href="../../../api/utils.html#iztro_py.utils.helpers.get_decadal_range">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_decadal_range</span><span class="p">(</span>
+    <span class="n">five_elements_class</span><span class="p">:</span> <span class="n">FiveElementsClass</span><span class="p">,</span>
+    <span class="n">palace_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">gender</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">soul_palace_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">year_branch_yin_yang</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;阳&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    计算大限年龄范围</span>
+
+<span class="sd">    大限从命宫开始，每个宫位管10年</span>
+<span class="sd">    男命阳年生人、女命阴年生人：顺行</span>
+<span class="sd">    男命阴年生人、女命阳年生人：逆行</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        five_elements_class: 五行局</span>
+<span class="sd">        palace_index: 宫位索引 (0-11)</span>
+<span class="sd">        gender: 性别 (&#39;男&#39; 或 &#39;女&#39;)</span>
+<span class="sd">        soul_palace_index: 命宫索引（默认0）</span>
+<span class="sd">        year_branch_yin_yang: 年支阴阳（默认&#39;阳&#39;）</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        (起始年龄, 截止年龄) 元组</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># 五行局决定起始年龄</span>
+    <span class="n">start_age</span> <span class="o">=</span> <span class="n">five_elements_class</span><span class="o">.</span><span class="n">value</span>
+
+    <span class="c1"># 判断顺逆行</span>
+    <span class="c1"># 男阳女阴顺行，男阴女阳逆行</span>
+    <span class="n">is_forward</span> <span class="o">=</span> <span class="p">(</span><span class="n">gender</span> <span class="o">==</span> <span class="s2">&quot;男&quot;</span> <span class="ow">and</span> <span class="n">year_branch_yin_yang</span> <span class="o">==</span> <span class="s2">&quot;阳&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+        <span class="n">gender</span> <span class="o">==</span> <span class="s2">&quot;女&quot;</span> <span class="ow">and</span> <span class="n">year_branch_yin_yang</span> <span class="o">==</span> <span class="s2">&quot;阴&quot;</span>
+    <span class="p">)</span>
+
+    <span class="c1"># 计算此宫位是第几个大限（从0开始）</span>
+    <span class="k">if</span> <span class="n">is_forward</span><span class="p">:</span>
+        <span class="c1"># 顺行：从命宫开始往后数</span>
+        <span class="n">decadal_order</span> <span class="o">=</span> <span class="p">(</span><span class="n">palace_index</span> <span class="o">-</span> <span class="n">soul_palace_index</span><span class="p">)</span> <span class="o">%</span> <span class="mi">12</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># 逆行：从命宫开始往前数</span>
+        <span class="n">decadal_order</span> <span class="o">=</span> <span class="p">(</span><span class="n">soul_palace_index</span> <span class="o">-</span> <span class="n">palace_index</span><span class="p">)</span> <span class="o">%</span> <span class="mi">12</span>
+
+    <span class="c1"># 起始年龄</span>
+    <span class="n">range_start</span> <span class="o">=</span> <span class="n">start_age</span> <span class="o">+</span> <span class="n">decadal_order</span> <span class="o">*</span> <span class="mi">10</span>
+    <span class="n">range_end</span> <span class="o">=</span> <span class="n">range_start</span> <span class="o">+</span> <span class="mi">9</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">range_start</span><span class="p">,</span> <span class="n">range_end</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_decadal_palace_index">
+<a class="viewcode-back" href="../../../api/utils.html#iztro_py.utils.helpers.get_decadal_palace_index">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_decadal_palace_index</span><span class="p">(</span>
+    <span class="n">age</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">five_elements_class</span><span class="p">:</span> <span class="n">FiveElementsClass</span><span class="p">,</span>
+    <span class="n">soul_palace_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">gender</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">year_branch_yin_yang</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;阳&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    根据年龄获取大限所在的宫位索引</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        age: 虚岁</span>
+<span class="sd">        five_elements_class: 五行局</span>
+<span class="sd">        soul_palace_index: 命宫索引</span>
+<span class="sd">        gender: 性别</span>
+<span class="sd">        year_branch_yin_yang: 年支阴阳</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        大限宫位索引</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">start_age</span> <span class="o">=</span> <span class="n">five_elements_class</span><span class="o">.</span><span class="n">value</span>
+
+    <span class="c1"># 判断顺逆行</span>
+    <span class="c1"># 男阳女阴顺行，男阴女阳逆行</span>
+    <span class="n">is_forward</span> <span class="o">=</span> <span class="p">(</span><span class="n">gender</span> <span class="o">==</span> <span class="s2">&quot;男&quot;</span> <span class="ow">and</span> <span class="n">year_branch_yin_yang</span> <span class="o">==</span> <span class="s2">&quot;阳&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+        <span class="n">gender</span> <span class="o">==</span> <span class="s2">&quot;女&quot;</span> <span class="ow">and</span> <span class="n">year_branch_yin_yang</span> <span class="o">==</span> <span class="s2">&quot;阴&quot;</span>
+    <span class="p">)</span>
+
+    <span class="c1"># 计算从命宫开始的第几个大限（从0开始）</span>
+    <span class="n">decadal_order</span> <span class="o">=</span> <span class="p">(</span><span class="n">age</span> <span class="o">-</span> <span class="n">start_age</span><span class="p">)</span> <span class="o">//</span> <span class="mi">10</span>
+
+    <span class="k">if</span> <span class="n">is_forward</span><span class="p">:</span>
+        <span class="c1"># 顺行</span>
+        <span class="n">palace_index</span> <span class="o">=</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">soul_palace_index</span> <span class="o">+</span> <span class="n">decadal_order</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># 逆行</span>
+        <span class="n">palace_index</span> <span class="o">=</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">soul_palace_index</span> <span class="o">-</span> <span class="n">decadal_order</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">palace_index</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, iztro-py Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

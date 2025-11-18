@@ -1,0 +1,278 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>快速开始 &mdash; iztro-py 0.3.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=d5a15cff"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="API 参考" href="api/index.html" />
+    <link rel="prev" title="安装" href="installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            iztro-py
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">内容目录:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">安装</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">快速开始</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">基本概念</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">创建星盘</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id4">使用阳历日期</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">使用农历日期</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id6">查询星盘信息</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id7">获取基本信息</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id8">获取宫位信息</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id9">查询星曜</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id10">宫位星曜查询</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id11">三方四正查询</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id12">运限查询</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id13">多语言支持</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id14">链式调用</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id15">下一步</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/index.html">API 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">使用示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">更新日志</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">iztro-py</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">快速开始</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/quickstart.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="id1">
+<h1>快速开始<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
+<p>这个快速指南将帮助你在几分钟内开始使用 iztro-py。</p>
+<section id="id2">
+<h2>基本概念<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<p>iztro-py 用于计算紫微斗数星盘，需要以下信息：</p>
+<ul class="simple">
+<li><p>出生日期（阳历或农历）</p></li>
+<li><p>出生时辰（0-12，其中0为早子时，12为晚子时）</p></li>
+<li><p>性别（’男’ 或 ‘女’）</p></li>
+</ul>
+</section>
+<section id="id3">
+<h2>创建星盘<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
+<section id="id4">
+<h3>使用阳历日期<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py</span><span class="w"> </span><span class="kn">import</span> <span class="n">by_solar</span>
+
+<span class="c1"># 创建星盘：2000年8月16日 午时 男命</span>
+<span class="n">chart</span> <span class="o">=</span> <span class="n">by_solar</span><span class="p">(</span><span class="s1">&#39;2000-8-16&#39;</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;男&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id5">
+<h3>使用农历日期<a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py</span><span class="w"> </span><span class="kn">import</span> <span class="n">by_lunar</span>
+
+<span class="c1"># 创建星盘：农历2000年7月17日 午时 男命</span>
+<span class="n">chart</span> <span class="o">=</span> <span class="n">by_lunar</span><span class="p">(</span><span class="s1">&#39;2000-7-17&#39;</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;男&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id6">
+<h2>查询星盘信息<a class="headerlink" href="#id6" title="Link to this heading"></a></h2>
+<section id="id7">
+<h3>获取基本信息<a class="headerlink" href="#id7" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;性别: </span><span class="si">{</span><span class="n">chart</span><span class="o">.</span><span class="n">gender</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;阳历: </span><span class="si">{</span><span class="n">chart</span><span class="o">.</span><span class="n">solar_date</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;农历: </span><span class="si">{</span><span class="n">chart</span><span class="o">.</span><span class="n">lunar_date</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;生肖: </span><span class="si">{</span><span class="n">chart</span><span class="o">.</span><span class="n">zodiac</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;星座: </span><span class="si">{</span><span class="n">chart</span><span class="o">.</span><span class="n">sign</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;五行局: </span><span class="si">{</span><span class="n">chart</span><span class="o">.</span><span class="n">five_elements_class</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id8">
+<h3>获取宫位信息<a class="headerlink" href="#id8" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 获取命宫</span>
+<span class="n">soul_palace</span> <span class="o">=</span> <span class="n">chart</span><span class="o">.</span><span class="n">get_soul_palace</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;命宫: </span><span class="si">{</span><span class="n">soul_palace</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># 获取其他宫位</span>
+<span class="n">wealth_palace</span> <span class="o">=</span> <span class="n">chart</span><span class="o">.</span><span class="n">palace</span><span class="p">(</span><span class="s1">&#39;财帛宫&#39;</span><span class="p">)</span>
+<span class="n">career_palace</span> <span class="o">=</span> <span class="n">chart</span><span class="o">.</span><span class="n">palace</span><span class="p">(</span><span class="s1">&#39;官禄宫&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id9">
+<h3>查询星曜<a class="headerlink" href="#id9" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 查询紫微星</span>
+<span class="n">ziwei</span> <span class="o">=</span> <span class="n">chart</span><span class="o">.</span><span class="n">star</span><span class="p">(</span><span class="s1">&#39;紫微&#39;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">ziwei</span><span class="p">:</span>
+    <span class="n">palace</span> <span class="o">=</span> <span class="n">ziwei</span><span class="o">.</span><span class="n">palace</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;紫微星在 </span><span class="si">{</span><span class="n">palace</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;亮度: </span><span class="si">{</span><span class="n">ziwei</span><span class="o">.</span><span class="n">brightness</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;四化: </span><span class="si">{</span><span class="n">ziwei</span><span class="o">.</span><span class="n">mutagen</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id10">
+<h3>宫位星曜查询<a class="headerlink" href="#id10" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 获取命宫的所有主星</span>
+<span class="n">soul_palace</span> <span class="o">=</span> <span class="n">chart</span><span class="o">.</span><span class="n">get_soul_palace</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">star</span> <span class="ow">in</span> <span class="n">soul_palace</span><span class="o">.</span><span class="n">major_stars</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">star</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> - 亮度:</span><span class="si">{</span><span class="n">star</span><span class="o">.</span><span class="n">brightness</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># 检查宫位是否包含特定星曜</span>
+<span class="k">if</span> <span class="n">soul_palace</span><span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s1">&#39;紫微&#39;</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;命宫有紫微星&quot;</span><span class="p">)</span>
+
+<span class="c1"># 检查宫位是否有四化</span>
+<span class="k">if</span> <span class="n">soul_palace</span><span class="o">.</span><span class="n">has_mutagen</span><span class="p">(</span><span class="s1">&#39;禄&#39;</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;命宫有化禄星&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id11">
+<h3>三方四正查询<a class="headerlink" href="#id11" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 获取命宫的三方四正</span>
+<span class="n">surpalaces</span> <span class="o">=</span> <span class="n">chart</span><span class="o">.</span><span class="n">get_soul_palace</span><span class="p">()</span><span class="o">.</span><span class="n">surrounded_palaces</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;对宫: </span><span class="si">{</span><span class="n">surpalaces</span><span class="o">.</span><span class="n">opposite</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;财帛位: </span><span class="si">{</span><span class="n">surpalaces</span><span class="o">.</span><span class="n">wealth</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;官禄位: </span><span class="si">{</span><span class="n">surpalaces</span><span class="o">.</span><span class="n">career</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># 检查三方四正是否有某星</span>
+<span class="k">if</span> <span class="n">surpalaces</span><span class="o">.</span><span class="n">have</span><span class="p">(</span><span class="s1">&#39;天马&#39;</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;三方四正有天马星&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id12">
+<h2>运限查询<a class="headerlink" href="#id12" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 获取某个年龄的运限</span>
+<span class="n">horoscope</span> <span class="o">=</span> <span class="n">chart</span><span class="o">.</span><span class="n">horoscope</span><span class="p">(</span><span class="mi">25</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;大限: </span><span class="si">{</span><span class="n">horoscope</span><span class="o">.</span><span class="n">decadal</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;流年: </span><span class="si">{</span><span class="n">horoscope</span><span class="o">.</span><span class="n">yearly</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;流月: </span><span class="si">{</span><span class="n">horoscope</span><span class="o">.</span><span class="n">monthly</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id13">
+<h2>多语言支持<a class="headerlink" href="#id13" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 设置语言</span>
+<span class="n">chart</span><span class="o">.</span><span class="n">set_language</span><span class="p">(</span><span class="s1">&#39;en-US&#39;</span><span class="p">)</span>  <span class="c1"># 英文</span>
+<span class="n">chart</span><span class="o">.</span><span class="n">set_language</span><span class="p">(</span><span class="s1">&#39;zh-TW&#39;</span><span class="p">)</span>  <span class="c1"># 繁体中文</span>
+<span class="n">chart</span><span class="o">.</span><span class="n">set_language</span><span class="p">(</span><span class="s1">&#39;ja-JP&#39;</span><span class="p">)</span>  <span class="c1"># 日文</span>
+<span class="n">chart</span><span class="o">.</span><span class="n">set_language</span><span class="p">(</span><span class="s1">&#39;ko-KR&#39;</span><span class="p">)</span>  <span class="c1"># 韩文</span>
+<span class="n">chart</span><span class="o">.</span><span class="n">set_language</span><span class="p">(</span><span class="s1">&#39;vi-VN&#39;</span><span class="p">)</span>  <span class="c1"># 越南文</span>
+</pre></div>
+</div>
+</section>
+<section id="id14">
+<h2>链式调用<a class="headerlink" href="#id14" title="Link to this heading"></a></h2>
+<p>iztro-py 支持链式调用，让代码更简洁：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 检查紫微星的三方四正是否有化忌</span>
+<span class="k">if</span> <span class="n">chart</span><span class="o">.</span><span class="n">star</span><span class="p">(</span><span class="s1">&#39;紫微&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">surrounded_palaces</span><span class="p">()</span><span class="o">.</span><span class="n">have_mutagen</span><span class="p">(</span><span class="s1">&#39;忌&#39;</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;紫微星三方四正有化忌&quot;</span><span class="p">)</span>
+
+<span class="c1"># 检查命宫主星的亮度</span>
+<span class="n">soul_palace</span> <span class="o">=</span> <span class="n">chart</span><span class="o">.</span><span class="n">get_soul_palace</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">star</span> <span class="ow">in</span> <span class="n">soul_palace</span><span class="o">.</span><span class="n">major_stars</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">star</span><span class="o">.</span><span class="n">with_brightness</span><span class="p">([</span><span class="s1">&#39;庙&#39;</span><span class="p">,</span> <span class="s1">&#39;旺&#39;</span><span class="p">]):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">star</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> 庙旺&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id15">
+<h2>下一步<a class="headerlink" href="#id15" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>查看 <a class="reference internal" href="api/index.html"><span class="doc">API 参考</span></a> 了解完整的API文档</p></li>
+<li><p>查看 <a class="reference internal" href="examples.html"><span class="doc">使用示例</span></a> 了解更多使用示例</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="installation.html" class="btn btn-neutral float-left" title="安装" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="api/index.html" class="btn btn-neutral float-right" title="API 参考" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, iztro-py Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

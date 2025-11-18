@@ -1,0 +1,309 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>iztro_py.data.heavenly_stems &mdash; iztro-py 0.3.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=d5a15cff"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            iztro-py
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">内容目录:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">安装</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart.html">快速开始</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">使用示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">更新日志</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">iztro-py</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">iztro_py.data.heavenly_stems</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for iztro_py.data.heavenly_stems</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Heavenly Stems (天干) data and properties</span>
+
+<span class="sd">Contains detailed information about the ten heavenly stems including</span>
+<span class="sd">yin-yang, five elements, clashes, and mutagen (四化) configurations.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">HeavenlyStemName</span><span class="p">,</span> <span class="n">YinYang</span><span class="p">,</span> <span class="n">FiveElements</span><span class="p">,</span> <span class="n">StarName</span><span class="p">,</span> <span class="n">Mutagen</span>
+
+
+<div class="viewcode-block" id="HeavenlyStem">
+<a class="viewcode-back" href="../../../api/data.html#iztro_py.data.heavenly_stems.HeavenlyStem">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">HeavenlyStem</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;天干数据类&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">yin_yang</span><span class="p">:</span> <span class="n">YinYang</span><span class="p">,</span>
+        <span class="n">five_elements</span><span class="p">:</span> <span class="n">FiveElements</span><span class="p">,</span>
+        <span class="n">crash</span><span class="p">:</span> <span class="n">HeavenlyStemName</span><span class="p">,</span>
+        <span class="n">mutagen</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">StarName</span><span class="p">],</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">yin_yang</span> <span class="o">=</span> <span class="n">yin_yang</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">five_elements</span> <span class="o">=</span> <span class="n">five_elements</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">crash</span> <span class="o">=</span> <span class="n">crash</span>  <span class="c1"># 相冲的天干</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mutagen</span> <span class="o">=</span> <span class="n">mutagen</span>  <span class="c1"># 四化：禄、权、科、忌</span></div>
+
+
+
+<span class="c1"># ============================================================================</span>
+<span class="c1"># Heavenly Stems Configuration</span>
+<span class="c1"># ============================================================================</span>
+
+<span class="n">HEAVENLY_STEMS_CONFIG</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">HeavenlyStemName</span><span class="p">,</span> <span class="n">HeavenlyStem</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="c1"># 甲天干</span>
+    <span class="s2">&quot;jiaHeavenly&quot;</span><span class="p">:</span> <span class="n">HeavenlyStem</span><span class="p">(</span>
+        <span class="n">yin_yang</span><span class="o">=</span><span class="s2">&quot;阳&quot;</span><span class="p">,</span>
+        <span class="n">five_elements</span><span class="o">=</span><span class="s2">&quot;木&quot;</span><span class="p">,</span>
+        <span class="n">crash</span><span class="o">=</span><span class="s2">&quot;gengHeavenly&quot;</span><span class="p">,</span>
+        <span class="n">mutagen</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;lianzhenMaj&quot;</span><span class="p">,</span> <span class="s2">&quot;pojunMaj&quot;</span><span class="p">,</span> <span class="s2">&quot;wuquMaj&quot;</span><span class="p">,</span> <span class="s2">&quot;taiyangMaj&quot;</span><span class="p">],</span>  <span class="c1"># 廉禄、破权、武科、阳忌</span>
+    <span class="p">),</span>
+    <span class="c1"># 乙天干</span>
+    <span class="s2">&quot;yiHeavenly&quot;</span><span class="p">:</span> <span class="n">HeavenlyStem</span><span class="p">(</span>
+        <span class="n">yin_yang</span><span class="o">=</span><span class="s2">&quot;阴&quot;</span><span class="p">,</span>
+        <span class="n">five_elements</span><span class="o">=</span><span class="s2">&quot;木&quot;</span><span class="p">,</span>
+        <span class="n">crash</span><span class="o">=</span><span class="s2">&quot;xinHeavenly&quot;</span><span class="p">,</span>
+        <span class="n">mutagen</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;tianjiMaj&quot;</span><span class="p">,</span> <span class="s2">&quot;tianliangMaj&quot;</span><span class="p">,</span> <span class="s2">&quot;ziweiMaj&quot;</span><span class="p">,</span> <span class="s2">&quot;taiyinMaj&quot;</span><span class="p">],</span>  <span class="c1"># 机禄、梁权、紫科、月忌</span>
+    <span class="p">),</span>
+    <span class="c1"># 丙天干</span>
+    <span class="s2">&quot;bingHeavenly&quot;</span><span class="p">:</span> <span class="n">HeavenlyStem</span><span class="p">(</span>
+        <span class="n">yin_yang</span><span class="o">=</span><span class="s2">&quot;阳&quot;</span><span class="p">,</span>
+        <span class="n">five_elements</span><span class="o">=</span><span class="s2">&quot;火&quot;</span><span class="p">,</span>
+        <span class="n">crash</span><span class="o">=</span><span class="s2">&quot;renHeavenly&quot;</span><span class="p">,</span>
+        <span class="n">mutagen</span><span class="o">=</span><span class="p">[</span>
+            <span class="s2">&quot;tiantongMaj&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;tianjiMaj&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;wenchangMin&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;lianzhenMaj&quot;</span><span class="p">,</span>
+        <span class="p">],</span>  <span class="c1"># 同禄、机权、昌科、廉忌</span>
+    <span class="p">),</span>
+    <span class="c1"># 丁天干</span>
+    <span class="s2">&quot;dingHeavenly&quot;</span><span class="p">:</span> <span class="n">HeavenlyStem</span><span class="p">(</span>
+        <span class="n">yin_yang</span><span class="o">=</span><span class="s2">&quot;阴&quot;</span><span class="p">,</span>
+        <span class="n">five_elements</span><span class="o">=</span><span class="s2">&quot;火&quot;</span><span class="p">,</span>
+        <span class="n">crash</span><span class="o">=</span><span class="s2">&quot;guiHeavenly&quot;</span><span class="p">,</span>
+        <span class="n">mutagen</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;taiyinMaj&quot;</span><span class="p">,</span> <span class="s2">&quot;tiantongMaj&quot;</span><span class="p">,</span> <span class="s2">&quot;tianjiMaj&quot;</span><span class="p">,</span> <span class="s2">&quot;jumenMaj&quot;</span><span class="p">],</span>  <span class="c1"># 阴禄、同权、机科、巨忌</span>
+    <span class="p">),</span>
+    <span class="c1"># 戊天干</span>
+    <span class="s2">&quot;wuHeavenly&quot;</span><span class="p">:</span> <span class="n">HeavenlyStem</span><span class="p">(</span>
+        <span class="n">yin_yang</span><span class="o">=</span><span class="s2">&quot;阳&quot;</span><span class="p">,</span>
+        <span class="n">five_elements</span><span class="o">=</span><span class="s2">&quot;土&quot;</span><span class="p">,</span>
+        <span class="n">crash</span><span class="o">=</span><span class="s2">&quot;jiaHeavenly&quot;</span><span class="p">,</span>
+        <span class="n">mutagen</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;tanlangMaj&quot;</span><span class="p">,</span> <span class="s2">&quot;taiyinMaj&quot;</span><span class="p">,</span> <span class="s2">&quot;youbiMin&quot;</span><span class="p">,</span> <span class="s2">&quot;tianjiMaj&quot;</span><span class="p">],</span>  <span class="c1"># 贪禄、月权、弼科、机忌</span>
+    <span class="p">),</span>
+    <span class="c1"># 己天干</span>
+    <span class="s2">&quot;jiHeavenly&quot;</span><span class="p">:</span> <span class="n">HeavenlyStem</span><span class="p">(</span>
+        <span class="n">yin_yang</span><span class="o">=</span><span class="s2">&quot;阴&quot;</span><span class="p">,</span>
+        <span class="n">five_elements</span><span class="o">=</span><span class="s2">&quot;土&quot;</span><span class="p">,</span>
+        <span class="n">crash</span><span class="o">=</span><span class="s2">&quot;yiHeavenly&quot;</span><span class="p">,</span>
+        <span class="n">mutagen</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;wuquMaj&quot;</span><span class="p">,</span> <span class="s2">&quot;tanlangMaj&quot;</span><span class="p">,</span> <span class="s2">&quot;tianliangMaj&quot;</span><span class="p">,</span> <span class="s2">&quot;wenquMin&quot;</span><span class="p">],</span>  <span class="c1"># 武禄、贪权、梁科、曲忌</span>
+    <span class="p">),</span>
+    <span class="c1"># 庚天干</span>
+    <span class="s2">&quot;gengHeavenly&quot;</span><span class="p">:</span> <span class="n">HeavenlyStem</span><span class="p">(</span>
+        <span class="n">yin_yang</span><span class="o">=</span><span class="s2">&quot;阳&quot;</span><span class="p">,</span>
+        <span class="n">five_elements</span><span class="o">=</span><span class="s2">&quot;金&quot;</span><span class="p">,</span>
+        <span class="n">crash</span><span class="o">=</span><span class="s2">&quot;jiaHeavenly&quot;</span><span class="p">,</span>
+        <span class="n">mutagen</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;taiyangMaj&quot;</span><span class="p">,</span> <span class="s2">&quot;wuquMaj&quot;</span><span class="p">,</span> <span class="s2">&quot;taiyinMaj&quot;</span><span class="p">,</span> <span class="s2">&quot;tiantongMaj&quot;</span><span class="p">],</span>  <span class="c1"># 阳禄、武权、阴科、同忌</span>
+    <span class="p">),</span>
+    <span class="c1"># 辛天干</span>
+    <span class="s2">&quot;xinHeavenly&quot;</span><span class="p">:</span> <span class="n">HeavenlyStem</span><span class="p">(</span>
+        <span class="n">yin_yang</span><span class="o">=</span><span class="s2">&quot;阴&quot;</span><span class="p">,</span>
+        <span class="n">five_elements</span><span class="o">=</span><span class="s2">&quot;金&quot;</span><span class="p">,</span>
+        <span class="n">crash</span><span class="o">=</span><span class="s2">&quot;yiHeavenly&quot;</span><span class="p">,</span>
+        <span class="n">mutagen</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;jumenMaj&quot;</span><span class="p">,</span> <span class="s2">&quot;taiyangMaj&quot;</span><span class="p">,</span> <span class="s2">&quot;wenquMin&quot;</span><span class="p">,</span> <span class="s2">&quot;wenchangMin&quot;</span><span class="p">],</span>  <span class="c1"># 巨禄、阳权、曲科、昌忌</span>
+    <span class="p">),</span>
+    <span class="c1"># 壬天干</span>
+    <span class="s2">&quot;renHeavenly&quot;</span><span class="p">:</span> <span class="n">HeavenlyStem</span><span class="p">(</span>
+        <span class="n">yin_yang</span><span class="o">=</span><span class="s2">&quot;阳&quot;</span><span class="p">,</span>
+        <span class="n">five_elements</span><span class="o">=</span><span class="s2">&quot;水&quot;</span><span class="p">,</span>
+        <span class="n">crash</span><span class="o">=</span><span class="s2">&quot;bingHeavenly&quot;</span><span class="p">,</span>
+        <span class="n">mutagen</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;tianliangMaj&quot;</span><span class="p">,</span> <span class="s2">&quot;ziweiMaj&quot;</span><span class="p">,</span> <span class="s2">&quot;zuofuMin&quot;</span><span class="p">,</span> <span class="s2">&quot;wuquMaj&quot;</span><span class="p">],</span>  <span class="c1"># 梁禄、紫权、左科、武忌</span>
+    <span class="p">),</span>
+    <span class="c1"># 癸天干</span>
+    <span class="s2">&quot;guiHeavenly&quot;</span><span class="p">:</span> <span class="n">HeavenlyStem</span><span class="p">(</span>
+        <span class="n">yin_yang</span><span class="o">=</span><span class="s2">&quot;阴&quot;</span><span class="p">,</span>
+        <span class="n">five_elements</span><span class="o">=</span><span class="s2">&quot;水&quot;</span><span class="p">,</span>
+        <span class="n">crash</span><span class="o">=</span><span class="s2">&quot;dingHeavenly&quot;</span><span class="p">,</span>
+        <span class="n">mutagen</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;pojunMaj&quot;</span><span class="p">,</span> <span class="s2">&quot;jumenMaj&quot;</span><span class="p">,</span> <span class="s2">&quot;taiyinMaj&quot;</span><span class="p">,</span> <span class="s2">&quot;tanlangMaj&quot;</span><span class="p">],</span>  <span class="c1"># 破禄、巨权、阴科、贪忌</span>
+    <span class="p">),</span>
+<span class="p">}</span>
+
+
+<span class="c1"># ============================================================================</span>
+<span class="c1"># Helper Functions</span>
+<span class="c1"># ============================================================================</span>
+
+
+<div class="viewcode-block" id="get_mutagen">
+<a class="viewcode-back" href="../../../api/data.html#iztro_py.data.heavenly_stems.get_mutagen">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_mutagen</span><span class="p">(</span><span class="n">heavenly_stem</span><span class="p">:</span> <span class="n">HeavenlyStemName</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">StarName</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    获取指定天干的四化星</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        heavenly_stem: 天干名称</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        四化星列表 [禄, 权, 科, 忌]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">HEAVENLY_STEMS_CONFIG</span><span class="p">[</span><span class="n">heavenly_stem</span><span class="p">]</span><span class="o">.</span><span class="n">mutagen</span></div>
+
+
+
+<div class="viewcode-block" id="get_mutagen_type">
+<a class="viewcode-back" href="../../../api/data.html#iztro_py.data.heavenly_stems.get_mutagen_type">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_mutagen_type</span><span class="p">(</span><span class="n">heavenly_stem</span><span class="p">:</span> <span class="n">HeavenlyStemName</span><span class="p">,</span> <span class="n">star_name</span><span class="p">:</span> <span class="n">StarName</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Mutagen</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    获取指定星耀在指定天干下的四化类型</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        heavenly_stem: 天干名称</span>
+<span class="sd">        star_name: 星耀名称</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        四化类型：&#39;禄&#39;、&#39;权&#39;、&#39;科&#39;、&#39;忌&#39;，如果不是四化星则返回 None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mutagen_stars</span> <span class="o">=</span> <span class="n">HEAVENLY_STEMS_CONFIG</span><span class="p">[</span><span class="n">heavenly_stem</span><span class="p">]</span><span class="o">.</span><span class="n">mutagen</span>
+    <span class="n">mutagen_types</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Mutagen</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;禄&quot;</span><span class="p">,</span> <span class="s2">&quot;权&quot;</span><span class="p">,</span> <span class="s2">&quot;科&quot;</span><span class="p">,</span> <span class="s2">&quot;忌&quot;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">star_name</span> <span class="ow">in</span> <span class="n">mutagen_stars</span><span class="p">:</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">mutagen_stars</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">star_name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">mutagen_types</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="get_yin_yang">
+<a class="viewcode-back" href="../../../api/data.html#iztro_py.data.heavenly_stems.get_yin_yang">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_yin_yang</span><span class="p">(</span><span class="n">heavenly_stem</span><span class="p">:</span> <span class="n">HeavenlyStemName</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">YinYang</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    获取天干的阴阳属性</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        heavenly_stem: 天干名称</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        阴阳属性</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">HEAVENLY_STEMS_CONFIG</span><span class="p">[</span><span class="n">heavenly_stem</span><span class="p">]</span><span class="o">.</span><span class="n">yin_yang</span></div>
+
+
+
+<div class="viewcode-block" id="get_five_elements">
+<a class="viewcode-back" href="../../../api/data.html#iztro_py.data.heavenly_stems.get_five_elements">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_five_elements</span><span class="p">(</span><span class="n">heavenly_stem</span><span class="p">:</span> <span class="n">HeavenlyStemName</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FiveElements</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    获取天干的五行属性</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        heavenly_stem: 天干名称</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        五行属性</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">HEAVENLY_STEMS_CONFIG</span><span class="p">[</span><span class="n">heavenly_stem</span><span class="p">]</span><span class="o">.</span><span class="n">five_elements</span></div>
+
+
+
+<div class="viewcode-block" id="get_crash">
+<a class="viewcode-back" href="../../../api/data.html#iztro_py.data.heavenly_stems.get_crash">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_crash</span><span class="p">(</span><span class="n">heavenly_stem</span><span class="p">:</span> <span class="n">HeavenlyStemName</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HeavenlyStemName</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    获取相冲的天干</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        heavenly_stem: 天干名称</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        相冲的天干名称</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">HEAVENLY_STEMS_CONFIG</span><span class="p">[</span><span class="n">heavenly_stem</span><span class="p">]</span><span class="o">.</span><span class="n">crash</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, iztro-py Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

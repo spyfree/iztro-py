@@ -1,0 +1,205 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>iztro_py.star.major_star &mdash; iztro-py 0.3.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=d5a15cff"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            iztro-py
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">内容目录:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">安装</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart.html">快速开始</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">使用示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">更新日志</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">iztro-py</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">iztro_py.star.major_star</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for iztro_py.star.major_star</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Major stars placement for iztro-py</span>
+
+<span class="sd">Functions for placing the 14 major stars (主星) into palaces.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Star</span><span class="p">,</span> <span class="n">FiveElementsClass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.star.location</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_major_star_positions</span>
+
+
+<div class="viewcode-block" id="place_major_stars">
+<a class="viewcode-back" href="../../../api/star.html#iztro_py.star.major_star.place_major_stars">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">place_major_stars</span><span class="p">(</span>
+    <span class="n">palaces</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span>
+    <span class="n">arg1</span><span class="p">,</span>
+    <span class="n">arg2</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    将14颗主星安置到宫位中</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        palaces: 宫位列表</span>
+<span class="sd">        arg1: 兼容两种调用方式：</span>
+<span class="sd">              - (FiveElementsClass, lunar_day)</span>
+<span class="sd">              - (ziwei_index: int, tianfu_index: int)</span>
+<span class="sd">        arg2: 同上</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        直接修改palaces列表，不返回值</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EARTHLY_BRANCHES</span>
+
+    <span class="c1"># 兼容旧API：如果第一个参数是 FiveElementsClass，则按旧算法计算索引</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg1</span><span class="p">,</span> <span class="n">FiveElementsClass</span><span class="p">):</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.star.location</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_ziwei_index</span><span class="p">,</span> <span class="n">get_tianfu_index</span>
+
+        <span class="n">five_class</span><span class="p">:</span> <span class="n">FiveElementsClass</span> <span class="o">=</span> <span class="n">arg1</span>
+        <span class="n">lunar_day</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">arg2</span>
+        <span class="n">ziwei_index</span> <span class="o">=</span> <span class="n">get_ziwei_index</span><span class="p">(</span><span class="n">five_class</span><span class="p">,</span> <span class="n">lunar_day</span><span class="p">)</span>
+        <span class="n">tianfu_index</span> <span class="o">=</span> <span class="n">get_tianfu_index</span><span class="p">(</span><span class="n">ziwei_index</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ziwei_index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">arg1</span><span class="p">)</span>
+        <span class="n">tianfu_index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">arg2</span><span class="p">)</span>
+
+    <span class="c1"># 获取所有主星位置（地支索引）</span>
+    <span class="n">star_positions</span> <span class="o">=</span> <span class="n">get_major_star_positions</span><span class="p">(</span><span class="n">ziwei_index</span><span class="p">,</span> <span class="n">tianfu_index</span><span class="p">)</span>
+
+    <span class="c1"># 将星曜放置到对应宫位</span>
+    <span class="c1"># 注意：star_positions 中的索引是地支索引，需要转换为宫位索引</span>
+    <span class="k">for</span> <span class="n">star_name</span><span class="p">,</span> <span class="n">earthly_branch_index</span> <span class="ow">in</span> <span class="n">star_positions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">star</span> <span class="o">=</span> <span class="n">Star</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">star_name</span><span class="p">,</span>
+            <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;major&quot;</span><span class="p">,</span>
+            <span class="n">scope</span><span class="o">=</span><span class="s2">&quot;origin&quot;</span><span class="p">,</span>
+            <span class="n">brightness</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># 后续计算</span>
+            <span class="n">mutagen</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># 后续计算</span>
+        <span class="p">)</span>
+
+        <span class="c1"># 查找具有该地支的宫位</span>
+        <span class="n">target_branch</span> <span class="o">=</span> <span class="n">EARTHLY_BRANCHES</span><span class="p">[</span><span class="n">earthly_branch_index</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">palace</span> <span class="ow">in</span> <span class="n">palaces</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">palace</span><span class="p">[</span><span class="s2">&quot;earthly_branch&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">target_branch</span><span class="p">:</span>
+                <span class="n">palace</span><span class="p">[</span><span class="s2">&quot;major_stars&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">star</span><span class="p">)</span>
+                <span class="k">break</span></div>
+
+
+
+<div class="viewcode-block" id="get_major_stars_in_palace">
+<a class="viewcode-back" href="../../../api/star.html#iztro_py.star.major_star.get_major_stars_in_palace">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_major_stars_in_palace</span><span class="p">(</span><span class="n">palace</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Star</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    获取指定宫位中的主星列表</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        palace: 宫位字典</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        主星列表</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">palace</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;major_stars&quot;</span><span class="p">,</span> <span class="p">[])</span></div>
+
+
+
+<div class="viewcode-block" id="has_major_star">
+<a class="viewcode-back" href="../../../api/star.html#iztro_py.star.major_star.has_major_star">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">has_major_star</span><span class="p">(</span><span class="n">palace</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">star_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    判断宫位是否包含指定主星</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        palace: 宫位字典</span>
+<span class="sd">        star_name: 星曜名称</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        是否包含</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">major_stars</span> <span class="o">=</span> <span class="n">get_major_stars_in_palace</span><span class="p">(</span><span class="n">palace</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">star</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">star_name</span> <span class="k">for</span> <span class="n">star</span> <span class="ow">in</span> <span class="n">major_stars</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, iztro-py Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

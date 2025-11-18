@@ -1,0 +1,279 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>iztro_py.data.brightness &mdash; iztro-py 0.3.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=d5a15cff"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            iztro-py
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">内容目录:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">安装</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart.html">快速开始</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">使用示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">更新日志</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">iztro-py</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">iztro_py.data.brightness</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for iztro_py.data.brightness</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Star brightness (星耀亮度) data and calculations</span>
+
+<span class="sd">Contains brightness information for stars based on their palace positions.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">StarName</span><span class="p">,</span> <span class="n">Brightness</span><span class="p">,</span> <span class="n">EarthlyBranchName</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EARTHLY_BRANCHES</span>
+
+
+<span class="c1"># ============================================================================</span>
+<span class="c1"># Brightness Data for Major Stars</span>
+<span class="c1"># ============================================================================</span>
+<span class="c1"># 亮度顺序：寅卯辰巳午未申酉戌亥子丑</span>
+<span class="c1"># Brightness levels: 庙(miao)、旺(wang)、得(de)、利(li)、平(ping)、不(bu)、陷(xian)</span>
+
+<span class="n">STAR_BRIGHTNESS</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">StarName</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">Brightness</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="c1"># 紫微星</span>
+    <span class="s2">&quot;ziweiMaj&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;旺&quot;</span><span class="p">,</span> <span class="s2">&quot;旺&quot;</span><span class="p">,</span> <span class="s2">&quot;得&quot;</span><span class="p">,</span> <span class="s2">&quot;旺&quot;</span><span class="p">,</span> <span class="s2">&quot;庙&quot;</span><span class="p">,</span> <span class="s2">&quot;庙&quot;</span><span class="p">,</span> <span class="s2">&quot;旺&quot;</span><span class="p">,</span> <span class="s2">&quot;旺&quot;</span><span class="p">,</span> <span class="s2">&quot;得&quot;</span><span class="p">,</span> <span class="s2">&quot;旺&quot;</span><span class="p">,</span> <span class="s2">&quot;平&quot;</span><span class="p">,</span> <span class="s2">&quot;庙&quot;</span><span class="p">],</span>
+    <span class="c1"># 天机星</span>
+    <span class="s2">&quot;tianjiMaj&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;旺&quot;</span><span class="p">,</span> <span class="s2">&quot;旺&quot;</span><span class="p">,</span> <span class="s2">&quot;平&quot;</span><span class="p">,</span> <span class="s2">&quot;陷&quot;</span><span class="p">,</span> <span class="s2">&quot;平&quot;</span><span class="p">,</span> <span class="s2">&quot;平&quot;</span><span class="p">,</span> <span class="s2">&quot;平&quot;</span><span class="p">,</span> <span class="s2">&quot;平&quot;</span><span class="p">,</span> <span class="s2">&quot;平&quot;</span><span class="p">,</span> <span class="s2">&quot;平&quot;</span><span class="p">,</span> <span class="s2">&quot;庙&quot;</span><span class="p">,</span> <span class="s2">&quot;庙&quot;</span><span class="p">],</span>
+    <span class="c1"># 太阳星</span>
+    <span class="s2">&quot;taiyangMaj&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;庙&quot;</span><span class="p">,</span> <span class="s2">&quot;庙&quot;</span><span class="p">,</span> <span class="s2">&quot;庙&quot;</span><span class="p">,</span> <span class="s2">&quot;庙&quot;</span><span class="p">,</span> <span class="s2">&quot;旺&quot;</span><span class="p">,</span> <span class="s2">&quot;利&quot;</span><span class="p">,</span> <span class="s2">&quot;平&quot;</span><span class="p">,</span> <span class="s2">&quot;陷&quot;</span><span class="p">,</span> <span class="s2">&quot;陷&quot;</span><span class="p">,</span> <span class="s2">&quot;陷&quot;</span><span class="p">,</span> <span class="s2">&quot;陷&quot;</span><span class="p">,</span> <span class="s2">&quot;得&quot;</span><span class="p">],</span>
+    <span class="c1"># 武曲星</span>
+    <span class="s2">&quot;wuquMaj&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;平&quot;</span><span class="p">,</span> <span class="s2">&quot;陷&quot;</span><span class="p">,</span> <span class="s2">&quot;得&quot;</span><span class="p">,</span> <span class="s2">&quot;利&quot;</span><span class="p">,</span> <span class="s2">&quot;陷&quot;</span><span class="p">,</span> <span class="s2">&quot;旺&quot;</span><span class="p">,</span> <span class="s2">&quot;旺&quot;</span><span class="p">,</span> <span class="s2">&quot;旺&quot;</span><span class="p">,</span> <span class="s2">&quot;庙&quot;</span><span class="p">,</span> <span class="s2">&quot;庙&quot;</span><span class="p">,</span> <span class="s2">&quot;得&quot;</span><span class="p">,</span> <span class="s2">&quot;得&quot;</span><span class="p">],</span>
+    <span class="c1"># 天同星</span>
+    <span class="s2">&quot;tiantongMaj&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;得&quot;</span><span class="p">,</span> <span class="s2">&quot;陷&quot;</span><span class="p">,</span> <span class="s2">&quot;陷&quot;</span><span class="p">,</span> <span class="s2">&quot;得&quot;</span><span class="p">,</span> <span class="s2">&quot;利&quot;</span><span class="p">,</span> <span class="s2">&quot;旺&quot;</span><span class="p">,</span> <span class="s2">&quot;得&quot;</span><span class="p">,</span> <span class="s2">&quot;得&quot;</span><span class="p">,</span> <span class="s2">&quot;利&quot;</span><span class="p">,</span> <span class="s2">&quot;旺&quot;</span><span class="p">,</span> <span class="s2">&quot;庙&quot;</span><span class="p">,</span> <span class="s2">&quot;庙&quot;</span><span class="p">],</span>
+    <span class="c1"># 廉贞星</span>
+    <span class="s2">&quot;lianzhenMaj&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;陷&quot;</span><span class="p">,</span> <span class="s2">&quot;陷&quot;</span><span class="p">,</span> <span class="s2">&quot;陷&quot;</span><span class="p">,</span> <span class="s2">&quot;庙&quot;</span><span class="p">,</span> <span class="s2">&quot;旺&quot;</span><span class="p">,</span> <span class="s2">&quot;利&quot;</span><span class="p">,</span> <span class="s2">&quot;平&quot;</span><span class="p">,</span> <span class="s2">&quot;平&quot;</span><span class="p">,</span> <span class="s2">&quot;平&quot;</span><span class="p">,</span> <span class="s2">&quot;平&quot;</span><span class="p">,</span> <span class="s2">&quot;庙&quot;</span><span class="p">,</span> <span class="s2">&quot;旺&quot;</span><span class="p">],</span>
+    <span class="c1"># 天府星</span>
+    <span class="s2">&quot;tianfuMaj&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;庙&quot;</span><span class="p">,</span> <span class="s2">&quot;庙&quot;</span><span class="p">,</span> <span class="s2">&quot;庙&quot;</span><span class="p">,</span> <span class="s2">&quot;庙&quot;</span><span class="p">,</span> <span class="s2">&quot;庙&quot;</span><span class="p">,</span> <span class="s2">&quot;庙&quot;</span><span class="p">,</span> <span class="s2">&quot;庙&quot;</span><span class="p">,</span> <span class="s2">&quot;庙&quot;</span><span class="p">,</span> <span class="s2">&quot;庙&quot;</span><span class="p">,</span> <span class="s2">&quot;庙&quot;</span><span class="p">,</span> <span class="s2">&quot;庙&quot;</span><span class="p">,</span> <span class="s2">&quot;庙&quot;</span><span class="p">],</span>
+    <span class="c1"># 太阴星</span>
+    <span class="s2">&quot;taiyinMaj&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;得&quot;</span><span class="p">,</span> <span class="s2">&quot;得&quot;</span><span class="p">,</span> <span class="s2">&quot;平&quot;</span><span class="p">,</span> <span class="s2">&quot;陷&quot;</span><span class="p">,</span> <span class="s2">&quot;旺&quot;</span><span class="p">,</span> <span class="s2">&quot;庙&quot;</span><span class="p">,</span> <span class="s2">&quot;平&quot;</span><span class="p">,</span> <span class="s2">&quot;得&quot;</span><span class="p">,</span> <span class="s2">&quot;平&quot;</span><span class="p">,</span> <span class="s2">&quot;陷&quot;</span><span class="p">,</span> <span class="s2">&quot;庙&quot;</span><span class="p">,</span> <span class="s2">&quot;庙&quot;</span><span class="p">],</span>
+    <span class="c1"># 贪狼星</span>
+    <span class="s2">&quot;tanlangMaj&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;旺&quot;</span><span class="p">,</span> <span class="s2">&quot;旺&quot;</span><span class="p">,</span> <span class="s2">&quot;陷&quot;</span><span class="p">,</span> <span class="s2">&quot;陷&quot;</span><span class="p">,</span> <span class="s2">&quot;利&quot;</span><span class="p">,</span> <span class="s2">&quot;得&quot;</span><span class="p">,</span> <span class="s2">&quot;庙&quot;</span><span class="p">,</span> <span class="s2">&quot;旺&quot;</span><span class="p">,</span> <span class="s2">&quot;庙&quot;</span><span class="p">,</span> <span class="s2">&quot;旺&quot;</span><span class="p">,</span> <span class="s2">&quot;陷&quot;</span><span class="p">,</span> <span class="s2">&quot;得&quot;</span><span class="p">],</span>
+    <span class="c1"># 巨门星</span>
+    <span class="s2">&quot;jumenMaj&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;得&quot;</span><span class="p">,</span> <span class="s2">&quot;得&quot;</span><span class="p">,</span> <span class="s2">&quot;陷&quot;</span><span class="p">,</span> <span class="s2">&quot;陷&quot;</span><span class="p">,</span> <span class="s2">&quot;陷&quot;</span><span class="p">,</span> <span class="s2">&quot;平&quot;</span><span class="p">,</span> <span class="s2">&quot;庙&quot;</span><span class="p">,</span> <span class="s2">&quot;旺&quot;</span><span class="p">,</span> <span class="s2">&quot;平&quot;</span><span class="p">,</span> <span class="s2">&quot;得&quot;</span><span class="p">,</span> <span class="s2">&quot;旺&quot;</span><span class="p">,</span> <span class="s2">&quot;得&quot;</span><span class="p">],</span>
+    <span class="c1"># 天相星</span>
+    <span class="s2">&quot;tianxiangMaj&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;旺&quot;</span><span class="p">,</span> <span class="s2">&quot;旺&quot;</span><span class="p">,</span> <span class="s2">&quot;平&quot;</span><span class="p">,</span> <span class="s2">&quot;平&quot;</span><span class="p">,</span> <span class="s2">&quot;庙&quot;</span><span class="p">,</span> <span class="s2">&quot;庙&quot;</span><span class="p">,</span> <span class="s2">&quot;旺&quot;</span><span class="p">,</span> <span class="s2">&quot;旺&quot;</span><span class="p">,</span> <span class="s2">&quot;平&quot;</span><span class="p">,</span> <span class="s2">&quot;平&quot;</span><span class="p">,</span> <span class="s2">&quot;庙&quot;</span><span class="p">,</span> <span class="s2">&quot;庙&quot;</span><span class="p">],</span>
+    <span class="c1"># 天梁星</span>
+    <span class="s2">&quot;tianliangMaj&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;庙&quot;</span><span class="p">,</span> <span class="s2">&quot;庙&quot;</span><span class="p">,</span> <span class="s2">&quot;平&quot;</span><span class="p">,</span> <span class="s2">&quot;平&quot;</span><span class="p">,</span> <span class="s2">&quot;旺&quot;</span><span class="p">,</span> <span class="s2">&quot;旺&quot;</span><span class="p">,</span> <span class="s2">&quot;平&quot;</span><span class="p">,</span> <span class="s2">&quot;平&quot;</span><span class="p">,</span> <span class="s2">&quot;利&quot;</span><span class="p">,</span> <span class="s2">&quot;利&quot;</span><span class="p">,</span> <span class="s2">&quot;得&quot;</span><span class="p">,</span> <span class="s2">&quot;得&quot;</span><span class="p">],</span>
+    <span class="c1"># 七杀星</span>
+    <span class="s2">&quot;qishaMaj&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;庙&quot;</span><span class="p">,</span> <span class="s2">&quot;庙&quot;</span><span class="p">,</span> <span class="s2">&quot;平&quot;</span><span class="p">,</span> <span class="s2">&quot;平&quot;</span><span class="p">,</span> <span class="s2">&quot;陷&quot;</span><span class="p">,</span> <span class="s2">&quot;陷&quot;</span><span class="p">,</span> <span class="s2">&quot;旺&quot;</span><span class="p">,</span> <span class="s2">&quot;旺&quot;</span><span class="p">,</span> <span class="s2">&quot;得&quot;</span><span class="p">,</span> <span class="s2">&quot;得&quot;</span><span class="p">,</span> <span class="s2">&quot;利&quot;</span><span class="p">,</span> <span class="s2">&quot;利&quot;</span><span class="p">],</span>
+    <span class="c1"># 破军星</span>
+    <span class="s2">&quot;pojunMaj&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;得&quot;</span><span class="p">,</span> <span class="s2">&quot;得&quot;</span><span class="p">,</span> <span class="s2">&quot;陷&quot;</span><span class="p">,</span> <span class="s2">&quot;旺&quot;</span><span class="p">,</span> <span class="s2">&quot;庙&quot;</span><span class="p">,</span> <span class="s2">&quot;平&quot;</span><span class="p">,</span> <span class="s2">&quot;陷&quot;</span><span class="p">,</span> <span class="s2">&quot;平&quot;</span><span class="p">,</span> <span class="s2">&quot;旺&quot;</span><span class="p">,</span> <span class="s2">&quot;庙&quot;</span><span class="p">,</span> <span class="s2">&quot;陷&quot;</span><span class="p">,</span> <span class="s2">&quot;得&quot;</span><span class="p">],</span>
+    <span class="c1"># 辅星的亮度通常不标注，这里可以留空或使用默认值</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="get_star_brightness">
+<a class="viewcode-back" href="../../../api/data.html#iztro_py.data.brightness.get_star_brightness">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_star_brightness</span><span class="p">(</span>
+    <span class="n">star_name</span><span class="p">:</span> <span class="n">StarName</span><span class="p">,</span> <span class="n">palace_branch</span><span class="p">:</span> <span class="n">EarthlyBranchName</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Brightness</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    根据星曜名称和宫位地支获取星曜亮度</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        star_name: 星曜名称</span>
+<span class="sd">        palace_branch: 宫位地支</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        亮度等级，如果没有定义则返回None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">star_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">STAR_BRIGHTNESS</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="n">brightness_list</span> <span class="o">=</span> <span class="n">STAR_BRIGHTNESS</span><span class="p">[</span><span class="n">star_name</span><span class="p">]</span>
+
+    <span class="c1"># 地支索引：子丑寅卯辰巳午未申酉戌亥 (0-11)</span>
+    <span class="c1"># 亮度列表索引：寅卯辰巳午未申酉戌亥子丑 (0-11)</span>
+    <span class="c1"># 需要转换索引</span>
+    <span class="n">branch_index</span> <span class="o">=</span> <span class="n">EARTHLY_BRANCHES</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">palace_branch</span><span class="p">)</span>
+
+    <span class="c1"># 转换索引：子(0)-&gt;10, 丑(1)-&gt;11, 寅(2)-&gt;0, ...</span>
+    <span class="n">brightness_index_map</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="mi">0</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>  <span class="c1"># 子</span>
+        <span class="mi">1</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span>  <span class="c1"># 丑</span>
+        <span class="mi">2</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>  <span class="c1"># 寅</span>
+        <span class="mi">3</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># 卯</span>
+        <span class="mi">4</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>  <span class="c1"># 辰</span>
+        <span class="mi">5</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>  <span class="c1"># 巳</span>
+        <span class="mi">6</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>  <span class="c1"># 午</span>
+        <span class="mi">7</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>  <span class="c1"># 未</span>
+        <span class="mi">8</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>  <span class="c1"># 申</span>
+        <span class="mi">9</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span>  <span class="c1"># 酉</span>
+        <span class="mi">10</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>  <span class="c1"># 戌</span>
+        <span class="mi">11</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span>  <span class="c1"># 亥</span>
+    <span class="p">}</span>
+
+    <span class="n">brightness_index</span> <span class="o">=</span> <span class="n">brightness_index_map</span><span class="p">[</span><span class="n">branch_index</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">brightness_list</span><span class="p">[</span><span class="n">brightness_index</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="apply_brightness_to_palaces">
+<a class="viewcode-back" href="../../../api/data.html#iztro_py.data.brightness.apply_brightness_to_palaces">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">apply_brightness_to_palaces</span><span class="p">(</span><span class="n">palaces</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    为所有宫位中的星曜添加亮度属性</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        palaces: 宫位列表</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        直接修改palaces列表，不返回值</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">palace</span> <span class="ow">in</span> <span class="n">palaces</span><span class="p">:</span>
+        <span class="n">palace_branch</span> <span class="o">=</span> <span class="n">palace</span><span class="p">[</span><span class="s2">&quot;earthly_branch&quot;</span><span class="p">]</span>
+
+        <span class="c1"># 为主星添加亮度</span>
+        <span class="k">for</span> <span class="n">star</span> <span class="ow">in</span> <span class="n">palace</span><span class="p">[</span><span class="s2">&quot;major_stars&quot;</span><span class="p">]:</span>
+            <span class="n">brightness</span> <span class="o">=</span> <span class="n">get_star_brightness</span><span class="p">(</span><span class="n">star</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">palace_branch</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">brightness</span><span class="p">:</span>
+                <span class="n">star</span><span class="o">.</span><span class="n">brightness</span> <span class="o">=</span> <span class="n">brightness</span></div>
+
+
+        <span class="c1"># 辅星通常不标注亮度，但可以预留接口</span>
+        <span class="c1"># for star in palace[&#39;minor_stars&#39;]:</span>
+        <span class="c1">#     brightness = get_star_brightness(star.name, palace_branch)</span>
+        <span class="c1">#     if brightness:</span>
+        <span class="c1">#         star.brightness = brightness</span>
+
+
+<div class="viewcode-block" id="get_brightness_score">
+<a class="viewcode-back" href="../../../api/data.html#iztro_py.data.brightness.get_brightness_score">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_brightness_score</span><span class="p">(</span><span class="n">brightness</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Brightness</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    获取亮度的数值评分（用于比较）</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        brightness: 亮度等级</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        数值评分 (0-6)，庙最高，陷最低</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">scores</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;庙&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;旺&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;得&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;利&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;平&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;不&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;陷&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">scores</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">brightness</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="is_bright">
+<a class="viewcode-back" href="../../../api/data.html#iztro_py.data.brightness.is_bright">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_bright</span><span class="p">(</span><span class="n">brightness</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Brightness</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    判断星曜是否处于庙旺状态</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        brightness: 亮度等级</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        是否为庙或旺</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">brightness</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;庙&quot;</span><span class="p">,</span> <span class="s2">&quot;旺&quot;</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="is_weak">
+<a class="viewcode-back" href="../../../api/data.html#iztro_py.data.brightness.is_weak">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_weak</span><span class="p">(</span><span class="n">brightness</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Brightness</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    判断星曜是否处于陷弱状态</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        brightness: 亮度等级</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        是否为陷</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">brightness</span> <span class="o">==</span> <span class="s2">&quot;陷&quot;</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, iztro-py Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

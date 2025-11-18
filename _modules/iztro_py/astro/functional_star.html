@@ -1,0 +1,305 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>iztro_py.astro.functional_star &mdash; iztro-py 0.3.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=d5a15cff"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            iztro-py
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">内容目录:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">安装</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart.html">快速开始</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">使用示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">更新日志</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">iztro-py</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">iztro_py.astro.functional_star</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for iztro_py.astro.functional_star</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">FunctionalStar class - Star with functional methods</span>
+
+<span class="sd">Provides a rich API for querying star properties and relationships.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Star</span><span class="p">,</span> <span class="n">Brightness</span><span class="p">,</span> <span class="n">Mutagen</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.astro.functional_palace</span><span class="w"> </span><span class="kn">import</span> <span class="n">FunctionalPalace</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.astro.functional_surpalaces</span><span class="w"> </span><span class="kn">import</span> <span class="n">FunctionalSurpalaces</span>
+
+
+<div class="viewcode-block" id="FunctionalStar">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.astro.functional_star.FunctionalStar">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FunctionalStar</span><span class="p">(</span><span class="n">Star</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    功能增强的星曜类</span>
+
+<span class="sd">    继承自Star，添加了查询方法和关联宫位的能力</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="FunctionalStar.__init__">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.astro.functional_star.FunctionalStar.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">star</span><span class="p">:</span> <span class="n">Star</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        初始化FunctionalStar</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            star: 基础Star对象</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">star</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="nb">type</span><span class="o">=</span><span class="n">star</span><span class="o">.</span><span class="n">type</span><span class="p">,</span>
+            <span class="n">scope</span><span class="o">=</span><span class="n">star</span><span class="o">.</span><span class="n">scope</span><span class="p">,</span>
+            <span class="n">brightness</span><span class="o">=</span><span class="n">star</span><span class="o">.</span><span class="n">brightness</span><span class="p">,</span>
+            <span class="n">mutagen</span><span class="o">=</span><span class="n">star</span><span class="o">.</span><span class="n">mutagen</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_palace</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;FunctionalPalace&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="FunctionalStar.set_palace">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.astro.functional_star.FunctionalStar.set_palace">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_palace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">palace</span><span class="p">:</span> <span class="s2">&quot;FunctionalPalace&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        设置星曜所在宫位</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            palace: 宫位对象</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_palace</span> <span class="o">=</span> <span class="n">palace</span></div>
+
+
+<div class="viewcode-block" id="FunctionalStar.palace">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.astro.functional_star.FunctionalStar.palace">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">palace</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;FunctionalPalace&quot;</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        获取星曜所在宫位</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            宫位对象，如果未设置则返回None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_palace</span></div>
+
+
+<div class="viewcode-block" id="FunctionalStar.with_brightness">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.astro.functional_star.FunctionalStar.with_brightness">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">with_brightness</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">brightness</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Brightness</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Brightness</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        判断星曜是否具有指定亮度</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            brightness: 亮度或亮度列表</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            是否匹配</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; star.with_brightness(&#39;庙&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; star.with_brightness([&#39;庙&#39;, &#39;旺&#39;])</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">brightness</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">brightness</span> <span class="ow">in</span> <span class="n">brightness</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">brightness</span> <span class="o">==</span> <span class="n">brightness</span></div>
+
+
+<div class="viewcode-block" id="FunctionalStar.with_mutagen">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.astro.functional_star.FunctionalStar.with_mutagen">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">with_mutagen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mutagen</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Mutagen</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Mutagen</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        判断星曜是否具有指定四化</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            mutagen: 四化类型或四化列表</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            是否匹配</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; star.with_mutagen(&#39;禄&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; star.with_mutagen([&#39;禄&#39;, &#39;权&#39;])</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mutagen</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mutagen</span> <span class="ow">in</span> <span class="n">mutagen</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mutagen</span> <span class="o">==</span> <span class="n">mutagen</span></div>
+
+
+<div class="viewcode-block" id="FunctionalStar.opposite_palace">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.astro.functional_star.FunctionalStar.opposite_palace">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">opposite_palace</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;FunctionalPalace&quot;</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        获取星曜的对宫</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            对宫对象，如果未设置宫位则返回None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_palace</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_opposite_index</span>
+
+        <span class="n">opposite_index</span> <span class="o">=</span> <span class="n">get_opposite_index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_palace</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+
+        <span class="c1"># 从星盘中获取对宫</span>
+        <span class="n">astrolabe</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_palace</span><span class="o">.</span><span class="n">astrolabe</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">astrolabe</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">astrolabe</span><span class="o">.</span><span class="n">palace</span><span class="p">(</span><span class="n">opposite_index</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="FunctionalStar.surrounded_palaces">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.astro.functional_star.FunctionalStar.surrounded_palaces">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">surrounded_palaces</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;FunctionalSurpalaces&quot;</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        获取星曜的三方四正宫位</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            三方四正对象，如果未设置宫位则返回None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_palace</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">astrolabe</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_palace</span><span class="o">.</span><span class="n">astrolabe</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">astrolabe</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">astrolabe</span><span class="o">.</span><span class="n">surrounded_palaces</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_palace</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="FunctionalStar.is_major">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.astro.functional_star.FunctionalStar.is_major">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_major</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;判断是否为主星&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;major&quot;</span></div>
+
+
+<div class="viewcode-block" id="FunctionalStar.is_minor">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.astro.functional_star.FunctionalStar.is_minor">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_minor</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;判断是否为辅星&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;soft&quot;</span><span class="p">,</span> <span class="s2">&quot;tough&quot;</span><span class="p">,</span> <span class="s2">&quot;lucun&quot;</span><span class="p">,</span> <span class="s2">&quot;tianma&quot;</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="FunctionalStar.is_bright">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.astro.functional_star.FunctionalStar.is_bright">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_bright</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;判断是否庙旺（亮度好）&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">brightness</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;庙&quot;</span><span class="p">,</span> <span class="s2">&quot;旺&quot;</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="FunctionalStar.is_weak">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.astro.functional_star.FunctionalStar.is_weak">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_weak</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;判断是否陷弱（亮度差）&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">brightness</span> <span class="o">==</span> <span class="s2">&quot;陷&quot;</span></div>
+
+
+<div class="viewcode-block" id="FunctionalStar.has_mutagen">
+<a class="viewcode-back" href="../../../api/index.html#iztro_py.astro.functional_star.FunctionalStar.has_mutagen">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">has_mutagen</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;判断是否有四化&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mutagen</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;字符串表示&quot;&quot;&quot;</span>
+        <span class="n">parts</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">brightness</span><span class="p">:</span>
+            <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">brightness</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mutagen</span><span class="p">:</span>
+            <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[化</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mutagen</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;FunctionalStar(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">, brightness=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">brightness</span><span class="si">}</span><span class="s2">, mutagen=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mutagen</span><span class="si">}</span><span class="s2">)&quot;</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, iztro-py Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
