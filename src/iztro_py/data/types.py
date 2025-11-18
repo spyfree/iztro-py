@@ -6,7 +6,7 @@ Based on the original TypeScript definitions from iztro.
 """
 
 from enum import Enum
-from typing import Literal, Optional, List, Tuple, Union
+from typing import Any, Dict, Literal, Optional, List, Tuple, Union
 from pydantic import BaseModel, Field, ConfigDict
 
 
@@ -500,8 +500,8 @@ class Horoscope(BaseModel):
 class Config(BaseModel):
     """全局配置"""
 
-    mutagens: Optional[dict] = None  # 四化配置
-    brightness: Optional[dict] = None  # 亮度配置
+    mutagens: Optional[Dict[str, Any]] = None  # 四化配置
+    brightness: Optional[Dict[str, Any]] = None  # 亮度配置
     year_divide: Literal["normal", "exact"] = "normal"  # 年分割点
     horoscope_divide: Literal["normal", "exact"] = "normal"  # 运限分割点
     age_divide: Literal["normal", "birthday"] = "normal"  # 小限分割点

@@ -4,12 +4,12 @@ Mutagen (四化) calculation for iztro-py
 Functions for calculating and applying mutagen transformations to stars.
 """
 
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 from iztro_py.data.types import HeavenlyStemName, StarName, Mutagen
 from iztro_py.data.heavenly_stems import get_mutagen, get_mutagen_type
 
 
-def apply_mutagen_to_palaces(palaces: List[dict], year_stem: HeavenlyStemName) -> None:
+def apply_mutagen_to_palaces(palaces: List[Dict[str, Any]], year_stem: HeavenlyStemName) -> None:
     """
     为所有宫位中的星曜添加四化属性
 

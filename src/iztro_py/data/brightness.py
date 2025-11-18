@@ -4,7 +4,7 @@ Star brightness (星耀亮度) data and calculations
 Contains brightness information for stars based on their palace positions.
 """
 
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 from iztro_py.data.types import StarName, Brightness, EarthlyBranchName
 from iztro_py.data.constants import EARTHLY_BRANCHES
 
@@ -92,7 +92,7 @@ def get_star_brightness(
     return brightness_list[brightness_index]
 
 
-def apply_brightness_to_palaces(palaces: List[dict]) -> None:
+def apply_brightness_to_palaces(palaces: List[Dict[str, Any]]) -> None:
     """
     为所有宫位中的星曜添加亮度属性
 

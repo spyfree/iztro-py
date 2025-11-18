@@ -4,13 +4,13 @@ Major stars placement for iztro-py
 Functions for placing the 14 major stars (主星) into palaces.
 """
 
-from typing import List
+from typing import Any, Dict, List
 from iztro_py.data.types import Star, FiveElementsClass
 from iztro_py.star.location import get_major_star_positions
 
 
 def place_major_stars(
-    palaces: List[dict],
+    palaces: List[Dict[str, Any]],
     arg1,
     arg2,
 ) -> None:
