@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "iztro-py"
-version = "0.3.2"
+version = "0.3.3"
 description = "A pure Python implementation of iztro - A lightweight Zi Wei Dou Shu (Purple Star Astrology) library with full i18n support (6 languages)"
 readme = "README.md"
 requires-python = ">=3.8"
@@ -15,7 +15,6 @@ keywords = ["astrology", "ziwei", "ziweidoushu", "purple-star", "chinese-astrolo
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
@@ -39,10 +38,16 @@ dev = [
     "mypy>=1.0.0",
     "ruff>=0.1.0",
 ]
+docs = [
+    "sphinx>=7.0.0",
+    "sphinx-rtd-theme>=2.0.0",
+    "sphinx-autodoc-typehints>=1.25.0",
+    "myst-parser>=2.0.0",
+]
 
 [project.urls]
 Homepage = "https://github.com/spyfree/iztro-py"
-Documentation = "https://github.com/spyfree/iztro-py#readme"
+Documentation = "https://spyfree.github.io/iztro-py/"
 Repository = "https://github.com/spyfree/iztro-py"
 Issues = "https://github.com/spyfree/iztro-py/issues"
 
@@ -54,7 +59,7 @@ line-length = 100
 target-version = ["py38", "py39", "py310", "py311"]
 
 [tool.mypy]
-python_version = "3.8"
+python_version = "3.9"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = false

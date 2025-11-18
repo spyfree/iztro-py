@@ -5,6 +5,72 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.3] - 2025-01-18
+
+### 🔧 Type System Fixes
+
+- Fixed Python 3.8-3.9 syntax compatibility issues
+- Changed `|` union type syntax to `Union[]` for broader Python version support
+- Migrated to Pydantic v2 `ConfigDict`
+- Fixed 35+ mypy type annotation errors across the codebase
+
+### 🚀 CI/CD
+
+- Added GitHub Actions CI workflow for automated testing
+- Multi-version testing (Python 3.8-3.12)
+- Type checking with mypy
+- Code quality checks (Black, Ruff)
+- Coverage reporting
+
+### 📚 Documentation
+
+- Added complete Sphinx documentation system
+- Added quick start guide
+- Added comprehensive API reference
+- Added usage examples
+- Documentation automatically deployed to GitHub Pages
+
+### 🔄 Workflows
+
+- Added automated documentation build and deployment
+- Added PyPI publishing workflow
+
+## [0.3.2] - 2025-01-08
+
+### ✨ Features
+
+- Added hour-based wrapper functions
+- Added iztro-compatible export functionality
+- Added AGENTS.md documentation
+
+### 🐛 Bug Fixes
+
+- Fixed Ziwei/Tianfu starting indices
+- Aligned Earthly Branch soul/body mapping
+- Corrected body palace branch calculation
+- Fixed star name typo (lingsxingMin → lingxingMin)
+
+## [0.3.0] - 2024-12-xx
+
+### 🌍 Internationalization
+
+- Added Traditional Chinese (zh-TW) support
+- Added Japanese (ja-JP) support
+- Added Vietnamese (vi-VN) support
+- Completed 6-language system (zh-CN, zh-TW, en-US, ja-JP, ko-KR, vi-VN)
+
+## [0.2.0] - 2024-11-xx
+
+### ✨ Features
+
+- Complete implementation of Zi Wei Dou Shu core algorithms
+- Support for solar and lunar calendar input
+- Implemented 14 major stars and 14 minor stars
+- Implemented Four Transformations system (四化)
+- Implemented horoscope system (运限系统)
+- Added fluent API design with method chaining
+- Added internationalization (i18n) support
+
 ## [0.1.0] - 2025-06-11
 
 ### 🎉 Initial Release

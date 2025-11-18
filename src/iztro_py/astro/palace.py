@@ -5,6 +5,7 @@ Contains functions for calculating palace positions, especially
 the soul palace (命宫) and body palace (身宫).
 """
 
+from typing import Any, Dict
 from iztro_py.data.types import (
     SoulAndBody,
     HeavenlyStemName,
@@ -225,7 +226,7 @@ def initialize_palaces(soul_and_body: SoulAndBody) -> list[dict]:
         # 判断该宫位是否为身宫（相对命宫的序列位置等于身宫相对索引）
         is_body = (i == body_palace_rel_index)
 
-        palace = {
+        palace: Dict[str, Any] = {
             'index': i,
             'name': PALACES[i],
             'is_body_palace': is_body,

@@ -1,0 +1,42 @@
+i18n 模块
+=========
+
+国际化支持。
+
+i18n
+----
+
+.. automodule:: iztro_py.i18n
+   :members:
+   :undoc-members:
+
+支持的语言
+----------
+
+* ``zh-CN`` - 简体中文（默认）
+* ``zh-TW`` - 繁體中文
+* ``en-US`` - English
+* ``ja-JP`` - 日本語
+* ``ko-KR`` - 한국어
+* ``vi-VN`` - Tiếng Việt
+
+使用示例
+--------
+
+.. code-block:: python
+
+    from iztro_py import by_solar
+    from iztro_py.i18n import set_language, t
+
+    # 全局设置语言
+    set_language('en-US')
+
+    # 创建星盘
+    chart = by_solar('2000-8-16', 6, '男')
+
+    # 星盘也会自动使用设置的语言
+    print(chart.zodiac)  # 输出英文
+
+    # 切换到日文
+    chart.set_language('ja-JP')
+    print(chart.zodiac)  # 输出日文

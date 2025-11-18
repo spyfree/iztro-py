@@ -4,7 +4,7 @@ FunctionalStar class - Star with functional methods
 Provides a rich API for querying star properties and relationships.
 """
 
-from typing import Optional, TYPE_CHECKING, List
+from typing import Optional, TYPE_CHECKING, List, Union
 from iztro_py.data.types import Star, Brightness, Mutagen
 
 if TYPE_CHECKING:
@@ -53,7 +53,7 @@ class FunctionalStar(Star):
         """
         return self._palace
 
-    def with_brightness(self, brightness: Brightness | List[Brightness]) -> bool:
+    def with_brightness(self, brightness: Union[Brightness, List[Brightness]]) -> bool:
         """
         判断星曜是否具有指定亮度
 
@@ -72,7 +72,7 @@ class FunctionalStar(Star):
         else:
             return self.brightness == brightness
 
-    def with_mutagen(self, mutagen: Mutagen | List[Mutagen]) -> bool:
+    def with_mutagen(self, mutagen: Union[Mutagen, List[Mutagen]]) -> bool:
         """
         判断星曜是否具有指定四化
 

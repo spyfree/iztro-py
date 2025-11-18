@@ -6,8 +6,8 @@ Based on the original TypeScript definitions from iztro.
 """
 
 from enum import Enum
-from typing import Literal, Optional, List, Tuple
-from pydantic import BaseModel, Field
+from typing import Literal, Optional, List, Tuple, Union
+from pydantic import BaseModel, Field, ConfigDict
 
 
 def _translate_name(key: str, lang: Optional[str] = None) -> str:
@@ -223,7 +223,7 @@ AdjectiveStarName = Literal[
 ]
 
 # All star names
-StarName = MajorStarName | MinorStarName | AdjectiveStarName
+StarName = Union[MajorStarName, MinorStarName, AdjectiveStarName]
 
 
 # ============================================================================
@@ -251,8 +251,7 @@ class Star(BaseModel):
     brightness: Optional[Brightness] = None
     mutagen: Optional[Mutagen] = None
 
-    class Config:
-        frozen = False  # Allow modification for mutagen/brightness
+    model_config = ConfigDict(frozen=False)  # Allow modification for mutagen/brightness
 
     def translate_name(self, lang: Optional[str] = None) -> str:
         """
@@ -318,8 +317,7 @@ class Palace(BaseModel):
     decadal: Optional[Decadal] = None
     ages: List[int] = Field(default_factory=list)  # 小限年龄数组
 
-    class Config:
-        frozen = False
+    model_config = ConfigDict(frozen=False)
 
     def translate_name(self, lang: Optional[str] = None) -> str:
         """
@@ -394,8 +392,7 @@ class Astrolabe(BaseModel):
     raw_lunar_date: Optional[LunarDate] = None
     raw_chinese_date: Optional[HeavenlyStemAndEarthlyBranchDate] = None
 
-    class Config:
-        frozen = False
+    model_config = ConfigDict(frozen=False)
 
     def set_language(self, lang: Language) -> None:
         """
@@ -416,8 +413,7 @@ class SurroundedPalaces(BaseModel):
     wealth: Palace  # 财帛位（相隔8宫）
     career: Palace  # 官禄位（相隔4宫）
 
-    class Config:
-        frozen = False
+    model_config = ConfigDict(frozen=False)
 
 
 class HoroscopeItem(BaseModel):
