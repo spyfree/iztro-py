@@ -79,15 +79,12 @@
 <span class="sd">Provides high-level functions for creating astrolabes.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">date</span>
-
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.types</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">GenderName</span><span class="p">,</span>
     <span class="n">Language</span><span class="p">,</span>
     <span class="n">Astrolabe</span><span class="p">,</span>
-    <span class="n">LunarDate</span><span class="p">,</span>
-    <span class="n">HeavenlyStemAndEarthlyBranchDate</span><span class="p">,</span>
+    <span class="n">Palace</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.astro.functional_astrolabe</span><span class="w"> </span><span class="kn">import</span> <span class="n">FunctionalAstrolabe</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.astro.palace</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_soul_and_body</span><span class="p">,</span> <span class="n">initialize_palaces</span>
@@ -209,6 +206,9 @@
     <span class="n">body_palace_rel_index</span> <span class="o">=</span> <span class="p">(</span><span class="n">soul_and_body</span><span class="o">.</span><span class="n">body_index</span> <span class="o">-</span> <span class="n">soul_and_body</span><span class="o">.</span><span class="n">soul_index</span><span class="p">)</span> <span class="o">%</span> <span class="mi">12</span>
     <span class="n">body_palace_branch</span> <span class="o">=</span> <span class="n">palaces</span><span class="p">[</span><span class="n">body_palace_rel_index</span><span class="p">][</span><span class="s2">&quot;earthly_branch&quot;</span><span class="p">]</span>
 
+    <span class="c1"># 将字典列表转换为 Palace 对象列表</span>
+    <span class="n">palace_objects</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Palace</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">Palace</span><span class="p">(</span><span class="o">**</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">palaces</span><span class="p">]</span>
+
     <span class="n">astrolabe</span> <span class="o">=</span> <span class="n">Astrolabe</span><span class="p">(</span>
         <span class="n">gender</span><span class="o">=</span><span class="n">gender</span><span class="p">,</span>
         <span class="n">solar_date</span><span class="o">=</span><span class="n">solar_date</span><span class="p">,</span>
@@ -223,7 +223,7 @@
         <span class="n">soul</span><span class="o">=</span><span class="n">soul_star</span><span class="p">,</span>
         <span class="n">body</span><span class="o">=</span><span class="n">body_star</span><span class="p">,</span>
         <span class="n">five_elements_class</span><span class="o">=</span><span class="n">get_five_elements_class_name</span><span class="p">(</span><span class="n">five_class</span><span class="p">),</span>
-        <span class="n">palaces</span><span class="o">=</span><span class="n">palaces</span><span class="p">,</span>
+        <span class="n">palaces</span><span class="o">=</span><span class="n">palace_objects</span><span class="p">,</span>
         <span class="n">language</span><span class="o">=</span><span class="n">language</span><span class="p">,</span>
         <span class="n">raw_lunar_date</span><span class="o">=</span><span class="n">lunar_date</span><span class="p">,</span>
         <span class="n">raw_chinese_date</span><span class="o">=</span><span class="n">chinese_date</span><span class="p">,</span>

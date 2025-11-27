@@ -79,13 +79,12 @@
 <span class="sd">Provides a rich API for querying palace properties and stars.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Palace</span><span class="p">,</span> <span class="n">StarName</span><span class="p">,</span> <span class="n">Mutagen</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">cast</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Palace</span><span class="p">,</span> <span class="n">StarName</span><span class="p">,</span> <span class="n">Mutagen</span><span class="p">,</span> <span class="n">Star</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.astro.functional_star</span><span class="w"> </span><span class="kn">import</span> <span class="n">FunctionalStar</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.astro.functional_astrolabe</span><span class="w"> </span><span class="kn">import</span> <span class="n">FunctionalAstrolabe</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.astro.functional_surpalaces</span><span class="w"> </span><span class="kn">import</span> <span class="n">FunctionalSurpalaces</span>
 
 
 <div class="viewcode-block" id="FunctionalPalace">
@@ -97,6 +96,11 @@
 <span class="sd">    继承自Palace，添加了星曜查询方法和关联星盘的能力</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="c1"># Override parent class attributes with more specific types</span>
+    <span class="n">major_stars</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">FunctionalStar</span><span class="p">]</span>  <span class="c1"># type: ignore[assignment]</span>
+    <span class="n">minor_stars</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">FunctionalStar</span><span class="p">]</span>  <span class="c1"># type: ignore[assignment]</span>
+    <span class="n">adjective_stars</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">FunctionalStar</span><span class="p">]</span>  <span class="c1"># type: ignore[assignment]</span>
+
 <div class="viewcode-block" id="FunctionalPalace.__init__">
 <a class="viewcode-back" href="../../../api/index.html#iztro_py.astro.functional_palace.FunctionalPalace.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">palace</span><span class="p">:</span> <span class="n">Palace</span><span class="p">):</span>
@@ -107,9 +111,9 @@
 <span class="sd">            palace: 基础Palace对象</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># 转换星曜为FunctionalStar</span>
-        <span class="n">major_stars</span> <span class="o">=</span> <span class="p">[</span><span class="n">FunctionalStar</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">palace</span><span class="o">.</span><span class="n">major_stars</span><span class="p">]</span>
-        <span class="n">minor_stars</span> <span class="o">=</span> <span class="p">[</span><span class="n">FunctionalStar</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">palace</span><span class="o">.</span><span class="n">minor_stars</span><span class="p">]</span>
-        <span class="n">adjective_stars</span> <span class="o">=</span> <span class="p">[</span><span class="n">FunctionalStar</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">palace</span><span class="o">.</span><span class="n">adjective_stars</span><span class="p">]</span>
+        <span class="n">major_stars_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Star</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">FunctionalStar</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">palace</span><span class="o">.</span><span class="n">major_stars</span><span class="p">]</span>
+        <span class="n">minor_stars_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Star</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">FunctionalStar</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">palace</span><span class="o">.</span><span class="n">minor_stars</span><span class="p">]</span>
+        <span class="n">adjective_stars_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Star</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">FunctionalStar</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">palace</span><span class="o">.</span><span class="n">adjective_stars</span><span class="p">]</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">index</span><span class="o">=</span><span class="n">palace</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
@@ -118,9 +122,9 @@
             <span class="n">is_original_palace</span><span class="o">=</span><span class="n">palace</span><span class="o">.</span><span class="n">is_original_palace</span><span class="p">,</span>
             <span class="n">heavenly_stem</span><span class="o">=</span><span class="n">palace</span><span class="o">.</span><span class="n">heavenly_stem</span><span class="p">,</span>
             <span class="n">earthly_branch</span><span class="o">=</span><span class="n">palace</span><span class="o">.</span><span class="n">earthly_branch</span><span class="p">,</span>
-            <span class="n">major_stars</span><span class="o">=</span><span class="n">major_stars</span><span class="p">,</span>
-            <span class="n">minor_stars</span><span class="o">=</span><span class="n">minor_stars</span><span class="p">,</span>
-            <span class="n">adjective_stars</span><span class="o">=</span><span class="n">adjective_stars</span><span class="p">,</span>
+            <span class="n">major_stars</span><span class="o">=</span><span class="n">major_stars_list</span><span class="p">,</span>
+            <span class="n">minor_stars</span><span class="o">=</span><span class="n">minor_stars_list</span><span class="p">,</span>
+            <span class="n">adjective_stars</span><span class="o">=</span><span class="n">adjective_stars_list</span><span class="p">,</span>
             <span class="n">changsheng12</span><span class="o">=</span><span class="n">palace</span><span class="o">.</span><span class="n">changsheng12</span><span class="p">,</span>
             <span class="n">boshi12</span><span class="o">=</span><span class="n">palace</span><span class="o">.</span><span class="n">boshi12</span><span class="p">,</span>
             <span class="n">jiangqian12</span><span class="o">=</span><span class="n">palace</span><span class="o">.</span><span class="n">jiangqian12</span><span class="p">,</span>
@@ -133,7 +137,7 @@
 
         <span class="c1"># 设置星曜的宫位引用</span>
         <span class="k">for</span> <span class="n">star</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">major_stars</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">minor_stars</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjective_stars</span><span class="p">:</span>
-            <span class="n">star</span><span class="o">.</span><span class="n">set_palace</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+            <span class="n">cast</span><span class="p">(</span><span class="n">FunctionalStar</span><span class="p">,</span> <span class="n">star</span><span class="p">)</span><span class="o">.</span><span class="n">set_palace</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="FunctionalPalace.set_astrolabe">
@@ -300,7 +304,7 @@
 
         <span class="k">for</span> <span class="n">star</span> <span class="ow">in</span> <span class="n">all_stars</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">star</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">star_name</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">star</span>
+                <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="n">FunctionalStar</span><span class="p">,</span> <span class="n">star</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="kc">None</span></div>
 

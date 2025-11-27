@@ -80,8 +80,8 @@
 <span class="sd">Provides rich API for querying palaces, stars, and their relationships.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Astrolabe</span><span class="p">,</span> <span class="n">PalaceName</span><span class="p">,</span> <span class="n">StarName</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">cast</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Astrolabe</span><span class="p">,</span> <span class="n">PalaceName</span><span class="p">,</span> <span class="n">StarName</span><span class="p">,</span> <span class="n">Palace</span><span class="p">,</span> <span class="n">Star</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.astro.functional_palace</span><span class="w"> </span><span class="kn">import</span> <span class="n">FunctionalPalace</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.astro.functional_star</span><span class="w"> </span><span class="kn">import</span> <span class="n">FunctionalStar</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.astro.functional_surpalaces</span><span class="w"> </span><span class="kn">import</span> <span class="n">FunctionalSurpalaces</span>
@@ -98,6 +98,9 @@
 <span class="sd">    继承自Astrolabe，提供丰富的查询和链式调用API</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="c1"># Override parent class attribute with more specific type</span>
+    <span class="n">palaces</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">FunctionalPalace</span><span class="p">]</span>  <span class="c1"># type: ignore[assignment]</span>
+
 <div class="viewcode-block" id="FunctionalAstrolabe.__init__">
 <a class="viewcode-back" href="../../../api/index.html#iztro_py.astro.functional_astrolabe.FunctionalAstrolabe.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">astrolabe</span><span class="p">:</span> <span class="n">Astrolabe</span><span class="p">):</span>
@@ -108,7 +111,9 @@
 <span class="sd">            astrolabe: 基础Astrolabe对象</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># 转换宫位为FunctionalPalace</span>
-        <span class="n">functional_palaces</span> <span class="o">=</span> <span class="p">[</span><span class="n">FunctionalPalace</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">astrolabe</span><span class="o">.</span><span class="n">palaces</span><span class="p">]</span>
+        <span class="n">functional_palaces</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Palace</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">FunctionalPalace</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">astrolabe</span><span class="o">.</span><span class="n">palaces</span>
+        <span class="p">]</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">gender</span><span class="o">=</span><span class="n">astrolabe</span><span class="o">.</span><span class="n">gender</span><span class="p">,</span>
@@ -131,7 +136,7 @@
 
         <span class="c1"># 设置宫位的星盘引用</span>
         <span class="k">for</span> <span class="n">palace</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">palaces</span><span class="p">:</span>
-            <span class="n">palace</span><span class="o">.</span><span class="n">set_astrolabe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+            <span class="n">cast</span><span class="p">(</span><span class="n">FunctionalPalace</span><span class="p">,</span> <span class="n">palace</span><span class="p">)</span><span class="o">.</span><span class="n">set_astrolabe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="FunctionalAstrolabe.palace">
@@ -154,21 +159,21 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">index_or_name</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
             <span class="c1"># 按索引查询</span>
             <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">index_or_name</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">palaces</span><span class="p">):</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">palaces</span><span class="p">[</span><span class="n">index_or_name</span><span class="p">]</span>
+                <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="n">FunctionalPalace</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">palaces</span><span class="p">[</span><span class="n">index_or_name</span><span class="p">])</span>
             <span class="k">return</span> <span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># 按名称查询</span>
             <span class="c1"># 先尝试英文名</span>
             <span class="k">for</span> <span class="n">palace</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">palaces</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">palace</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">index_or_name</span><span class="p">:</span>
-                    <span class="k">return</span> <span class="n">palace</span>
+                    <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="n">FunctionalPalace</span><span class="p">,</span> <span class="n">palace</span><span class="p">)</span>
 
             <span class="c1"># 再尝试中文名</span>
             <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.utils.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_palace_index_by_name</span>
 
             <span class="n">palace_index</span> <span class="o">=</span> <span class="n">get_palace_index_by_name</span><span class="p">(</span><span class="n">index_or_name</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">palace_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">palaces</span><span class="p">[</span><span class="n">palace_index</span><span class="p">]</span>
+                <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="n">FunctionalPalace</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">palaces</span><span class="p">[</span><span class="n">palace_index</span><span class="p">])</span>
 
             <span class="k">return</span> <span class="kc">None</span></div>
 
@@ -190,7 +195,8 @@
 <span class="sd">            &gt;&gt;&gt; astrolabe.star(&#39;紫微&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">palace</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">palaces</span><span class="p">:</span>
-            <span class="n">star</span> <span class="o">=</span> <span class="n">palace</span><span class="o">.</span><span class="n">get_star</span><span class="p">(</span><span class="n">star_name</span><span class="p">)</span>
+            <span class="n">fp</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">FunctionalPalace</span><span class="p">,</span> <span class="n">palace</span><span class="p">)</span>
+            <span class="n">star</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">get_star</span><span class="p">(</span><span class="n">star_name</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">star</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">star</span>
 
@@ -222,9 +228,9 @@
         <span class="c1"># 获取三方四正的索引</span>
         <span class="n">indices</span> <span class="o">=</span> <span class="n">get_surrounded_indices</span><span class="p">(</span><span class="n">target_palace</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
 
-        <span class="n">opposite_palace</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">palaces</span><span class="p">[</span><span class="n">indices</span><span class="p">[</span><span class="s2">&quot;opposite&quot;</span><span class="p">]]</span>
-        <span class="n">wealth_palace</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">palaces</span><span class="p">[</span><span class="n">indices</span><span class="p">[</span><span class="s2">&quot;wealth&quot;</span><span class="p">]]</span>
-        <span class="n">career_palace</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">palaces</span><span class="p">[</span><span class="n">indices</span><span class="p">[</span><span class="s2">&quot;career&quot;</span><span class="p">]]</span>
+        <span class="n">opposite_palace</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">FunctionalPalace</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">palaces</span><span class="p">[</span><span class="n">indices</span><span class="p">[</span><span class="s2">&quot;opposite&quot;</span><span class="p">]])</span>
+        <span class="n">wealth_palace</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">FunctionalPalace</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">palaces</span><span class="p">[</span><span class="n">indices</span><span class="p">[</span><span class="s2">&quot;wealth&quot;</span><span class="p">]])</span>
+        <span class="n">career_palace</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">FunctionalPalace</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">palaces</span><span class="p">[</span><span class="n">indices</span><span class="p">[</span><span class="s2">&quot;career&quot;</span><span class="p">]])</span>
 
         <span class="k">return</span> <span class="n">FunctionalSurpalaces</span><span class="p">(</span>
             <span class="n">target</span><span class="o">=</span><span class="n">target_palace</span><span class="p">,</span>
@@ -243,7 +249,11 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            非空宫列表</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">palaces</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">p</span><span class="o">.</span><span class="n">is_empty</span><span class="p">()]</span></div>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">cast</span><span class="p">(</span><span class="n">FunctionalPalace</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">palaces</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">cast</span><span class="p">(</span><span class="n">FunctionalPalace</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">is_empty</span><span class="p">()</span>
+        <span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="FunctionalAstrolabe.empty_palaces">
@@ -255,7 +265,11 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            空宫列表</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">palaces</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">is_empty</span><span class="p">()]</span></div>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">cast</span><span class="p">(</span><span class="n">FunctionalPalace</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">palaces</span>
+            <span class="k">if</span> <span class="n">cast</span><span class="p">(</span><span class="n">FunctionalPalace</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">is_empty</span><span class="p">()</span>
+        <span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="FunctionalAstrolabe.get_soul_palace">
@@ -269,7 +283,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">palace</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">palaces</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">palace</span><span class="o">.</span><span class="n">is_original_palace</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">palace</span>
+                <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="n">FunctionalPalace</span><span class="p">,</span> <span class="n">palace</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
 
@@ -284,7 +298,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">palace</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">palaces</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">palace</span><span class="o">.</span><span class="n">is_body_palace</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">palace</span>
+                <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="n">FunctionalPalace</span><span class="p">,</span> <span class="n">palace</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
 
@@ -340,10 +354,13 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">year_branch_yin_yang</span> <span class="o">=</span> <span class="s2">&quot;阳&quot;</span>
 
+        <span class="c1"># Cast palaces to List[Palace] for horoscope function compatibility</span>
+        <span class="n">palaces_for_horoscope</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Palace</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">cast</span><span class="p">(</span><span class="n">Palace</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">palaces</span><span class="p">]</span>
+
         <span class="k">return</span> <span class="n">get_horoscope</span><span class="p">(</span>
             <span class="n">solar_date_str</span><span class="o">=</span><span class="n">solar_date</span><span class="p">,</span>
             <span class="n">time_index</span><span class="o">=</span><span class="n">time_index</span><span class="p">,</span>
-            <span class="n">palaces</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">palaces</span><span class="p">,</span>
+            <span class="n">palaces</span><span class="o">=</span><span class="n">palaces_for_horoscope</span><span class="p">,</span>
             <span class="n">soul_palace_index</span><span class="o">=</span><span class="n">soul_palace_index</span><span class="p">,</span>
             <span class="n">five_elements_class</span><span class="o">=</span><span class="n">five_elements</span><span class="p">,</span>
             <span class="n">gender</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">gender</span><span class="p">,</span>
@@ -355,7 +372,7 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;字符串表示&quot;&quot;&quot;</span>
         <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="sa">f</span><span class="s2">&quot;紫微斗数星盘&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;紫微斗数星盘&quot;</span><span class="p">,</span>
             <span class="sa">f</span><span class="s2">&quot;出生日期: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">solar_date</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">lunar_date</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">,</span>
             <span class="sa">f</span><span class="s2">&quot;性别: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">gender</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="sa">f</span><span class="s2">&quot;生肖: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">zodiac</span><span class="si">}</span><span class="s2"> | 星座: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sign</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
@@ -394,7 +411,7 @@
         <span class="k">def</span><span class="w"> </span><span class="nf">tr_stem</span><span class="p">(</span><span class="n">stem_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">t</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;heavenlyStem.</span><span class="si">{</span><span class="n">stem_key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="s2">&quot;Heavenly&quot;</span> <span class="ow">in</span> <span class="n">stem_key</span> <span class="k">else</span> <span class="n">stem_key</span>
 
-        <span class="k">def</span><span class="w"> </span><span class="nf">star_dict</span><span class="p">(</span><span class="n">star</span><span class="p">:</span> <span class="n">FunctionalStar</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">star_dict</span><span class="p">(</span><span class="n">star</span><span class="p">:</span> <span class="n">Star</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">{</span>
                 <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">star</span><span class="o">.</span><span class="n">translate_name</span><span class="p">(),</span>
                 <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">star</span><span class="o">.</span><span class="n">type</span><span class="p">,</span>
@@ -405,20 +422,19 @@
 
         <span class="n">palaces</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">palaces</span><span class="p">:</span>
+            <span class="n">fp</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">FunctionalPalace</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
             <span class="n">palaces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">translate_name</span><span class="p">(),</span>
-                    <span class="s2">&quot;isBodyPalace&quot;</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">is_body_palace</span><span class="p">,</span>
-                    <span class="s2">&quot;isOriginalPalace&quot;</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">is_original_palace</span><span class="p">,</span>
-                    <span class="s2">&quot;heavenlyStem&quot;</span><span class="p">:</span> <span class="n">tr_stem</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">heavenly_stem</span><span class="p">),</span>
-                    <span class="s2">&quot;earthlyBranch&quot;</span><span class="p">:</span> <span class="n">tr_branch</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">earthly_branch</span><span class="p">),</span>
-                    <span class="s2">&quot;majorStars&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">star_dict</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">major_stars</span><span class="p">],</span>
-                    <span class="s2">&quot;minorStars&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">star_dict</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">minor_stars</span><span class="p">],</span>
-                    <span class="s2">&quot;adjectiveStars&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">star_dict</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">adjective_stars</span><span class="p">],</span>
+                    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">fp</span><span class="o">.</span><span class="n">translate_name</span><span class="p">(),</span>
+                    <span class="s2">&quot;isBodyPalace&quot;</span><span class="p">:</span> <span class="n">fp</span><span class="o">.</span><span class="n">is_body_palace</span><span class="p">,</span>
+                    <span class="s2">&quot;isOriginalPalace&quot;</span><span class="p">:</span> <span class="n">fp</span><span class="o">.</span><span class="n">is_original_palace</span><span class="p">,</span>
+                    <span class="s2">&quot;heavenlyStem&quot;</span><span class="p">:</span> <span class="n">tr_stem</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">heavenly_stem</span><span class="p">),</span>
+                    <span class="s2">&quot;earthlyBranch&quot;</span><span class="p">:</span> <span class="n">tr_branch</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">earthly_branch</span><span class="p">),</span>
+                    <span class="s2">&quot;majorStars&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">star_dict</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">fp</span><span class="o">.</span><span class="n">major_stars</span><span class="p">],</span>
+                    <span class="s2">&quot;minorStars&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">star_dict</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">fp</span><span class="o">.</span><span class="n">minor_stars</span><span class="p">],</span>
+                    <span class="s2">&quot;adjectiveStars&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">star_dict</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">fp</span><span class="o">.</span><span class="n">adjective_stars</span><span class="p">],</span>
                 <span class="p">}</span>
             <span class="p">)</span>
-
-        <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Star</span>
 
         <span class="k">return</span> <span class="p">{</span>
             <span class="s2">&quot;gender&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">gender</span><span class="p">,</span>

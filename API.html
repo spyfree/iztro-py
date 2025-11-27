@@ -1,0 +1,431 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API Reference &mdash; iztro-py 0.3.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=d5a15cff"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            iztro-py
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">内容目录:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">安装</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">快速开始</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/index.html">API 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">使用示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">更新日志</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">iztro-py</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">API Reference</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/API.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="api-reference">
+<h1>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h1>
+<section id="core-functions">
+<h2>Core Functions<a class="headerlink" href="#core-functions" title="Link to this heading"></a></h2>
+<section id="astro-by-solar">
+<h3><code class="docutils literal notranslate"><span class="pre">astro.by_solar()</span></code><a class="headerlink" href="#astro-by-solar" title="Link to this heading"></a></h3>
+<p>Create an astrolabe from a solar (Gregorian) date.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py</span><span class="w"> </span><span class="kn">import</span> <span class="n">astro</span>
+
+<span class="n">chart</span> <span class="o">=</span> <span class="n">astro</span><span class="o">.</span><span class="n">by_solar</span><span class="p">(</span>
+    <span class="n">solar_date</span><span class="o">=</span><span class="s1">&#39;2000-8-16&#39;</span><span class="p">,</span>  <span class="c1"># Date string (YYYY-M-D or YYYY-MM-DD)</span>
+    <span class="n">time_index</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>            <span class="c1"># Time index (0-12)</span>
+    <span class="n">gender</span><span class="o">=</span><span class="s1">&#39;男&#39;</span><span class="p">,</span>             <span class="c1"># Gender (&#39;男&#39; or &#39;女&#39;)</span>
+    <span class="n">fix_leap</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>           <span class="c1"># Fix leap month (default: True)</span>
+    <span class="n">language</span><span class="o">=</span><span class="s1">&#39;zh-CN&#39;</span>         <span class="c1"># Output language (default: &#39;zh-CN&#39;)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Time Index Reference:</strong></p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Index</p></th>
+<th class="head"><p>Time Range</p></th>
+<th class="head"><p>Chinese Name</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>00:00-01:00</p></td>
+<td><p>早子时</p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>01:00-03:00</p></td>
+<td><p>丑时</p></td>
+</tr>
+<tr class="row-even"><td><p>2</p></td>
+<td><p>03:00-05:00</p></td>
+<td><p>寅时</p></td>
+</tr>
+<tr class="row-odd"><td><p>3</p></td>
+<td><p>05:00-07:00</p></td>
+<td><p>卯时</p></td>
+</tr>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>07:00-09:00</p></td>
+<td><p>辰时</p></td>
+</tr>
+<tr class="row-odd"><td><p>5</p></td>
+<td><p>09:00-11:00</p></td>
+<td><p>巳时</p></td>
+</tr>
+<tr class="row-even"><td><p>6</p></td>
+<td><p>11:00-13:00</p></td>
+<td><p>午时</p></td>
+</tr>
+<tr class="row-odd"><td><p>7</p></td>
+<td><p>13:00-15:00</p></td>
+<td><p>未时</p></td>
+</tr>
+<tr class="row-even"><td><p>8</p></td>
+<td><p>15:00-17:00</p></td>
+<td><p>申时</p></td>
+</tr>
+<tr class="row-odd"><td><p>9</p></td>
+<td><p>17:00-19:00</p></td>
+<td><p>酉时</p></td>
+</tr>
+<tr class="row-even"><td><p>10</p></td>
+<td><p>19:00-21:00</p></td>
+<td><p>戌时</p></td>
+</tr>
+<tr class="row-odd"><td><p>11</p></td>
+<td><p>21:00-23:00</p></td>
+<td><p>亥时</p></td>
+</tr>
+<tr class="row-even"><td><p>12</p></td>
+<td><p>23:00-00:00</p></td>
+<td><p>晚子时</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="astro-by-lunar">
+<h3><code class="docutils literal notranslate"><span class="pre">astro.by_lunar()</span></code><a class="headerlink" href="#astro-by-lunar" title="Link to this heading"></a></h3>
+<p>Create an astrolabe from a lunar (Chinese) date.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">chart</span> <span class="o">=</span> <span class="n">astro</span><span class="o">.</span><span class="n">by_lunar</span><span class="p">(</span>
+    <span class="n">lunar_date</span><span class="o">=</span><span class="s1">&#39;2000-7-17&#39;</span><span class="p">,</span>  <span class="c1"># Lunar date string</span>
+    <span class="n">time_index</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
+    <span class="n">gender</span><span class="o">=</span><span class="s1">&#39;男&#39;</span><span class="p">,</span>
+    <span class="n">is_leap_month</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>     <span class="c1"># Is leap month (default: False)</span>
+    <span class="n">fix_leap</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">language</span><span class="o">=</span><span class="s1">&#39;zh-CN&#39;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="functionalastrolabe-class">
+<h2>FunctionalAstrolabe Class<a class="headerlink" href="#functionalastrolabe-class" title="Link to this heading"></a></h2>
+<section id="properties">
+<h3>Properties<a class="headerlink" href="#properties" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">gender</span></code></p></td>
+<td><p>str</p></td>
+<td><p>Gender</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">solar_date</span></code></p></td>
+<td><p>str</p></td>
+<td><p>Solar date</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">lunar_date</span></code></p></td>
+<td><p>str</p></td>
+<td><p>Lunar date</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">chinese_date</span></code></p></td>
+<td><p>str</p></td>
+<td><p>Chinese date (四柱)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">zodiac</span></code></p></td>
+<td><p>str</p></td>
+<td><p>Chinese zodiac</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">sign</span></code></p></td>
+<td><p>str</p></td>
+<td><p>Western zodiac sign</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">five_elements_class</span></code></p></td>
+<td><p>str</p></td>
+<td><p>Five elements class</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">palaces</span></code></p></td>
+<td><p>List[FunctionalPalace]</p></td>
+<td><p>12 palaces</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="methods">
+<h3>Methods<a class="headerlink" href="#methods" title="Link to this heading"></a></h3>
+<section id="palace-index-or-name">
+<h4><code class="docutils literal notranslate"><span class="pre">palace(index_or_name)</span></code><a class="headerlink" href="#palace-index-or-name" title="Link to this heading"></a></h4>
+<p>Get a palace by index or name.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># By index</span>
+<span class="n">palace</span> <span class="o">=</span> <span class="n">chart</span><span class="o">.</span><span class="n">palace</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># By English name</span>
+<span class="n">palace</span> <span class="o">=</span> <span class="n">chart</span><span class="o">.</span><span class="n">palace</span><span class="p">(</span><span class="s1">&#39;soulPalace&#39;</span><span class="p">)</span>
+
+<span class="c1"># By Chinese name</span>
+<span class="n">palace</span> <span class="o">=</span> <span class="n">chart</span><span class="o">.</span><span class="n">palace</span><span class="p">(</span><span class="s1">&#39;命宫&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="star-star-name">
+<h4><code class="docutils literal notranslate"><span class="pre">star(star_name)</span></code><a class="headerlink" href="#star-star-name" title="Link to this heading"></a></h4>
+<p>Find a star by name.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ziwei</span> <span class="o">=</span> <span class="n">chart</span><span class="o">.</span><span class="n">star</span><span class="p">(</span><span class="s1">&#39;ziweiMaj&#39;</span><span class="p">)</span>
+<span class="c1"># or</span>
+<span class="n">ziwei</span> <span class="o">=</span> <span class="n">chart</span><span class="o">.</span><span class="n">star</span><span class="p">(</span><span class="s1">&#39;紫微&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="surrounded-palaces-index-or-name">
+<h4><code class="docutils literal notranslate"><span class="pre">surrounded_palaces(index_or_name)</span></code><a class="headerlink" href="#surrounded-palaces-index-or-name" title="Link to this heading"></a></h4>
+<p>Get the three-sided palaces (三方四正).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">surpalaces</span> <span class="o">=</span> <span class="n">chart</span><span class="o">.</span><span class="n">surrounded_palaces</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="c1"># Returns: target, opposite, wealth, career palaces</span>
+</pre></div>
+</div>
+</section>
+<section id="get-soul-palace">
+<h4><code class="docutils literal notranslate"><span class="pre">get_soul_palace()</span></code><a class="headerlink" href="#get-soul-palace" title="Link to this heading"></a></h4>
+<p>Get the soul palace (命宫).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">soul</span> <span class="o">=</span> <span class="n">chart</span><span class="o">.</span><span class="n">get_soul_palace</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="get-body-palace">
+<h4><code class="docutils literal notranslate"><span class="pre">get_body_palace()</span></code><a class="headerlink" href="#get-body-palace" title="Link to this heading"></a></h4>
+<p>Get the body palace (身宫).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">body</span> <span class="o">=</span> <span class="n">chart</span><span class="o">.</span><span class="n">get_body_palace</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="horoscope-solar-date-time-index-0">
+<h4><code class="docutils literal notranslate"><span class="pre">horoscope(solar_date,</span> <span class="pre">time_index=0)</span></code><a class="headerlink" href="#horoscope-solar-date-time-index-0" title="Link to this heading"></a></h4>
+<p>Get horoscope for a specific date.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">horoscope</span> <span class="o">=</span> <span class="n">chart</span><span class="o">.</span><span class="n">horoscope</span><span class="p">(</span><span class="s1">&#39;2024-1-1&#39;</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">horoscope</span><span class="o">.</span><span class="n">decadal</span><span class="p">)</span>  <span class="c1"># 大限</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">horoscope</span><span class="o">.</span><span class="n">yearly</span><span class="p">)</span>   <span class="c1"># 流年</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="functionalpalace-class">
+<h2>FunctionalPalace Class<a class="headerlink" href="#functionalpalace-class" title="Link to this heading"></a></h2>
+<section id="id1">
+<h3>Methods<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<section id="has-stars">
+<h4><code class="docutils literal notranslate"><span class="pre">has(stars)</span></code><a class="headerlink" href="#has-stars" title="Link to this heading"></a></h4>
+<p>Check if palace contains all specified stars.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">palace</span><span class="o">.</span><span class="n">has</span><span class="p">([</span><span class="s1">&#39;ziweiMaj&#39;</span><span class="p">,</span> <span class="s1">&#39;tianfuMaj&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</section>
+<section id="has-one-of-stars">
+<h4><code class="docutils literal notranslate"><span class="pre">has_one_of(stars)</span></code><a class="headerlink" href="#has-one-of-stars" title="Link to this heading"></a></h4>
+<p>Check if palace contains any of the specified stars.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">palace</span><span class="o">.</span><span class="n">has_one_of</span><span class="p">([</span><span class="s1">&#39;ziweiMaj&#39;</span><span class="p">,</span> <span class="s1">&#39;tianfuMaj&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</section>
+<section id="has-mutagen-mutagen">
+<h4><code class="docutils literal notranslate"><span class="pre">has_mutagen(mutagen)</span></code><a class="headerlink" href="#has-mutagen-mutagen" title="Link to this heading"></a></h4>
+<p>Check if palace has a star with the specified mutagen.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">palace</span><span class="o">.</span><span class="n">has_mutagen</span><span class="p">(</span><span class="s1">&#39;禄&#39;</span><span class="p">)</span>  <span class="c1"># 化禄</span>
+<span class="n">palace</span><span class="o">.</span><span class="n">has_mutagen</span><span class="p">(</span><span class="s1">&#39;忌&#39;</span><span class="p">)</span>  <span class="c1"># 化忌</span>
+</pre></div>
+</div>
+</section>
+<section id="is-empty">
+<h4><code class="docutils literal notranslate"><span class="pre">is_empty()</span></code><a class="headerlink" href="#is-empty" title="Link to this heading"></a></h4>
+<p>Check if palace has no major stars.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">palace</span><span class="o">.</span><span class="n">is_empty</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Empty palace&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="functionalstar-class">
+<h2>FunctionalStar Class<a class="headerlink" href="#functionalstar-class" title="Link to this heading"></a></h2>
+<section id="id2">
+<h3>Properties<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">name</span></code></p></td>
+<td><p>str</p></td>
+<td><p>Star name</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">type</span></code></p></td>
+<td><p>str</p></td>
+<td><p>Star type (major/soft/tough)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">brightness</span></code></p></td>
+<td><p>str</p></td>
+<td><p>Brightness level</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">mutagen</span></code></p></td>
+<td><p>str</p></td>
+<td><p>Mutagen (四化)</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id3">
+<h3>Methods<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<section id="palace">
+<h4><code class="docutils literal notranslate"><span class="pre">palace()</span></code><a class="headerlink" href="#palace" title="Link to this heading"></a></h4>
+<p>Get the palace where this star is located.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">palace</span> <span class="o">=</span> <span class="n">star</span><span class="o">.</span><span class="n">palace</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="is-bright">
+<h4><code class="docutils literal notranslate"><span class="pre">is_bright()</span></code><a class="headerlink" href="#is-bright" title="Link to this heading"></a></h4>
+<p>Check if star has good brightness (庙/旺).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">star</span><span class="o">.</span><span class="n">is_bright</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Star is bright&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="surrounded-palaces">
+<h4><code class="docutils literal notranslate"><span class="pre">surrounded_palaces()</span></code><a class="headerlink" href="#surrounded-palaces" title="Link to this heading"></a></h4>
+<p>Get the three-sided palaces of this star’s location.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">surpalaces</span> <span class="o">=</span> <span class="n">star</span><span class="o">.</span><span class="n">surrounded_palaces</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="supported-languages">
+<h2>Supported Languages<a class="headerlink" href="#supported-languages" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Code</p></th>
+<th class="head"><p>Language</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">zh-CN</span></code></p></td>
+<td><p>简体中文</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">zh-TW</span></code></p></td>
+<td><p>繁體中文</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">en-US</span></code></p></td>
+<td><p>English</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ja-JP</span></code></p></td>
+<td><p>日本語</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ko-KR</span></code></p></td>
+<td><p>한국어</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">vi-VN</span></code></p></td>
+<td><p>Tiếng Việt</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, iztro-py Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

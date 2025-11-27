@@ -270,6 +270,11 @@ Provides rich API for querying palaces, stars, and their relationships.</p>
 <dd class="field-odd"><p><strong>astrolabe</strong> (<a class="reference internal" href="index.html#iztro_py.data.types.Astrolabe" title="iztro_py.data.types.Astrolabe"><em>Astrolabe</em></a>)</p>
 </dd>
 </dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="iztro_py.astro.functional_astrolabe.FunctionalAstrolabe.palaces">
+<span class="sig-name descname"><span class="pre">palaces</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a><span class="pre">[</span><a class="reference internal" href="index.html#iztro_py.astro.functional_palace.FunctionalPalace" title="iztro_py.astro.functional_palace.FunctionalPalace"><code class="xref py py-class docutils literal notranslate"><span class="pre">FunctionalPalace</span></code></a><span class="pre">]</span></em><a class="headerlink" href="#iztro_py.astro.functional_astrolabe.FunctionalAstrolabe.palaces" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="iztro_py.astro.functional_astrolabe.FunctionalAstrolabe.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">astrolabe</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/iztro_py/astro/functional_astrolabe.html#FunctionalAstrolabe.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#iztro_py.astro.functional_astrolabe.FunctionalAstrolabe.__init__" title="Link to this definition"></a></dt>
@@ -467,6 +472,21 @@ Provides rich API for querying palaces, stars, and their relationships.</p>
 <dd class="field-odd"><p><strong>palace</strong> (<a class="reference internal" href="index.html#iztro_py.data.types.Palace" title="iztro_py.data.types.Palace"><em>Palace</em></a>)</p>
 </dd>
 </dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="iztro_py.astro.functional_palace.FunctionalPalace.major_stars">
+<span class="sig-name descname"><span class="pre">major_stars</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a><span class="pre">[</span><a class="reference internal" href="index.html#iztro_py.astro.functional_star.FunctionalStar" title="iztro_py.astro.functional_star.FunctionalStar"><code class="xref py py-class docutils literal notranslate"><span class="pre">FunctionalStar</span></code></a><span class="pre">]</span></em><a class="headerlink" href="#iztro_py.astro.functional_palace.FunctionalPalace.major_stars" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="iztro_py.astro.functional_palace.FunctionalPalace.minor_stars">
+<span class="sig-name descname"><span class="pre">minor_stars</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a><span class="pre">[</span><a class="reference internal" href="index.html#iztro_py.astro.functional_star.FunctionalStar" title="iztro_py.astro.functional_star.FunctionalStar"><code class="xref py py-class docutils literal notranslate"><span class="pre">FunctionalStar</span></code></a><span class="pre">]</span></em><a class="headerlink" href="#iztro_py.astro.functional_palace.FunctionalPalace.minor_stars" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="iztro_py.astro.functional_palace.FunctionalPalace.adjective_stars">
+<span class="sig-name descname"><span class="pre">adjective_stars</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a><span class="pre">[</span><a class="reference internal" href="index.html#iztro_py.astro.functional_star.FunctionalStar" title="iztro_py.astro.functional_star.FunctionalStar"><code class="xref py py-class docutils literal notranslate"><span class="pre">FunctionalStar</span></code></a><span class="pre">]</span></em><a class="headerlink" href="#iztro_py.astro.functional_palace.FunctionalPalace.adjective_stars" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="iztro_py.astro.functional_palace.FunctionalPalace.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">palace</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/iztro_py/astro/functional_palace.html#FunctionalPalace.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#iztro_py.astro.functional_palace.FunctionalPalace.__init__" title="Link to this definition"></a></dt>
@@ -866,13 +886,33 @@ Provides rich API for querying palaces, stars, and their relationships.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>target</strong> (<a class="reference internal" href="index.html#iztro_py.data.types.Palace" title="iztro_py.data.types.Palace"><em>Palace</em></a>)</p></li>
-<li><p><strong>opposite</strong> (<a class="reference internal" href="index.html#iztro_py.data.types.Palace" title="iztro_py.data.types.Palace"><em>Palace</em></a>)</p></li>
-<li><p><strong>wealth</strong> (<a class="reference internal" href="index.html#iztro_py.data.types.Palace" title="iztro_py.data.types.Palace"><em>Palace</em></a>)</p></li>
-<li><p><strong>career</strong> (<a class="reference internal" href="index.html#iztro_py.data.types.Palace" title="iztro_py.data.types.Palace"><em>Palace</em></a>)</p></li>
+<li><p><strong>target</strong> (<a class="reference internal" href="index.html#iztro_py.astro.functional_palace.FunctionalPalace" title="iztro_py.astro.functional_palace.FunctionalPalace"><em>FunctionalPalace</em></a>)</p></li>
+<li><p><strong>opposite</strong> (<a class="reference internal" href="index.html#iztro_py.astro.functional_palace.FunctionalPalace" title="iztro_py.astro.functional_palace.FunctionalPalace"><em>FunctionalPalace</em></a>)</p></li>
+<li><p><strong>wealth</strong> (<a class="reference internal" href="index.html#iztro_py.astro.functional_palace.FunctionalPalace" title="iztro_py.astro.functional_palace.FunctionalPalace"><em>FunctionalPalace</em></a>)</p></li>
+<li><p><strong>career</strong> (<a class="reference internal" href="index.html#iztro_py.astro.functional_palace.FunctionalPalace" title="iztro_py.astro.functional_palace.FunctionalPalace"><em>FunctionalPalace</em></a>)</p></li>
 </ul>
 </dd>
 </dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="iztro_py.astro.functional_surpalaces.FunctionalSurpalaces.target">
+<span class="sig-name descname"><span class="pre">target</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="index.html#iztro_py.astro.functional_palace.FunctionalPalace" title="iztro_py.astro.functional_palace.FunctionalPalace"><code class="xref py py-class docutils literal notranslate"><span class="pre">FunctionalPalace</span></code></a></em><a class="headerlink" href="#iztro_py.astro.functional_surpalaces.FunctionalSurpalaces.target" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="iztro_py.astro.functional_surpalaces.FunctionalSurpalaces.opposite">
+<span class="sig-name descname"><span class="pre">opposite</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="index.html#iztro_py.astro.functional_palace.FunctionalPalace" title="iztro_py.astro.functional_palace.FunctionalPalace"><code class="xref py py-class docutils literal notranslate"><span class="pre">FunctionalPalace</span></code></a></em><a class="headerlink" href="#iztro_py.astro.functional_surpalaces.FunctionalSurpalaces.opposite" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="iztro_py.astro.functional_surpalaces.FunctionalSurpalaces.wealth">
+<span class="sig-name descname"><span class="pre">wealth</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="index.html#iztro_py.astro.functional_palace.FunctionalPalace" title="iztro_py.astro.functional_palace.FunctionalPalace"><code class="xref py py-class docutils literal notranslate"><span class="pre">FunctionalPalace</span></code></a></em><a class="headerlink" href="#iztro_py.astro.functional_surpalaces.FunctionalSurpalaces.wealth" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="iztro_py.astro.functional_surpalaces.FunctionalSurpalaces.career">
+<span class="sig-name descname"><span class="pre">career</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="index.html#iztro_py.astro.functional_palace.FunctionalPalace" title="iztro_py.astro.functional_palace.FunctionalPalace"><code class="xref py py-class docutils literal notranslate"><span class="pre">FunctionalPalace</span></code></a></em><a class="headerlink" href="#iztro_py.astro.functional_surpalaces.FunctionalSurpalaces.career" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="iztro_py.astro.functional_surpalaces.FunctionalSurpalaces.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">opposite</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wealth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">career</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/iztro_py/astro/functional_surpalaces.html#FunctionalSurpalaces.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#iztro_py.astro.functional_surpalaces.FunctionalSurpalaces.__init__" title="Link to this definition"></a></dt>

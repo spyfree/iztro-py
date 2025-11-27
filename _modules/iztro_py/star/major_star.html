@@ -79,8 +79,8 @@
 <span class="sd">Functions for placing the 14 major stars (主星) into palaces.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Star</span><span class="p">,</span> <span class="n">FiveElementsClass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">cast</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Star</span><span class="p">,</span> <span class="n">FiveElementsClass</span><span class="p">,</span> <span class="n">StarName</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.star.location</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_major_star_positions</span>
 
 
@@ -125,7 +125,7 @@
     <span class="c1"># 注意：star_positions 中的索引是地支索引，需要转换为宫位索引</span>
     <span class="k">for</span> <span class="n">star_name</span><span class="p">,</span> <span class="n">earthly_branch_index</span> <span class="ow">in</span> <span class="n">star_positions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="n">star</span> <span class="o">=</span> <span class="n">Star</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="n">star_name</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">cast</span><span class="p">(</span><span class="n">StarName</span><span class="p">,</span> <span class="n">star_name</span><span class="p">),</span>
             <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;major&quot;</span><span class="p">,</span>
             <span class="n">scope</span><span class="o">=</span><span class="s2">&quot;origin&quot;</span><span class="p">,</span>
             <span class="n">brightness</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># 后续计算</span>
@@ -153,7 +153,8 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        主星列表</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">palace</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;major_stars&quot;</span><span class="p">,</span> <span class="p">[])</span></div>
+    <span class="n">result</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Star</span><span class="p">]</span> <span class="o">=</span> <span class="n">palace</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;major_stars&quot;</span><span class="p">,</span> <span class="p">[])</span>
+    <span class="k">return</span> <span class="n">result</span></div>
 
 
 
