@@ -8,7 +8,7 @@ especially Ziwei (紫微) and Tianfu (天府).
 from typing import Dict, Tuple
 from datetime import date, timedelta
 from iztro_py.data.types import FiveElementsClass, HeavenlyStemName, EarthlyBranchName
-from iztro_py.data.constants import fix_index, ZIWEI_START_POSITIONS
+from iztro_py.data.constants import fix_index
 from iztro_py.utils.calendar import parse_solar_date, solar_to_lunar
 
 

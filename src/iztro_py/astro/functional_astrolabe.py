@@ -5,8 +5,8 @@ The main class for interacting with a Zi Wei Dou Shu astrolabe.
 Provides rich API for querying palaces, stars, and their relationships.
 """
 
-from typing import List, Optional, Union
-from iztro_py.data.types import Astrolabe, PalaceName, StarName
+from typing import List, Optional, Union, cast
+from iztro_py.data.types import Astrolabe, PalaceName, StarName, Palace, Star
 from iztro_py.astro.functional_palace import FunctionalPalace
 from iztro_py.astro.functional_star import FunctionalStar
 from iztro_py.astro.functional_surpalaces import FunctionalSurpalaces
@@ -21,6 +21,9 @@ class FunctionalAstrolabe(Astrolabe):
     继承自Astrolabe，提供丰富的查询和链式调用API
     """
 
+    # Override parent class attribute with more specific type
+    palaces: List[FunctionalPalace]  # type: ignore[assignment]
+
     def __init__(self, astrolabe: Astrolabe):
         """
         初始化FunctionalAstrolabe
@@ -29,7 +32,9 @@ class FunctionalAstrolabe(Astrolabe):
             astrolabe: 基础Astrolabe对象
         """
         # 转换宫位为FunctionalPalace
-        functional_palaces = [FunctionalPalace(p) for p in astrolabe.palaces]
+        functional_palaces: List[Palace] = [
+            FunctionalPalace(p) for p in astrolabe.palaces
+        ]
 
         super().__init__(
             gender=astrolabe.gender,
@@ -52,7 +57,7 @@ class FunctionalAstrolabe(Astrolabe):
 
         # 设置宫位的星盘引用
         for palace in self.palaces:
-            palace.set_astrolabe(self)
+            cast(FunctionalPalace, palace).set_astrolabe(self)
 
     def palace(self, index_or_name: Union[int, PalaceName]) -> Optional[FunctionalPalace]:
         """
@@ -72,21 +77,21 @@ class FunctionalAstrolabe(Astrolabe):
         if isinstance(index_or_name, int):
             # 按索引查询
             if 0 <= index_or_name < len(self.palaces):
-                return self.palaces[index_or_name]
+                return cast(FunctionalPalace, self.palaces[index_or_name])
             return None
         else:
             # 按名称查询
             # 先尝试英文名
             for palace in self.palaces:
                 if palace.name == index_or_name:
-                    return palace
+                    return cast(FunctionalPalace, palace)
 
             # 再尝试中文名
             from iztro_py.utils.helpers import get_palace_index_by_name
 
             palace_index = get_palace_index_by_name(index_or_name)
             if palace_index is not None:
-                return self.palaces[palace_index]
+                return cast(FunctionalPalace, self.palaces[palace_index])
 
             return None
 
@@ -105,7 +110,8 @@ class FunctionalAstrolabe(Astrolabe):
             >>> astrolabe.star('紫微')
         """
         for palace in self.palaces:
-            star = palace.get_star(star_name)
+            fp = cast(FunctionalPalace, palace)
+            star = fp.get_star(star_name)
             if star:
                 return star
 
@@ -134,9 +140,9 @@ class FunctionalAstrolabe(Astrolabe):
         # 获取三方四正的索引
         indices = get_surrounded_indices(target_palace.index)
 
-        opposite_palace = self.palaces[indices["opposite"]]
-        wealth_palace = self.palaces[indices["wealth"]]
-        career_palace = self.palaces[indices["career"]]
+        opposite_palace = cast(FunctionalPalace, self.palaces[indices["opposite"]])
+        wealth_palace = cast(FunctionalPalace, self.palaces[indices["wealth"]])
+        career_palace = cast(FunctionalPalace, self.palaces[indices["career"]])
 
         return FunctionalSurpalaces(
             target=target_palace,
@@ -152,7 +158,11 @@ class FunctionalAstrolabe(Astrolabe):
         Returns:
             非空宫列表
         """
-        return [p for p in self.palaces if not p.is_empty()]
+        return [
+            cast(FunctionalPalace, p)
+            for p in self.palaces
+            if not cast(FunctionalPalace, p).is_empty()
+        ]
 
     def empty_palaces(self) -> List[FunctionalPalace]:
         """
@@ -161,7 +171,11 @@ class FunctionalAstrolabe(Astrolabe):
         Returns:
             空宫列表
         """
-        return [p for p in self.palaces if p.is_empty()]
+        return [
+            cast(FunctionalPalace, p)
+            for p in self.palaces
+            if cast(FunctionalPalace, p).is_empty()
+        ]
 
     def get_soul_palace(self) -> Optional[FunctionalPalace]:
         """
@@ -172,7 +186,7 @@ class FunctionalAstrolabe(Astrolabe):
         """
         for palace in self.palaces:
             if palace.is_original_palace:
-                return palace
+                return cast(FunctionalPalace, palace)
         return None
 
     def get_body_palace(self) -> Optional[FunctionalPalace]:
@@ -184,7 +198,7 @@ class FunctionalAstrolabe(Astrolabe):
         """
         for palace in self.palaces:
             if palace.is_body_palace:
-                return palace
+                return cast(FunctionalPalace, palace)
         return None
 
     def horoscope(self, solar_date: str, time_index: int = 0):
@@ -237,10 +251,13 @@ class FunctionalAstrolabe(Astrolabe):
         else:
             year_branch_yin_yang = "阳"
 
+        # Cast palaces to List[Palace] for horoscope function compatibility
+        palaces_for_horoscope: List[Palace] = [cast(Palace, p) for p in self.palaces]
+
         return get_horoscope(
             solar_date_str=solar_date,
             time_index=time_index,
-            palaces=self.palaces,
+            palaces=palaces_for_horoscope,
             soul_palace_index=soul_palace_index,
             five_elements_class=five_elements,
             gender=self.gender,
@@ -251,7 +268,7 @@ class FunctionalAstrolabe(Astrolabe):
     def __str__(self) -> str:
         """字符串表示"""
         lines = [
-            f"紫微斗数星盘",
+            "紫微斗数星盘",
             f"出生日期: {self.solar_date} ({self.lunar_date})",
             f"性别: {self.gender}",
             f"生肖: {self.zodiac} | 星座: {self.sign}",
@@ -288,7 +305,7 @@ class FunctionalAstrolabe(Astrolabe):
         def tr_stem(stem_key: str) -> str:
             return t(f"heavenlyStem.{stem_key}") if "Heavenly" in stem_key else stem_key
 
-        def star_dict(star: FunctionalStar) -> dict:
+        def star_dict(star: Star) -> dict:
             return {
                 "name": star.translate_name(),
                 "type": star.type,
@@ -299,20 +316,19 @@ class FunctionalAstrolabe(Astrolabe):
 
         palaces = []
         for p in self.palaces:
+            fp = cast(FunctionalPalace, p)
             palaces.append(
                 {
-                    "name": p.translate_name(),
-                    "isBodyPalace": p.is_body_palace,
-                    "isOriginalPalace": p.is_original_palace,
-                    "heavenlyStem": tr_stem(p.heavenly_stem),
-                    "earthlyBranch": tr_branch(p.earthly_branch),
-                    "majorStars": [star_dict(s) for s in p.major_stars],
-                    "minorStars": [star_dict(s) for s in p.minor_stars],
-                    "adjectiveStars": [star_dict(s) for s in p.adjective_stars],
+                    "name": fp.translate_name(),
+                    "isBodyPalace": fp.is_body_palace,
+                    "isOriginalPalace": fp.is_original_palace,
+                    "heavenlyStem": tr_stem(fp.heavenly_stem),
+                    "earthlyBranch": tr_branch(fp.earthly_branch),
+                    "majorStars": [star_dict(s) for s in fp.major_stars],
+                    "minorStars": [star_dict(s) for s in fp.minor_stars],
+                    "adjectiveStars": [star_dict(s) for s in fp.adjective_stars],
                 }
             )
-
-        from iztro_py.data.types import Star
 
         return {
             "gender": self.gender,

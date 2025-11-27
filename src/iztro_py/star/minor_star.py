@@ -151,7 +151,8 @@ def get_minor_stars_in_palace(palace: dict) -> List[Star]:
     Returns:
         辅星列表
     """
-    return palace.get("minor_stars", [])
+    result: List[Star] = palace.get("minor_stars", [])
+    return result
 
 
 def has_minor_star(palace: dict, star_name: str) -> bool:

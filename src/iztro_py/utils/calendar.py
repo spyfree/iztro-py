@@ -5,7 +5,7 @@ Provides functions for converting between solar and lunar calendars,
 and calculating heavenly stems and earthly branches (天干地支).
 """
 
-from datetime import datetime, date
+from datetime import date
 from typing import Tuple, Optional
 from lunarcalendar import Converter, Solar, Lunar, DateNotExist
 
@@ -88,7 +88,7 @@ def parse_solar_date(date_str: str) -> Tuple[int, int, int]:
 
         return year, month, day
 
-    except (ValueError, IndexError) as e:
+    except (ValueError, IndexError):
         raise ValueError(f"Invalid date string: {date_str}. Expected format: YYYY-M-D")
 
 

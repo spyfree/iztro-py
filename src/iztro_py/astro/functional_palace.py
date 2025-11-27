@@ -4,13 +4,12 @@ FunctionalPalace class - Palace with functional methods
 Provides a rich API for querying palace properties and stars.
 """
 
-from typing import Optional, List, TYPE_CHECKING
-from iztro_py.data.types import Palace, StarName, Mutagen
+from typing import Optional, List, TYPE_CHECKING, cast
+from iztro_py.data.types import Palace, StarName, Mutagen, Star
 from iztro_py.astro.functional_star import FunctionalStar
 
 if TYPE_CHECKING:
     from iztro_py.astro.functional_astrolabe import FunctionalAstrolabe
-    from iztro_py.astro.functional_surpalaces import FunctionalSurpalaces
 
 
 class FunctionalPalace(Palace):
@@ -20,6 +19,11 @@ class FunctionalPalace(Palace):
     继承自Palace，添加了星曜查询方法和关联星盘的能力
     """
 
+    # Override parent class attributes with more specific types
+    major_stars: List[FunctionalStar]  # type: ignore[assignment]
+    minor_stars: List[FunctionalStar]  # type: ignore[assignment]
+    adjective_stars: List[FunctionalStar]  # type: ignore[assignment]
+
     def __init__(self, palace: Palace):
         """
         初始化FunctionalPalace
@@ -28,9 +32,9 @@ class FunctionalPalace(Palace):
             palace: 基础Palace对象
         """
         # 转换星曜为FunctionalStar
-        major_stars = [FunctionalStar(s) for s in palace.major_stars]
-        minor_stars = [FunctionalStar(s) for s in palace.minor_stars]
-        adjective_stars = [FunctionalStar(s) for s in palace.adjective_stars]
+        major_stars_list: List[Star] = [FunctionalStar(s) for s in palace.major_stars]
+        minor_stars_list: List[Star] = [FunctionalStar(s) for s in palace.minor_stars]
+        adjective_stars_list: List[Star] = [FunctionalStar(s) for s in palace.adjective_stars]
 
         super().__init__(
             index=palace.index,
@@ -39,9 +43,9 @@ class FunctionalPalace(Palace):
             is_original_palace=palace.is_original_palace,
             heavenly_stem=palace.heavenly_stem,
             earthly_branch=palace.earthly_branch,
-            major_stars=major_stars,
-            minor_stars=minor_stars,
-            adjective_stars=adjective_stars,
+            major_stars=major_stars_list,
+            minor_stars=minor_stars_list,
+            adjective_stars=adjective_stars_list,
             changsheng12=palace.changsheng12,
             boshi12=palace.boshi12,
             jiangqian12=palace.jiangqian12,
@@ -54,7 +58,7 @@ class FunctionalPalace(Palace):
 
         # 设置星曜的宫位引用
         for star in self.major_stars + self.minor_stars + self.adjective_stars:
-            star.set_palace(self)
+            cast(FunctionalStar, star).set_palace(self)
 
     def set_astrolabe(self, astrolabe: "FunctionalAstrolabe") -> None:
         """
@@ -194,7 +198,7 @@ class FunctionalPalace(Palace):
 
         for star in all_stars:
             if star.name == star_name:
-                return star
+                return cast(FunctionalStar, star)
 
         return None
 

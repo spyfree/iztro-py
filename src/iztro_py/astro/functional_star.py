@@ -150,7 +150,7 @@ class FunctionalStar(Star):
 
     def __str__(self) -> str:
         """字符串表示"""
-        parts = [self.name]
+        parts: List[str] = [str(self.name)]
         if self.brightness:
             parts.append(f"({self.brightness})")
         if self.mutagen:

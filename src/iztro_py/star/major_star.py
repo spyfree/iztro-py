@@ -4,8 +4,8 @@ Major stars placement for iztro-py
 Functions for placing the 14 major stars (主星) into palaces.
 """
 
-from typing import Any, Dict, List
-from iztro_py.data.types import Star, FiveElementsClass
+from typing import Any, Dict, List, cast
+from iztro_py.data.types import Star, FiveElementsClass, StarName
 from iztro_py.star.location import get_major_star_positions
 
 
@@ -48,7 +48,7 @@ def place_major_stars(
     # 注意：star_positions 中的索引是地支索引，需要转换为宫位索引
     for star_name, earthly_branch_index in star_positions.items():
         star = Star(
-            name=star_name,
+            name=cast(StarName, star_name),
             type="major",
             scope="origin",
             brightness=None,  # 后续计算
@@ -73,7 +73,8 @@ def get_major_stars_in_palace(palace: dict) -> List[Star]:
     Returns:
         主星列表
     """
-    return palace.get("major_stars", [])
+    result: List[Star] = palace.get("major_stars", [])
+    return result
 
 
 def has_major_star(palace: dict, star_name: str) -> bool:

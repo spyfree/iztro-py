@@ -4,15 +4,12 @@ Main API for iztro-py
 Provides high-level functions for creating astrolabes.
 """
 
-from typing import Optional
-from datetime import date
-
+from typing import List
 from iztro_py.data.types import (
     GenderName,
     Language,
     Astrolabe,
-    LunarDate,
-    HeavenlyStemAndEarthlyBranchDate,
+    Palace,
 )
 from iztro_py.astro.functional_astrolabe import FunctionalAstrolabe
 from iztro_py.astro.palace import get_soul_and_body, initialize_palaces
@@ -132,6 +129,9 @@ def by_solar(
     body_palace_rel_index = (soul_and_body.body_index - soul_and_body.soul_index) % 12
     body_palace_branch = palaces[body_palace_rel_index]["earthly_branch"]
 
+    # 将字典列表转换为 Palace 对象列表
+    palace_objects: List[Palace] = [Palace(**p) for p in palaces]
+
     astrolabe = Astrolabe(
         gender=gender,
         solar_date=solar_date,
@@ -146,7 +146,7 @@ def by_solar(
         soul=soul_star,
         body=body_star,
         five_elements_class=get_five_elements_class_name(five_class),
-        palaces=palaces,
+        palaces=palace_objects,
         language=language,
         raw_lunar_date=lunar_date,
         raw_chinese_date=chinese_date,

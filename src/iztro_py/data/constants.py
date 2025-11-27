@@ -12,7 +12,6 @@ from iztro_py.data.types import (
     PalaceName,
     ChineseTime,
     StarName,
-    FiveElementsClass,
 )
 
 

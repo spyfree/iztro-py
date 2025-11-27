@@ -22,9 +22,6 @@ def apply_mutagen_to_palaces(palaces: List[Dict[str, Any]], year_stem: HeavenlyS
     Note:
         直接修改palaces列表，不返回值
     """
-    # 获取该年干对应的四化星
-    mutagen_stars = get_mutagen(year_stem)  # [禄星, 权星, 科星, 忌星]
-
     # 遍历所有宫位
     for palace in palaces:
         # 检查主星

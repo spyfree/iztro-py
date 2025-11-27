@@ -4,8 +4,8 @@ FunctionalSurpalaces class - Surrounded palaces (三方四正) with functional m
 Represents the four related palaces in Zi Wei Dou Shu astrology.
 """
 
-from typing import List
-from iztro_py.data.types import SurroundedPalaces, StarName, Mutagen
+from typing import List, cast
+from iztro_py.data.types import SurroundedPalaces, StarName, Mutagen, Palace
 from iztro_py.astro.functional_palace import FunctionalPalace
 
 
@@ -19,6 +19,12 @@ class FunctionalSurpalaces(SurroundedPalaces):
     - wealth: 财帛位（相隔8宫）
     - career: 官禄位（相隔4宫）
     """
+
+    # Override parent class attributes with more specific types
+    target: FunctionalPalace  # type: ignore[assignment]
+    opposite: FunctionalPalace  # type: ignore[assignment]
+    wealth: FunctionalPalace  # type: ignore[assignment]
+    career: FunctionalPalace  # type: ignore[assignment]
 
     def __init__(
         self,
@@ -36,7 +42,13 @@ class FunctionalSurpalaces(SurroundedPalaces):
             wealth: 财帛位
             career: 官禄位
         """
-        super().__init__(target=target, opposite=opposite, wealth=wealth, career=career)
+        # Cast to Palace for parent class compatibility
+        super().__init__(
+            target=cast(Palace, target),
+            opposite=cast(Palace, opposite),
+            wealth=cast(Palace, wealth),
+            career=cast(Palace, career),
+        )
 
     def have(self, stars: List[StarName]) -> bool:
         """

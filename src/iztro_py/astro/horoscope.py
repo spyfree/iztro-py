@@ -5,13 +5,11 @@ Implements decadal (大限), yearly (流年), monthly (流月),
 daily (流日), and hourly (流时) horoscope calculations.
 """
 
-from typing import List, Optional
-from datetime import datetime
+from typing import List
 
 from iztro_py.data.types import (
     Horoscope,
     HoroscopeItem,
-    PalaceName,
     StarName,
     HeavenlyStemName,
     EarthlyBranchName,
@@ -29,7 +27,6 @@ from iztro_py.utils.helpers import (
     calculate_nominal_age,
     fix_index,
 )
-from iztro_py.data.constants import HEAVENLY_STEMS, EARTHLY_BRANCHES, fix_index as const_fix_index
 
 
 def get_horoscope(
