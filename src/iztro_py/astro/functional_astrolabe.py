@@ -32,9 +32,7 @@ class FunctionalAstrolabe(Astrolabe):
             astrolabe: 基础Astrolabe对象
         """
         # 转换宫位为FunctionalPalace
-        functional_palaces: List[Palace] = [
-            FunctionalPalace(p) for p in astrolabe.palaces
-        ]
+        functional_palaces: List[Palace] = [FunctionalPalace(p) for p in astrolabe.palaces]
 
         super().__init__(
             gender=astrolabe.gender,
@@ -172,9 +170,7 @@ class FunctionalAstrolabe(Astrolabe):
             空宫列表
         """
         return [
-            cast(FunctionalPalace, p)
-            for p in self.palaces
-            if cast(FunctionalPalace, p).is_empty()
+            cast(FunctionalPalace, p) for p in self.palaces if cast(FunctionalPalace, p).is_empty()
         ]
 
     def get_soul_palace(self) -> Optional[FunctionalPalace]:
