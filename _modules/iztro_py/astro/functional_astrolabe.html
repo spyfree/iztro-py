@@ -111,9 +111,7 @@
 <span class="sd">            astrolabe: 基础Astrolabe对象</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># 转换宫位为FunctionalPalace</span>
-        <span class="n">functional_palaces</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Palace</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">FunctionalPalace</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">astrolabe</span><span class="o">.</span><span class="n">palaces</span>
-        <span class="p">]</span>
+        <span class="n">functional_palaces</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Palace</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">FunctionalPalace</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">astrolabe</span><span class="o">.</span><span class="n">palaces</span><span class="p">]</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">gender</span><span class="o">=</span><span class="n">astrolabe</span><span class="o">.</span><span class="n">gender</span><span class="p">,</span>
@@ -266,9 +264,7 @@
 <span class="sd">            空宫列表</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span>
-            <span class="n">cast</span><span class="p">(</span><span class="n">FunctionalPalace</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">palaces</span>
-            <span class="k">if</span> <span class="n">cast</span><span class="p">(</span><span class="n">FunctionalPalace</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">is_empty</span><span class="p">()</span>
+            <span class="n">cast</span><span class="p">(</span><span class="n">FunctionalPalace</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">palaces</span> <span class="k">if</span> <span class="n">cast</span><span class="p">(</span><span class="n">FunctionalPalace</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">is_empty</span><span class="p">()</span>
         <span class="p">]</span></div>
 
 
