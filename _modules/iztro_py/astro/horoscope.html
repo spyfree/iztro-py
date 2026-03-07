@@ -221,7 +221,11 @@
 <span class="sd">        大限运势项</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">palace</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span>
-        <span class="p">(</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">palaces</span> <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">decadal</span> <span class="ow">and</span> <span class="n">item</span><span class="o">.</span><span class="n">decadal</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">age</span> <span class="o">&lt;=</span> <span class="n">item</span><span class="o">.</span><span class="n">decadal</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+        <span class="p">(</span>
+            <span class="n">item</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">palaces</span>
+            <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">decadal</span> <span class="ow">and</span> <span class="n">item</span><span class="o">.</span><span class="n">decadal</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">age</span> <span class="o">&lt;=</span> <span class="n">item</span><span class="o">.</span><span class="n">decadal</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="p">),</span>
         <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span>
 
@@ -234,7 +238,9 @@
             <span class="s2">&quot;spiritPalace&quot;</span><span class="p">,</span>
             <span class="s2">&quot;careerPalace&quot;</span><span class="p">,</span>
         <span class="p">]</span>
-        <span class="n">palace</span> <span class="o">=</span> <span class="nb">next</span><span class="p">((</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">palaces</span> <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">childhood_order</span><span class="p">[</span><span class="n">age</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">palaces</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">palace</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">palaces</span> <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">childhood_order</span><span class="p">[</span><span class="n">age</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">palaces</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="p">)</span>
         <span class="n">item_name</span> <span class="o">=</span> <span class="s2">&quot;童限&quot;</span>
     <span class="k">elif</span> <span class="n">palace</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">palace</span> <span class="o">=</span> <span class="n">palaces</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -326,7 +332,9 @@
     <span class="n">target_lunar_date</span><span class="p">:</span> <span class="n">LunarDate</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="n">birth_leap_addition</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">birth_lunar_date</span><span class="o">.</span><span class="n">is_leap_month</span> <span class="ow">and</span> <span class="n">birth_lunar_date</span><span class="o">.</span><span class="n">day</span> <span class="o">&gt;</span> <span class="mi">15</span> <span class="k">else</span> <span class="mi">0</span>
-    <span class="n">target_leap_addition</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">target_lunar_date</span><span class="o">.</span><span class="n">is_leap_month</span> <span class="ow">and</span> <span class="n">target_lunar_date</span><span class="o">.</span><span class="n">day</span> <span class="o">&gt;</span> <span class="mi">15</span> <span class="k">else</span> <span class="mi">0</span>
+    <span class="n">target_leap_addition</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="mi">1</span> <span class="k">if</span> <span class="n">target_lunar_date</span><span class="o">.</span><span class="n">is_leap_month</span> <span class="ow">and</span> <span class="n">target_lunar_date</span><span class="o">.</span><span class="n">day</span> <span class="o">&gt;</span> <span class="mi">15</span> <span class="k">else</span> <span class="mi">0</span>
+    <span class="p">)</span>
     <span class="k">return</span> <span class="n">fix_index</span><span class="p">(</span>
         <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="n">year_branch</span><span class="p">)</span>
         <span class="o">-</span> <span class="p">(</span><span class="n">birth_lunar_date</span><span class="o">.</span><span class="n">month</span> <span class="o">+</span> <span class="n">birth_leap_addition</span><span class="p">)</span>
