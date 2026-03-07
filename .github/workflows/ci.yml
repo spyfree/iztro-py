@@ -87,7 +87,8 @@ jobs:
 
     - name: Check code formatting with Black
       run: |
-        black --check src tests
+        python -m black --version
+        python -m black --check src tests
 
     - name: Lint with Ruff
       run: |
