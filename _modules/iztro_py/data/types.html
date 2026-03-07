@@ -7,14 +7,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>iztro_py.data.types &mdash; iztro-py 0.3.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="../../../_static/documentation_options.js?v=d5a15cff"></script>
-      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -298,21 +298,12 @@
 
 <span class="c1"># Adjective stars (杂耀)</span>
 <span class="n">AdjectiveStarName</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span>
-    <span class="c1"># 长生12神</span>
-    <span class="s2">&quot;changsheng12&quot;</span><span class="p">,</span>
-    <span class="c1"># 博士12神</span>
-    <span class="s2">&quot;boshi12&quot;</span><span class="p">,</span>
-    <span class="c1"># 流年将前12神</span>
-    <span class="s2">&quot;jiangqian12&quot;</span><span class="p">,</span>
-    <span class="c1"># 流年岁前12神</span>
-    <span class="s2">&quot;suiqian12&quot;</span><span class="p">,</span>
-    <span class="c1"># 其他杂耀</span>
-    <span class="s2">&quot;huagaiAdj&quot;</span><span class="p">,</span>  <span class="c1"># 华盖</span>
-    <span class="s2">&quot;xianchiAdj&quot;</span><span class="p">,</span>  <span class="c1"># 咸池</span>
-    <span class="s2">&quot;guchenAdj&quot;</span><span class="p">,</span>  <span class="c1"># 孤辰</span>
-    <span class="s2">&quot;guasuAdj&quot;</span><span class="p">,</span>  <span class="c1"># 寡宿</span>
-    <span class="s2">&quot;tiancaiAdj&quot;</span><span class="p">,</span>  <span class="c1"># 天才</span>
-    <span class="s2">&quot;tianshouAdj&quot;</span><span class="p">,</span>  <span class="c1"># 天寿</span>
+    <span class="s2">&quot;huagai&quot;</span><span class="p">,</span>  <span class="c1"># 华盖</span>
+    <span class="s2">&quot;xianchi&quot;</span><span class="p">,</span>  <span class="c1"># 咸池</span>
+    <span class="s2">&quot;guchen&quot;</span><span class="p">,</span>  <span class="c1"># 孤辰</span>
+    <span class="s2">&quot;guasu&quot;</span><span class="p">,</span>  <span class="c1"># 寡宿</span>
+    <span class="s2">&quot;tiancai&quot;</span><span class="p">,</span>  <span class="c1"># 天才</span>
+    <span class="s2">&quot;tianshou&quot;</span><span class="p">,</span>  <span class="c1"># 天寿</span>
     <span class="s2">&quot;hongluan&quot;</span><span class="p">,</span>  <span class="c1"># 红鸾</span>
     <span class="s2">&quot;tianxi&quot;</span><span class="p">,</span>  <span class="c1"># 天喜</span>
     <span class="s2">&quot;tianxing&quot;</span><span class="p">,</span>  <span class="c1"># 天刑</span>
@@ -320,18 +311,35 @@
     <span class="s2">&quot;jieshen&quot;</span><span class="p">,</span>  <span class="c1"># 解神</span>
     <span class="s2">&quot;yinsha&quot;</span><span class="p">,</span>  <span class="c1"># 阴煞</span>
     <span class="s2">&quot;tianguan&quot;</span><span class="p">,</span>  <span class="c1"># 天官</span>
-    <span class="s2">&quot;tianfu2&quot;</span><span class="p">,</span>  <span class="c1"># 天福</span>
+    <span class="s2">&quot;tianfuAdj&quot;</span><span class="p">,</span>  <span class="c1"># 天福</span>
     <span class="s2">&quot;tianku&quot;</span><span class="p">,</span>  <span class="c1"># 天哭</span>
     <span class="s2">&quot;tianxu&quot;</span><span class="p">,</span>  <span class="c1"># 天虚</span>
     <span class="s2">&quot;longchi&quot;</span><span class="p">,</span>  <span class="c1"># 龙池</span>
     <span class="s2">&quot;fengge&quot;</span><span class="p">,</span>  <span class="c1"># 凤阁</span>
-    <span class="s2">&quot;hongluan&quot;</span><span class="p">,</span>  <span class="c1"># 红鸾</span>
-    <span class="s2">&quot;tianxi&quot;</span><span class="p">,</span>  <span class="c1"># 天喜</span>
-    <span class="s2">&quot;guchen&quot;</span><span class="p">,</span>  <span class="c1"># 孤辰</span>
-    <span class="s2">&quot;guasu&quot;</span><span class="p">,</span>  <span class="c1"># 寡宿</span>
     <span class="s2">&quot;feilian&quot;</span><span class="p">,</span>  <span class="c1"># 蜚廉</span>
     <span class="s2">&quot;posui&quot;</span><span class="p">,</span>  <span class="c1"># 破碎</span>
     <span class="s2">&quot;tianchu&quot;</span><span class="p">,</span>  <span class="c1"># 天厨</span>
+    <span class="s2">&quot;santai&quot;</span><span class="p">,</span>  <span class="c1"># 三台</span>
+    <span class="s2">&quot;bazuo&quot;</span><span class="p">,</span>  <span class="c1"># 八座</span>
+    <span class="s2">&quot;enguang&quot;</span><span class="p">,</span>  <span class="c1"># 恩光</span>
+    <span class="s2">&quot;tiangui&quot;</span><span class="p">,</span>  <span class="c1"># 天贵</span>
+    <span class="s2">&quot;taifu&quot;</span><span class="p">,</span>  <span class="c1"># 台辅</span>
+    <span class="s2">&quot;fenggao&quot;</span><span class="p">,</span>  <span class="c1"># 封诰</span>
+    <span class="s2">&quot;tianwu&quot;</span><span class="p">,</span>  <span class="c1"># 天巫</span>
+    <span class="s2">&quot;tianyue&quot;</span><span class="p">,</span>  <span class="c1"># 天月</span>
+    <span class="s2">&quot;tiande&quot;</span><span class="p">,</span>  <span class="c1"># 天德</span>
+    <span class="s2">&quot;yuede&quot;</span><span class="p">,</span>  <span class="c1"># 月德</span>
+    <span class="s2">&quot;tiankong&quot;</span><span class="p">,</span>  <span class="c1"># 天空</span>
+    <span class="s2">&quot;xunkong&quot;</span><span class="p">,</span>  <span class="c1"># 旬空</span>
+    <span class="s2">&quot;jielu&quot;</span><span class="p">,</span>  <span class="c1"># 截路</span>
+    <span class="s2">&quot;kongwang&quot;</span><span class="p">,</span>  <span class="c1"># 空亡</span>
+    <span class="s2">&quot;longde&quot;</span><span class="p">,</span>  <span class="c1"># 龙德</span>
+    <span class="s2">&quot;jiekong&quot;</span><span class="p">,</span>  <span class="c1"># 截空</span>
+    <span class="s2">&quot;jieshaAdj&quot;</span><span class="p">,</span>  <span class="c1"># 劫煞</span>
+    <span class="s2">&quot;dahaoAdj&quot;</span><span class="p">,</span>  <span class="c1"># 大耗</span>
+    <span class="s2">&quot;tianshi&quot;</span><span class="p">,</span>  <span class="c1"># 天使</span>
+    <span class="s2">&quot;tianshang&quot;</span><span class="p">,</span>  <span class="c1"># 天伤</span>
+    <span class="s2">&quot;nianjie&quot;</span><span class="p">,</span>  <span class="c1"># 年解</span>
 <span class="p">]</span>
 
 <span class="c1"># All star names</span>
@@ -446,10 +454,10 @@
     <span class="n">major_stars</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Star</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
     <span class="n">minor_stars</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Star</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
     <span class="n">adjective_stars</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Star</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
-    <span class="n">changsheng12</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">StarName</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">boshi12</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">StarName</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">jiangqian12</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">StarName</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">suiqian12</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">StarName</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">changsheng12</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">boshi12</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">jiangqian12</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">suiqian12</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">decadal</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Decadal</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">ages</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>  <span class="c1"># 小限年龄数组</span>
 

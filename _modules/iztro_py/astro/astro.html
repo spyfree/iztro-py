@@ -7,14 +7,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>iztro_py.astro.astro &mdash; iztro-py 0.3.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="../../../_static/documentation_options.js?v=d5a15cff"></script>
-      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -87,9 +87,11 @@
     <span class="n">Palace</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.astro.functional_astrolabe</span><span class="w"> </span><span class="kn">import</span> <span class="n">FunctionalAstrolabe</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.astro.palace</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_soul_and_body</span><span class="p">,</span> <span class="n">initialize_palaces</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.astro.palace</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_soul_and_body</span><span class="p">,</span> <span class="n">initialize_palaces</span><span class="p">,</span> <span class="n">populate_decadal_and_ages</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.star.major_star</span><span class="w"> </span><span class="kn">import</span> <span class="n">place_major_stars</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.star.minor_star</span><span class="w"> </span><span class="kn">import</span> <span class="n">place_minor_stars</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.star.adjective_star</span><span class="w"> </span><span class="kn">import</span> <span class="n">place_adjective_stars</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.star.decorative_star</span><span class="w"> </span><span class="kn">import</span> <span class="n">apply_decorative_stars</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.star.mutagen</span><span class="w"> </span><span class="kn">import</span> <span class="n">apply_mutagen_to_palaces</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.brightness</span><span class="w"> </span><span class="kn">import</span> <span class="n">apply_brightness_to_palaces</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.earthly_branches</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_soul_star</span><span class="p">,</span> <span class="n">get_body_star</span>
@@ -110,6 +112,7 @@
     <span class="n">get_time_name</span><span class="p">,</span>
     <span class="n">get_time_range</span><span class="p">,</span>
     <span class="n">hour_to_time_index</span><span class="p">,</span>
+    <span class="n">fix_lunar_month_index</span><span class="p">,</span>
 <span class="p">)</span>
 
 
@@ -157,16 +160,14 @@
     <span class="n">lunar_date</span> <span class="o">=</span> <span class="n">solar_to_lunar</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="p">,</span> <span class="n">fix_leap</span><span class="p">)</span>
 
     <span class="c1"># 3. 计算四柱</span>
-    <span class="n">chinese_date</span> <span class="o">=</span> <span class="n">get_heavenly_stem_and_earthly_branch_date</span><span class="p">(</span>
-        <span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="p">,</span> <span class="n">time_index</span><span class="p">,</span> <span class="n">lunar_date</span><span class="o">.</span><span class="n">month</span>
-    <span class="p">)</span>
+    <span class="n">chinese_date</span> <span class="o">=</span> <span class="n">get_heavenly_stem_and_earthly_branch_date</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="p">,</span> <span class="n">time_index</span><span class="p">)</span>
 
     <span class="c1"># 4. 生肖星座</span>
     <span class="n">zodiac</span> <span class="o">=</span> <span class="n">get_zodiac</span><span class="p">(</span><span class="n">chinese_date</span><span class="o">.</span><span class="n">year_branch</span><span class="p">)</span>
     <span class="n">sign</span> <span class="o">=</span> <span class="n">get_sign</span><span class="p">(</span><span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="p">)</span>
 
     <span class="c1"># 5. 计算命宫身宫</span>
-    <span class="n">soul_and_body</span> <span class="o">=</span> <span class="n">get_soul_and_body</span><span class="p">(</span><span class="n">lunar_date</span><span class="o">.</span><span class="n">month</span><span class="p">,</span> <span class="n">time_index</span><span class="p">,</span> <span class="n">chinese_date</span><span class="o">.</span><span class="n">year_stem</span><span class="p">)</span>
+    <span class="n">soul_and_body</span> <span class="o">=</span> <span class="n">get_soul_and_body</span><span class="p">(</span><span class="n">solar_date</span><span class="p">,</span> <span class="n">time_index</span><span class="p">,</span> <span class="n">fix_leap</span><span class="o">=</span><span class="n">fix_leap</span><span class="p">)</span>
 
     <span class="c1"># 6. 计算五行局</span>
     <span class="n">five_class</span> <span class="o">=</span> <span class="n">get_five_elements_class</span><span class="p">(</span>
@@ -178,7 +179,7 @@
     <span class="n">body_star</span> <span class="o">=</span> <span class="n">get_body_star</span><span class="p">(</span><span class="n">chinese_date</span><span class="o">.</span><span class="n">year_branch</span><span class="p">)</span>
 
     <span class="c1"># 8. 初始化十二宫</span>
-    <span class="n">palaces</span> <span class="o">=</span> <span class="n">initialize_palaces</span><span class="p">(</span><span class="n">soul_and_body</span><span class="p">)</span>
+    <span class="n">palaces</span> <span class="o">=</span> <span class="n">initialize_palaces</span><span class="p">(</span><span class="n">soul_and_body</span><span class="p">,</span> <span class="n">chinese_date</span><span class="o">.</span><span class="n">year_stem</span><span class="p">)</span>
 
     <span class="c1"># 9. 安置主星（与原生 iztro 对齐的紫微/天府起局算法）</span>
     <span class="n">ziwei_idx</span><span class="p">,</span> <span class="n">tianfu_idx</span> <span class="o">=</span> <span class="n">get_start_indices</span><span class="p">(</span>
@@ -191,20 +192,53 @@
     <span class="n">place_major_stars</span><span class="p">(</span><span class="n">palaces</span><span class="p">,</span> <span class="n">ziwei_idx</span><span class="p">,</span> <span class="n">tianfu_idx</span><span class="p">)</span>
 
     <span class="c1"># 10. 安置辅星</span>
+    <span class="n">adjusted_lunar_month</span> <span class="o">=</span> <span class="n">fix_lunar_month_index</span><span class="p">(</span><span class="n">solar_date</span><span class="p">,</span> <span class="n">time_index</span><span class="p">,</span> <span class="n">fix_leap</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
     <span class="n">place_minor_stars</span><span class="p">(</span>
-        <span class="n">palaces</span><span class="p">,</span> <span class="n">lunar_date</span><span class="o">.</span><span class="n">month</span><span class="p">,</span> <span class="n">time_index</span><span class="p">,</span> <span class="n">chinese_date</span><span class="o">.</span><span class="n">year_stem</span><span class="p">,</span> <span class="n">chinese_date</span><span class="o">.</span><span class="n">year_branch</span>
+        <span class="n">palaces</span><span class="p">,</span>
+        <span class="n">adjusted_lunar_month</span><span class="p">,</span>
+        <span class="n">time_index</span><span class="p">,</span>
+        <span class="n">chinese_date</span><span class="o">.</span><span class="n">year_stem</span><span class="p">,</span>
+        <span class="n">chinese_date</span><span class="o">.</span><span class="n">year_branch</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="c1"># 11. 应用四化</span>
+    <span class="c1"># 11. 安置杂曜</span>
+    <span class="n">place_adjective_stars</span><span class="p">(</span>
+        <span class="n">palaces</span><span class="p">,</span>
+        <span class="n">solar_date</span><span class="p">,</span>
+        <span class="n">time_index</span><span class="p">,</span>
+        <span class="n">gender</span><span class="p">,</span>
+        <span class="n">fix_leap</span><span class="p">,</span>
+        <span class="n">soul_and_body</span><span class="o">.</span><span class="n">soul_index</span><span class="p">,</span>
+        <span class="n">soul_and_body</span><span class="o">.</span><span class="n">body_index</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># 12. 填充长生/博士/将前/岁前 12 神</span>
+    <span class="n">apply_decorative_stars</span><span class="p">(</span>
+        <span class="n">palaces</span><span class="p">,</span>
+        <span class="n">five_class</span><span class="p">,</span>
+        <span class="n">gender</span><span class="p">,</span>
+        <span class="n">chinese_date</span><span class="o">.</span><span class="n">year_stem</span><span class="p">,</span>
+        <span class="n">chinese_date</span><span class="o">.</span><span class="n">year_branch</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># 13. 应用四化</span>
     <span class="n">apply_mutagen_to_palaces</span><span class="p">(</span><span class="n">palaces</span><span class="p">,</span> <span class="n">chinese_date</span><span class="o">.</span><span class="n">year_stem</span><span class="p">)</span>
 
-    <span class="c1"># 12. 应用亮度</span>
+    <span class="c1"># 14. 应用亮度</span>
     <span class="n">apply_brightness_to_palaces</span><span class="p">(</span><span class="n">palaces</span><span class="p">)</span>
 
-    <span class="c1"># 13. 创建Astrolabe对象</span>
-    <span class="c1"># 计算身宫地支（以身宫所在宫位的地支为准）</span>
-    <span class="n">body_palace_rel_index</span> <span class="o">=</span> <span class="p">(</span><span class="n">soul_and_body</span><span class="o">.</span><span class="n">body_index</span> <span class="o">-</span> <span class="n">soul_and_body</span><span class="o">.</span><span class="n">soul_index</span><span class="p">)</span> <span class="o">%</span> <span class="mi">12</span>
-    <span class="n">body_palace_branch</span> <span class="o">=</span> <span class="n">palaces</span><span class="p">[</span><span class="n">body_palace_rel_index</span><span class="p">][</span><span class="s2">&quot;earthly_branch&quot;</span><span class="p">]</span>
+    <span class="c1"># 15. 填充大限与小限锚点</span>
+    <span class="n">populate_decadal_and_ages</span><span class="p">(</span>
+        <span class="n">palaces</span><span class="p">,</span>
+        <span class="n">soul_and_body</span><span class="o">.</span><span class="n">soul_index</span><span class="p">,</span>
+        <span class="n">five_class</span><span class="p">,</span>
+        <span class="n">gender</span><span class="p">,</span>
+        <span class="n">chinese_date</span><span class="o">.</span><span class="n">year_stem</span><span class="p">,</span>
+        <span class="n">chinese_date</span><span class="o">.</span><span class="n">year_branch</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># 16. 创建Astrolabe对象</span>
+    <span class="n">body_palace_branch</span> <span class="o">=</span> <span class="n">palaces</span><span class="p">[</span><span class="n">soul_and_body</span><span class="o">.</span><span class="n">body_index</span><span class="p">][</span><span class="s2">&quot;earthly_branch&quot;</span><span class="p">]</span>
 
     <span class="c1"># 将字典列表转换为 Palace 对象列表</span>
     <span class="n">palace_objects</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Palace</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">Palace</span><span class="p">(</span><span class="o">**</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">palaces</span><span class="p">]</span>
@@ -229,7 +263,7 @@
         <span class="n">raw_chinese_date</span><span class="o">=</span><span class="n">chinese_date</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="c1"># 14. 转换为FunctionalAstrolabe</span>
+    <span class="c1"># 17. 转换为FunctionalAstrolabe</span>
     <span class="k">return</span> <span class="n">FunctionalAstrolabe</span><span class="p">(</span><span class="n">astrolabe</span><span class="p">)</span></div>
 
 
