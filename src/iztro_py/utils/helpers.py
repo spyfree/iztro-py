@@ -9,7 +9,6 @@ from iztro_py.data.types import HeavenlyStemName, EarthlyBranchName, FiveElement
 from iztro_py.data.constants import (
     HEAVENLY_STEMS,
     EARTHLY_BRANCHES,
-    FIVE_ELEMENTS_CLASS_LOOKUP,
     fix_index,
 )
 
@@ -27,24 +26,21 @@ def get_five_elements_class(
     Returns:
         五行局枚举值
     """
-    stem_index = HEAVENLY_STEMS.index(heavenly_stem)
-    branch_index = EARTHLY_BRANCHES.index(earthly_branch)
+    stem_number = HEAVENLY_STEMS.index(heavenly_stem) // 2 + 1
+    branch_number = fix_index(EARTHLY_BRANCHES.index(earthly_branch), 6) // 2 + 1
 
-    class_value = FIVE_ELEMENTS_CLASS_LOOKUP[stem_index][branch_index]
+    class_index = stem_number + branch_number
+    while class_index > 5:
+        class_index -= 5
 
-    # 转换为枚举
-    if class_value == 2:
-        return FiveElementsClass.WATER_2
-    elif class_value == 3:
-        return FiveElementsClass.WOOD_3
-    elif class_value == 4:
-        return FiveElementsClass.METAL_4
-    elif class_value == 5:
-        return FiveElementsClass.EARTH_5
-    elif class_value == 6:
-        return FiveElementsClass.FIRE_6
-    else:
-        raise ValueError(f"Invalid five elements class value: {class_value}")
+    mapping = {
+        1: FiveElementsClass.WOOD_3,
+        2: FiveElementsClass.METAL_4,
+        3: FiveElementsClass.WATER_2,
+        4: FiveElementsClass.FIRE_6,
+        5: FiveElementsClass.EARTH_5,
+    }
+    return mapping[class_index]
 
 
 def get_five_elements_class_name(five_elements_class: FiveElementsClass) -> str:
@@ -151,6 +147,60 @@ def hour_to_time_index(hour: int) -> int:
     if hour == 23:
         return 12  # 晚子时
     return (hour + 1) // 2
+
+
+def fix_earthly_branch_index(earthly_branch: EarthlyBranchName) -> int:
+    """
+    将地支转换为以寅宫为 0 的宫位索引。
+
+    Args:
+        earthly_branch: 地支名称
+
+    Returns:
+        宫位索引 (0-11)
+    """
+    return fix_index(EARTHLY_BRANCHES.index(earthly_branch) - EARTHLY_BRANCHES.index("yinEarthly"))
+
+
+def fix_lunar_month_index(solar_date: str, time_index: int, fix_leap: bool = True) -> int:
+    """
+    计算以寅宫为 0 的农历月份索引。
+
+    对齐 iztro `fixLunarMonthIndex`：
+    - 正月建寅，所以正月索引为 0
+    - 闰月前半月按上月算，后半月按下月算
+    - 晚子时不额外进位月份
+    """
+    from iztro_py.utils.calendar import parse_solar_date, solar_to_lunar
+
+    year, month, day = parse_solar_date(solar_date)
+    lunar = solar_to_lunar(year, month, day)
+    need_to_add = lunar.is_leap_month and fix_leap and lunar.day > 15 and time_index != 12
+    return fix_index(lunar.month - 1 + (1 if need_to_add else 0))
+
+
+def fix_lunar_day_index(lunar_day: int, time_index: int) -> int:
+    """
+    获取农历日期对应的 0-based 索引。
+
+    JS `fixLunarDayIndex` 规则：
+    - 晚子时按次日算，所以不减 1
+    - 其他时辰按当日算，索引 = 日 - 1
+    """
+    return lunar_day if time_index >= 12 else lunar_day - 1
+
+
+def get_age_index(year_branch: EarthlyBranchName) -> int:
+    """
+    获取小限起始宫位索引（以寅宫为 0）。
+    """
+    if year_branch in ["yinEarthly", "wuEarthly", "xuEarthly"]:
+        return fix_earthly_branch_index("chenEarthly")
+    if year_branch in ["shenEarthly", "ziEarthly", "chenEarthly"]:
+        return fix_earthly_branch_index("xuEarthly")
+    if year_branch in ["siEarthly", "youEarthly", "chouEarthly"]:
+        return fix_earthly_branch_index("weiEarthly")
+    return fix_earthly_branch_index("chouEarthly")
 
 
 def calculate_nominal_age(birth_year: int, target_year: int, age_divide: str = "normal") -> int:

@@ -9,7 +9,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../s
 
 from iztro_py.astro.palace import get_soul_and_body, initialize_palaces
 from iztro_py.data.types import FiveElementsClass
-from iztro_py.data.constants import EARTHLY_BRANCHES
+from iztro_py.data.constants import EARTHLY_BRANCHES, fix_index
 from iztro_py.utils.helpers import get_five_elements_class
 
 
@@ -76,14 +76,16 @@ def test_initialize_palaces():
     # 验证宫位数量
     assert len(palaces) == 12
 
-    # 验证命宫标记（命宫总是第0个宫位）
-    assert palaces[0]["is_original_palace"] == True
+    # 验证命宫名称会按 soul_index 旋转到对应宫位
+    assert palaces[soul_and_body.soul_index]["name"] == "soulPalace"
 
-    # 验证身宫标记（需要根据地支查找）
+    # 验证身宫标记（palaces 以寅宫为 index 0）
     body_palace = next(
-        p for p in palaces if p["earthly_branch"] == EARTHLY_BRANCHES[soul_and_body.body_index]
+        p
+        for p in palaces
+        if p["earthly_branch"] == EARTHLY_BRANCHES[fix_index(soul_and_body.body_index + 2)]
     )
-    assert body_palace["is_body_palace"] == True
+    assert body_palace["is_body_palace"]
 
     # 打印前3个宫位信息
     for i in range(3):

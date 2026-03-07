@@ -7,7 +7,8 @@ and calculating heavenly stems and earthly branches (天干地支).
 
 from datetime import date
 from typing import Tuple, Optional
-from lunarcalendar import Converter, Solar, Lunar, DateNotExist
+from lunar_python import Solar as LunarSolar
+from lunar_python import Lunar as LunarDateValue
 
 from iztro_py.data.types import (
     LunarDate,
@@ -46,20 +47,15 @@ def solar_to_lunar(year: int, month: int, day: int, fix_leap: bool = True) -> Lu
         ValueError: 如果日期无效
     """
     try:
-        solar = Solar(year, month, day)
-        lunar = Converter.Solar2Lunar(solar)
-
-        is_leap = lunar.isleap
-
-        # 修正闰月：如果在闰月的前半月，调整为前一个月
-        if fix_leap and is_leap and lunar.day <= 15:
-            # 调整为前一个月的非闰月
-            is_leap = False
-
-        return LunarDate(year=lunar.year, month=lunar.month, day=lunar.day, is_leap_month=is_leap)
-
-    except DateNotExist:
-        raise ValueError(f"Invalid solar date: {year}-{month}-{day}")
+        solar = LunarSolar.fromYmd(year, month, day)
+        lunar = solar.getLunar()
+        lunar_month = lunar.getMonth()
+        return LunarDate(
+            year=lunar.getYear(),
+            month=abs(lunar_month),
+            day=lunar.getDay(),
+            is_leap_month=lunar_month < 0,
+        )
     except Exception as e:
         raise ValueError(f"Error converting solar to lunar: {e}")
 
@@ -116,13 +112,10 @@ def lunar_to_solar(
         ValueError: 如果日期无效
     """
     try:
-        lunar = Lunar(year, month, day, isleap=is_leap_month)
-        solar = Converter.Lunar2Solar(lunar)
-
-        return solar.year, solar.month, solar.day
-
-    except DateNotExist:
-        raise ValueError(f"Invalid lunar date: {year}-{month}-{day} (leap={is_leap_month})")
+        lunar_month = -month if is_leap_month else month
+        lunar = LunarDateValue.fromYmd(year, lunar_month, day)
+        solar = lunar.getSolar()
+        return solar.getYear(), solar.getMonth(), solar.getDay()
     except Exception as e:
         raise ValueError(f"Error converting lunar to solar: {e}")
 
@@ -284,22 +277,13 @@ def get_heavenly_stem_and_earthly_branch_date(
     Returns:
         HeavenlyStemAndEarthlyBranchDate对象
     """
-    # 年干支
-    year_stem, year_branch = get_year_stem_branch(year)
+    solar = LunarSolar.fromYmdHms(year, month, day, _time_index_to_hour(time_index), 0, 0)
+    lunar = solar.getLunar()
 
-    # 月干支（使用农历月）
-    if lunar_month is None:
-        lunar_date = solar_to_lunar(year, month, day)
-        lunar_month = lunar_date.month
-
-    month_stem, month_branch = get_month_stem_branch(year_stem, lunar_month)
-
-    # 日干支
-    solar_date = date(year, month, day)
-    day_stem, day_branch = get_day_stem_branch(solar_date)
-
-    # 时干支
-    time_stem, time_branch = get_time_stem_branch(day_stem, time_index)
+    year_stem, year_branch = _parse_ganzhi(lunar.getYearInGanZhiExact())
+    month_stem, month_branch = _parse_ganzhi(lunar.getMonthInGanZhiExact())
+    day_stem, day_branch = _parse_ganzhi(lunar.getDayInGanZhiExact())
+    time_stem, time_branch = _parse_ganzhi(lunar.getTimeInGanZhi())
 
     return HeavenlyStemAndEarthlyBranchDate(
         year_stem=year_stem,
@@ -435,7 +419,8 @@ def format_lunar_date(lunar_date: LunarDate) -> str:
     else:
         day_str = str(lunar_date.day)
 
-    return f"{lunar_date.year}年{month_str}月{day_str}"
+    year_str = "".join(chinese_numbers[int(d)] for d in str(lunar_date.year))
+    return f"{year_str}年{month_str}月{day_str}"
 
 
 def format_chinese_date(chinese_date: HeavenlyStemAndEarthlyBranchDate) -> str:
@@ -482,4 +467,45 @@ def format_chinese_date(chinese_date: HeavenlyStemAndEarthlyBranchDate) -> str:
     day_str = f"{stem_names[chinese_date.day_stem]}{branch_names[chinese_date.day_branch]}"
     time_str = f"{stem_names[chinese_date.time_stem]}{branch_names[chinese_date.time_branch]}"
 
-    return f"{year_str}年{month_str}月{day_str}日 {time_str}时"
+    return f"{year_str} {month_str} {day_str} {time_str}"
+
+
+def _time_index_to_hour(time_index: int) -> int:
+    """Map iztro time index to a concrete hour for `lunar_python`."""
+    time_index_to_hour = [0, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23]
+    if not (0 <= time_index < len(time_index_to_hour)):
+        raise ValueError(f"Invalid time index: {time_index}. Must be 0-12.")
+    return time_index_to_hour[time_index]
+
+
+def _parse_ganzhi(value: str) -> Tuple[HeavenlyStemName, EarthlyBranchName]:
+    """Convert a 2-char Chinese ganzhi string like '庚午' into internal enum keys."""
+    stem_map = {
+        "甲": "jiaHeavenly",
+        "乙": "yiHeavenly",
+        "丙": "bingHeavenly",
+        "丁": "dingHeavenly",
+        "戊": "wuHeavenly",
+        "己": "jiHeavenly",
+        "庚": "gengHeavenly",
+        "辛": "xinHeavenly",
+        "壬": "renHeavenly",
+        "癸": "guiHeavenly",
+    }
+    branch_map = {
+        "子": "ziEarthly",
+        "丑": "chouEarthly",
+        "寅": "yinEarthly",
+        "卯": "maoEarthly",
+        "辰": "chenEarthly",
+        "巳": "siEarthly",
+        "午": "wuEarthly",
+        "未": "weiEarthly",
+        "申": "shenEarthly",
+        "酉": "youEarthly",
+        "戌": "xuEarthly",
+        "亥": "haiEarthly",
+    }
+    if len(value) != 2:
+        raise ValueError(f"Invalid ganzhi value: {value}")
+    return stem_map[value[0]], branch_map[value[1]]

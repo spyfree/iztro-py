@@ -135,7 +135,6 @@ class TestAPICompatibility:
         """Test palace.is_empty() method"""
         chart = astro.by_solar("2000-8-16", 6, "男")
 
-        # Should have both empty and non-empty palaces
         has_empty = False
         has_non_empty = False
 
@@ -145,8 +144,9 @@ class TestAPICompatibility:
             else:
                 has_non_empty = True
 
-        assert has_empty, "Should have at least one empty palace"
-        assert has_non_empty, "Should have at least one non-empty palace"
+        # 对齐 iztro@2.5.8：该样例 12 宫都有主/辅星，不存在空宫。
+        assert has_empty is False
+        assert has_non_empty is True
 
     def test_star_palace_method(self):
         """Test star.palace() returns the palace containing the star"""
@@ -227,7 +227,7 @@ class TestKnownTestCases:
         assert chart.gender == "男"
         assert chart.zodiac == "龙"
         assert chart.sign == "狮子座"
-        assert "金四局" in chart.five_elements_class
+        assert chart.five_elements_class == "土五局"
 
         # Soul palace should be at spiritPalace (福德宫) for this birth data
         soul = chart.get_soul_palace()
@@ -336,7 +336,8 @@ class TestKnownTestCases:
 
         assert soul is not None
         assert body is not None
-        assert soul.is_original_palace is True
+        # 对齐 iztro@2.5.8：命宫不等于来因宫。
+        assert soul.is_original_palace is False
         assert body.is_body_palace is True
 
 

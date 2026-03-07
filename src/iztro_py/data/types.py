@@ -223,21 +223,12 @@ MinorStarName = Literal[
 
 # Adjective stars (杂耀)
 AdjectiveStarName = Literal[
-    # 长生12神
-    "changsheng12",
-    # 博士12神
-    "boshi12",
-    # 流年将前12神
-    "jiangqian12",
-    # 流年岁前12神
-    "suiqian12",
-    # 其他杂耀
-    "huagaiAdj",  # 华盖
-    "xianchiAdj",  # 咸池
-    "guchenAdj",  # 孤辰
-    "guasuAdj",  # 寡宿
-    "tiancaiAdj",  # 天才
-    "tianshouAdj",  # 天寿
+    "huagai",  # 华盖
+    "xianchi",  # 咸池
+    "guchen",  # 孤辰
+    "guasu",  # 寡宿
+    "tiancai",  # 天才
+    "tianshou",  # 天寿
     "hongluan",  # 红鸾
     "tianxi",  # 天喜
     "tianxing",  # 天刑
@@ -245,18 +236,35 @@ AdjectiveStarName = Literal[
     "jieshen",  # 解神
     "yinsha",  # 阴煞
     "tianguan",  # 天官
-    "tianfu2",  # 天福
+    "tianfuAdj",  # 天福
     "tianku",  # 天哭
     "tianxu",  # 天虚
     "longchi",  # 龙池
     "fengge",  # 凤阁
-    "hongluan",  # 红鸾
-    "tianxi",  # 天喜
-    "guchen",  # 孤辰
-    "guasu",  # 寡宿
     "feilian",  # 蜚廉
     "posui",  # 破碎
     "tianchu",  # 天厨
+    "santai",  # 三台
+    "bazuo",  # 八座
+    "enguang",  # 恩光
+    "tiangui",  # 天贵
+    "taifu",  # 台辅
+    "fenggao",  # 封诰
+    "tianwu",  # 天巫
+    "tianyue",  # 天月
+    "tiande",  # 天德
+    "yuede",  # 月德
+    "tiankong",  # 天空
+    "xunkong",  # 旬空
+    "jielu",  # 截路
+    "kongwang",  # 空亡
+    "longde",  # 龙德
+    "jiekong",  # 截空
+    "jieshaAdj",  # 劫煞
+    "dahaoAdj",  # 大耗
+    "tianshi",  # 天使
+    "tianshang",  # 天伤
+    "nianjie",  # 年解
 ]
 
 # All star names
@@ -354,10 +362,10 @@ class Palace(BaseModel):
     major_stars: List[Star] = Field(default_factory=list)
     minor_stars: List[Star] = Field(default_factory=list)
     adjective_stars: List[Star] = Field(default_factory=list)
-    changsheng12: Optional[StarName] = None
-    boshi12: Optional[StarName] = None
-    jiangqian12: Optional[StarName] = None
-    suiqian12: Optional[StarName] = None
+    changsheng12: Optional[str] = None
+    boshi12: Optional[str] = None
+    jiangqian12: Optional[str] = None
+    suiqian12: Optional[str] = None
     decadal: Optional[Decadal] = None
     ages: List[int] = Field(default_factory=list)  # 小限年龄数组
 

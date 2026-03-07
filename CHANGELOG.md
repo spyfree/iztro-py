@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.4] - 2026-03-07
+
+### 🔧 Alignment Fixes
+
+- Reworked the solar/lunar and exact Ganzhi pipeline to match `iztro@2.5.8`
+- Fixed five-elements-class calculation to use the same rule as upstream `iztro`
+- Corrected soul/body palace indexing and palace initialization to stay in the 寅宫=0 coordinate system
+- Fixed major and minor star placement to align with upstream palace coordinates
+- Matched decadal, age, and yearly anchor logic with upstream `iztro`
+
+### ✨ Feature Parity
+
+- Added adjective, flower, and helper star placement to align birth-chart output with `iztro@2.5.8`
+- Added `changsheng12`, `boshi12`, `jiangqian12`, and `suiqian12` palace fields
+- Extended `to_iztro_dict()` export with decorative 12-god fields
+- Added a JS-vs-Python alignment comparison script for regression checks
+
+### 🧪 Verification
+
+- Added regression coverage for the fixed-hour and leap-year alignment matrix
+- Verified zero blocking diffs against `iztro@2.5.8` for the reference matrix
+- Confirmed the full pytest suite passes locally
+
+### 📦 Packaging
+
+- Declared the `lunar_python` runtime dependency used by the calendar alignment implementation
+
 ## [0.3.3] - 2025-01-18
 
 ### 🔧 Type System Fixes

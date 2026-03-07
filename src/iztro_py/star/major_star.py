@@ -27,8 +27,6 @@ def place_major_stars(
     Note:
         直接修改palaces列表，不返回值
     """
-    from iztro_py.data.constants import EARTHLY_BRANCHES
-
     # 兼容旧API：如果第一个参数是 FiveElementsClass，则按旧算法计算索引
     if isinstance(arg1, FiveElementsClass):
         from iztro_py.star.location import get_ziwei_index, get_tianfu_index
@@ -41,12 +39,11 @@ def place_major_stars(
         ziwei_index = int(arg1)
         tianfu_index = int(arg2)
 
-    # 获取所有主星位置（地支索引）
+    # 获取所有主星位置（以寅宫为 0 的宫位索引）
     star_positions = get_major_star_positions(ziwei_index, tianfu_index)
 
     # 将星曜放置到对应宫位
-    # 注意：star_positions 中的索引是地支索引，需要转换为宫位索引
-    for star_name, earthly_branch_index in star_positions.items():
+    for star_name, palace_index in star_positions.items():
         star = Star(
             name=cast(StarName, star_name),
             type="major",
@@ -54,13 +51,7 @@ def place_major_stars(
             brightness=None,  # 后续计算
             mutagen=None,  # 后续计算
         )
-
-        # 查找具有该地支的宫位
-        target_branch = EARTHLY_BRANCHES[earthly_branch_index]
-        for palace in palaces:
-            if palace["earthly_branch"] == target_branch:
-                palace["major_stars"].append(star)
-                break
+        palaces[palace_index]["major_stars"].append(star)
 
 
 def get_major_stars_in_palace(palace: dict) -> List[Star]:

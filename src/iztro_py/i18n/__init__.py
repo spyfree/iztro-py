@@ -20,6 +20,16 @@ _current_language = "zh-CN"
 _locales: Dict[str, Dict[str, Any]] = {}
 
 
+def _lookup(locale: Dict[str, Any], key: str) -> Optional[str]:
+    """Return a nested translation value if present."""
+    value: Any = locale
+    for part in key.split("."):
+        if not isinstance(value, dict) or part not in value:
+            return None
+        value = value[part]
+    return value if isinstance(value, str) else None
+
+
 def set_language(lang: str) -> None:
     """
     设置当前语言
@@ -112,17 +122,13 @@ def t(key: str, lang: Optional[str] = None) -> str:
         _load_locale(target_lang)
 
     locale = _locales.get(target_lang, {})
+    value = _lookup(locale, key)
+    if value is not None:
+        return value
 
-    # 支持嵌套键，如 'palaces.soulPalace'
-    keys = key.split(".")
-    value = locale
-    for k in keys:
-        if isinstance(value, dict):
-            value = value.get(k, key)
-        else:
-            return key
-
-    return value if isinstance(value, str) else key
+    zh_cn = _locales.get("zh-CN", {})
+    fallback = _lookup(zh_cn, key)
+    return fallback if fallback is not None else key
 
 
 def translate_dict(data: Dict[str, Any], lang: Optional[str] = None) -> Dict[str, Any]:

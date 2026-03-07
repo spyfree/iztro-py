@@ -5,7 +5,7 @@ Implements decadal (大限), yearly (流年), monthly (流月),
 daily (流日), and hourly (流时) horoscope calculations.
 """
 
-from typing import List
+from typing import List, Optional
 
 from iztro_py.data.types import (
     Horoscope,
@@ -15,6 +15,7 @@ from iztro_py.data.types import (
     EarthlyBranchName,
     FiveElementsClass,
     Palace,
+    LunarDate,
 )
 from iztro_py.utils.calendar import (
     solar_to_lunar,
@@ -22,10 +23,9 @@ from iztro_py.utils.calendar import (
     format_lunar_date,
 )
 from iztro_py.utils.helpers import (
-    get_decadal_palace_index,
-    get_decadal_range,
     calculate_nominal_age,
     fix_index,
+    fix_earthly_branch_index,
 )
 
 
@@ -38,6 +38,8 @@ def get_horoscope(
     gender: str,
     year_branch_yin_yang: str,
     birth_year: int,
+    birth_lunar_date: Optional[LunarDate] = None,
+    birth_time_branch: Optional[EarthlyBranchName] = None,
 ) -> Horoscope:
     """
     获取指定日期的运势信息
@@ -79,31 +81,32 @@ def get_horoscope(
     # 计算虚岁
     nominal_age = calculate_nominal_age(birth_year, year)
 
-    # 大限
     decadal = get_decadal_horoscope(
         nominal_age,
         five_elements_class,
-        soul_palace_index,
-        gender,
-        year_branch_yin_yang,
         palaces,
-        year_stem,
     )
+    age_horoscope = get_age_horoscope(nominal_age, palaces)
+    yearly = get_yearly_horoscope(year_branch, year_stem)
 
-    # 小限
-    age_horoscope = get_age_horoscope(nominal_age, soul_palace_index, gender, palaces, year_stem)
+    if birth_lunar_date is None:
+        birth_lunar_date = lunar_info
+    if birth_time_branch is None:
+        birth_time_branch = hour_branch
 
-    # 流年
-    yearly = get_yearly_horoscope(year_branch, year_stem, palaces, year_stem)
+    monthly_index = get_monthly_horoscope_index(
+        year_branch=year_branch,
+        birth_lunar_date=birth_lunar_date,
+        birth_time_branch=birth_time_branch,
+        target_lunar_date=lunar_info,
+    )
+    monthly = get_monthly_horoscope(monthly_index, month_branch, month_stem)
 
-    # 流月
-    monthly = get_monthly_horoscope(month_branch, month_stem, palaces, year_stem)
+    daily_index = fix_index(monthly_index + lunar_info.day - 1)
+    daily = get_daily_horoscope(daily_index, day_branch, day_stem)
 
-    # 流日
-    daily = get_daily_horoscope(day_branch, day_stem, palaces, year_stem)
-
-    # 流时
-    hourly = get_hourly_horoscope(hour_branch, hour_stem, palaces, year_stem)
+    hourly_index = fix_index(daily_index + _get_branch_index(hour_branch))
+    hourly = get_hourly_horoscope(hourly_index, hour_branch, hour_stem)
 
     return Horoscope(
         solar_date=solar_date_str,
@@ -121,11 +124,7 @@ def get_horoscope(
 def get_decadal_horoscope(
     age: int,
     five_elements_class: FiveElementsClass,
-    soul_palace_index: int,
-    gender: str,
-    year_branch_yin_yang: str,
     palaces: List[Palace],
-    year_stem: HeavenlyStemName,
 ) -> HoroscopeItem:
     """
     获取大限信息
@@ -136,51 +135,47 @@ def get_decadal_horoscope(
     Args:
         age: 虚岁
         five_elements_class: 五行局
-        soul_palace_index: 命宫索引
-        gender: 性别
-        year_branch_yin_yang: 年支阴阳
         palaces: 宫位列表
-        year_stem: 流年天干（用于计算四化）
 
     Returns:
         大限运势项
     """
-    # 获取大限宫位索引
-    palace_index = get_decadal_palace_index(
-        age, five_elements_class, soul_palace_index, gender, year_branch_yin_yang
+    palace = next(
+        (item for item in palaces if item.decadal and item.decadal.range[0] <= age <= item.decadal.range[1]),
+        None,
     )
 
-    # 获取大限年龄范围
-    age_range = get_decadal_range(
-        five_elements_class, palace_index, gender, soul_palace_index, year_branch_yin_yang
-    )
-
-    # 获取宫位信息
-    palace = palaces[palace_index]
-
-    # 获取大限四化（使用大限宫的天干）
-    decadal_mutagen = _get_mutagen_stars(palace.heavenly_stem)
-
-    # 获取大限所在的宫位名称列表（大限宫本身）
-    palace_names = [palace.name]
+    if palace is None and age <= five_elements_class.value:
+        childhood_order = [
+            "soulPalace",
+            "wealthPalace",
+            "healthPalace",
+            "spousePalace",
+            "spiritPalace",
+            "careerPalace",
+        ]
+        palace = next((item for item in palaces if item.name == childhood_order[age - 1]), palaces[0])
+        item_name = "童限"
+    elif palace is None:
+        palace = palaces[0]
+        item_name = "大限"
+    else:
+        item_name = "大限"
 
     return HoroscopeItem(
-        index=palace_index,
-        name=f"{age_range[0]}-{age_range[1]}岁",
+        index=palace.index,
+        name=item_name,
         heavenly_stem=palace.heavenly_stem,
         earthly_branch=palace.earthly_branch,
-        palace_names=palace_names,
-        mutagen=decadal_mutagen,
+        palace_names=_get_palace_names(palace.index),
+        mutagen=_get_mutagen_stars(palace.heavenly_stem),
         stars=None,  # 大限不安流耀
     )
 
 
 def get_age_horoscope(
     age: int,
-    soul_palace_index: int,
-    gender: str,
     palaces: List[Palace],
-    year_stem: HeavenlyStemName,
 ) -> HoroscopeItem:
     """
     获取小限信息
@@ -189,33 +184,20 @@ def get_age_horoscope(
 
     Args:
         age: 虚岁
-        soul_palace_index: 命宫索引
-        gender: 性别
         palaces: 宫位列表
-        year_stem: 流年天干
 
     Returns:
         小限运势项
     """
-    # 小限从1岁开始
-    # 男命顺行，女命逆行
-    if gender == "男":
-        palace_index = fix_index(soul_palace_index + age - 1)
-    else:
-        palace_index = fix_index(soul_palace_index - age + 1)
-
-    palace = palaces[palace_index]
-
-    # 小限四化（使用小限宫的天干）
-    age_mutagen = _get_mutagen_stars(palace.heavenly_stem)
+    palace = next((item for item in palaces if age in item.ages), palaces[0])
 
     return HoroscopeItem(
-        index=palace_index,
-        name=f"{age}岁",
+        index=palace.index,
+        name="小限",
         heavenly_stem=palace.heavenly_stem,
         earthly_branch=palace.earthly_branch,
-        palace_names=[palace.name],
-        mutagen=age_mutagen,
+        palace_names=_get_palace_names(palace.index),
+        mutagen=_get_mutagen_stars(palace.heavenly_stem),
         stars=None,
     )
 
@@ -223,8 +205,6 @@ def get_age_horoscope(
 def get_yearly_horoscope(
     year_branch: EarthlyBranchName,
     year_stem: HeavenlyStemName,
-    palaces: List[Palace],
-    birth_year_stem: HeavenlyStemName,
 ) -> HoroscopeItem:
     """
     获取流年信息
@@ -234,49 +214,42 @@ def get_yearly_horoscope(
     Args:
         year_branch: 流年地支
         year_stem: 流年天干
-        palaces: 宫位列表
-        birth_year_stem: 出生年天干
-
     Returns:
         流年运势项
     """
-    # 流年命宫在年支所在的地支位置
-    branch_index = _get_branch_index(year_branch)
-
-    # 找到该地支对应的宫位
-    palace_index = -1
-    for i, palace in enumerate(palaces):
-        if _get_branch_index(palace.earthly_branch) == branch_index:
-            palace_index = i
-            break
-
-    if palace_index == -1:
-        palace_index = 0  # fallback
-
-    palace = palaces[palace_index]
-
-    # 流年四化（使用流年天干）
-    yearly_mutagen = _get_mutagen_stars(year_stem)
-
-    # 流年宫位名称（流年命宫在本命哪个宫）
-    palace_names = [palace.name]
+    palace_index = fix_earthly_branch_index(year_branch)
 
     return HoroscopeItem(
         index=palace_index,
-        name=f"{_get_stem_name(year_stem)}{_get_branch_name(year_branch)}年",
+        name="流年",
         heavenly_stem=year_stem,
         earthly_branch=year_branch,
-        palace_names=palace_names,
-        mutagen=yearly_mutagen,
+        palace_names=_get_palace_names(palace_index),
+        mutagen=_get_mutagen_stars(year_stem),
         stars=None,  # 可以扩展添加流年星
     )
 
 
+def get_monthly_horoscope_index(
+    year_branch: EarthlyBranchName,
+    birth_lunar_date: LunarDate,
+    birth_time_branch: EarthlyBranchName,
+    target_lunar_date: LunarDate,
+) -> int:
+    birth_leap_addition = 1 if birth_lunar_date.is_leap_month and birth_lunar_date.day > 15 else 0
+    target_leap_addition = 1 if target_lunar_date.is_leap_month and target_lunar_date.day > 15 else 0
+    return fix_index(
+        fix_earthly_branch_index(year_branch)
+        - (birth_lunar_date.month + birth_leap_addition)
+        + _get_branch_index(birth_time_branch)
+        + (target_lunar_date.month + target_leap_addition)
+    )
+
+
 def get_monthly_horoscope(
+    palace_index: int,
     month_branch: EarthlyBranchName,
     month_stem: HeavenlyStemName,
-    palaces: List[Palace],
-    year_stem: HeavenlyStemName,
 ) -> HoroscopeItem:
     """
     获取流月信息
@@ -284,42 +257,24 @@ def get_monthly_horoscope(
     Args:
         month_branch: 流月地支
         month_stem: 流月天干
-        palaces: 宫位列表
-        year_stem: 流年天干
-
     Returns:
         流月运势项
     """
-    branch_index = _get_branch_index(month_branch)
-
-    palace_index = -1
-    for i, palace in enumerate(palaces):
-        if _get_branch_index(palace.earthly_branch) == branch_index:
-            palace_index = i
-            break
-
-    if palace_index == -1:
-        palace_index = 0
-
-    palace = palaces[palace_index]
-    monthly_mutagen = _get_mutagen_stars(month_stem)
-
     return HoroscopeItem(
         index=palace_index,
-        name=f"{_get_stem_name(month_stem)}{_get_branch_name(month_branch)}月",
+        name="流月",
         heavenly_stem=month_stem,
         earthly_branch=month_branch,
-        palace_names=[palace.name],
-        mutagen=monthly_mutagen,
+        palace_names=_get_palace_names(palace_index),
+        mutagen=_get_mutagen_stars(month_stem),
         stars=None,
     )
 
 
 def get_daily_horoscope(
+    palace_index: int,
     day_branch: EarthlyBranchName,
     day_stem: HeavenlyStemName,
-    palaces: List[Palace],
-    year_stem: HeavenlyStemName,
 ) -> HoroscopeItem:
     """
     获取流日信息
@@ -327,42 +282,24 @@ def get_daily_horoscope(
     Args:
         day_branch: 流日地支
         day_stem: 流日天干
-        palaces: 宫位列表
-        year_stem: 流年天干
-
     Returns:
         流日运势项
     """
-    branch_index = _get_branch_index(day_branch)
-
-    palace_index = -1
-    for i, palace in enumerate(palaces):
-        if _get_branch_index(palace.earthly_branch) == branch_index:
-            palace_index = i
-            break
-
-    if palace_index == -1:
-        palace_index = 0
-
-    palace = palaces[palace_index]
-    daily_mutagen = _get_mutagen_stars(day_stem)
-
     return HoroscopeItem(
         index=palace_index,
-        name=f"{_get_stem_name(day_stem)}{_get_branch_name(day_branch)}日",
+        name="流日",
         heavenly_stem=day_stem,
         earthly_branch=day_branch,
-        palace_names=[palace.name],
-        mutagen=daily_mutagen,
+        palace_names=_get_palace_names(palace_index),
+        mutagen=_get_mutagen_stars(day_stem),
         stars=None,
     )
 
 
 def get_hourly_horoscope(
+    palace_index: int,
     hour_branch: EarthlyBranchName,
     hour_stem: HeavenlyStemName,
-    palaces: List[Palace],
-    year_stem: HeavenlyStemName,
 ) -> HoroscopeItem:
     """
     获取流时信息
@@ -370,33 +307,16 @@ def get_hourly_horoscope(
     Args:
         hour_branch: 流时地支
         hour_stem: 流时天干
-        palaces: 宫位列表
-        year_stem: 流年天干
-
     Returns:
         流时运势项
     """
-    branch_index = _get_branch_index(hour_branch)
-
-    palace_index = -1
-    for i, palace in enumerate(palaces):
-        if _get_branch_index(palace.earthly_branch) == branch_index:
-            palace_index = i
-            break
-
-    if palace_index == -1:
-        palace_index = 0
-
-    palace = palaces[palace_index]
-    hourly_mutagen = _get_mutagen_stars(hour_stem)
-
     return HoroscopeItem(
         index=palace_index,
-        name=f"{_get_stem_name(hour_stem)}{_get_branch_name(hour_branch)}时",
+        name="流时",
         heavenly_stem=hour_stem,
         earthly_branch=hour_branch,
-        palace_names=[palace.name],
-        mutagen=hourly_mutagen,
+        palace_names=_get_palace_names(palace_index),
+        mutagen=_get_mutagen_stars(hour_stem),
         stars=None,
     )
 
@@ -442,6 +362,12 @@ def _get_branch_index(branch: EarthlyBranchName) -> int:
         return branch_order.index(branch)
     except ValueError:
         return 0
+
+
+def _get_palace_names(from_index: int) -> List[str]:
+    from iztro_py.data.constants import PALACES
+
+    return [PALACES[fix_index(i - from_index)] for i in range(12)]
 
 
 def _get_stem_name(stem: HeavenlyStemName) -> str:

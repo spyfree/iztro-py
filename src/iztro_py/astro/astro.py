@@ -12,9 +12,11 @@ from iztro_py.data.types import (
     Palace,
 )
 from iztro_py.astro.functional_astrolabe import FunctionalAstrolabe
-from iztro_py.astro.palace import get_soul_and_body, initialize_palaces
+from iztro_py.astro.palace import get_soul_and_body, initialize_palaces, populate_decadal_and_ages
 from iztro_py.star.major_star import place_major_stars
 from iztro_py.star.minor_star import place_minor_stars
+from iztro_py.star.adjective_star import place_adjective_stars
+from iztro_py.star.decorative_star import apply_decorative_stars
 from iztro_py.star.mutagen import apply_mutagen_to_palaces
 from iztro_py.data.brightness import apply_brightness_to_palaces
 from iztro_py.data.earthly_branches import get_soul_star, get_body_star
@@ -35,6 +37,7 @@ from iztro_py.utils.helpers import (
     get_time_name,
     get_time_range,
     hour_to_time_index,
+    fix_lunar_month_index,
 )
 
 
@@ -80,16 +83,14 @@ def by_solar(
     lunar_date = solar_to_lunar(year, month, day, fix_leap)
 
     # 3. 计算四柱
-    chinese_date = get_heavenly_stem_and_earthly_branch_date(
-        year, month, day, time_index, lunar_date.month
-    )
+    chinese_date = get_heavenly_stem_and_earthly_branch_date(year, month, day, time_index)
 
     # 4. 生肖星座
     zodiac = get_zodiac(chinese_date.year_branch)
     sign = get_sign(month, day)
 
     # 5. 计算命宫身宫
-    soul_and_body = get_soul_and_body(lunar_date.month, time_index, chinese_date.year_stem)
+    soul_and_body = get_soul_and_body(solar_date, time_index, fix_leap=fix_leap)
 
     # 6. 计算五行局
     five_class = get_five_elements_class(
@@ -101,7 +102,7 @@ def by_solar(
     body_star = get_body_star(chinese_date.year_branch)
 
     # 8. 初始化十二宫
-    palaces = initialize_palaces(soul_and_body)
+    palaces = initialize_palaces(soul_and_body, chinese_date.year_stem)
 
     # 9. 安置主星（与原生 iztro 对齐的紫微/天府起局算法）
     ziwei_idx, tianfu_idx = get_start_indices(
@@ -114,20 +115,53 @@ def by_solar(
     place_major_stars(palaces, ziwei_idx, tianfu_idx)
 
     # 10. 安置辅星
+    adjusted_lunar_month = fix_lunar_month_index(solar_date, time_index, fix_leap) + 1
     place_minor_stars(
-        palaces, lunar_date.month, time_index, chinese_date.year_stem, chinese_date.year_branch
+        palaces,
+        adjusted_lunar_month,
+        time_index,
+        chinese_date.year_stem,
+        chinese_date.year_branch,
     )
 
-    # 11. 应用四化
+    # 11. 安置杂曜
+    place_adjective_stars(
+        palaces,
+        solar_date,
+        time_index,
+        gender,
+        fix_leap,
+        soul_and_body.soul_index,
+        soul_and_body.body_index,
+    )
+
+    # 12. 填充长生/博士/将前/岁前 12 神
+    apply_decorative_stars(
+        palaces,
+        five_class,
+        gender,
+        chinese_date.year_stem,
+        chinese_date.year_branch,
+    )
+
+    # 13. 应用四化
     apply_mutagen_to_palaces(palaces, chinese_date.year_stem)
 
-    # 12. 应用亮度
+    # 14. 应用亮度
     apply_brightness_to_palaces(palaces)
 
-    # 13. 创建Astrolabe对象
-    # 计算身宫地支（以身宫所在宫位的地支为准）
-    body_palace_rel_index = (soul_and_body.body_index - soul_and_body.soul_index) % 12
-    body_palace_branch = palaces[body_palace_rel_index]["earthly_branch"]
+    # 15. 填充大限与小限锚点
+    populate_decadal_and_ages(
+        palaces,
+        soul_and_body.soul_index,
+        five_class,
+        gender,
+        chinese_date.year_stem,
+        chinese_date.year_branch,
+    )
+
+    # 16. 创建Astrolabe对象
+    body_palace_branch = palaces[soul_and_body.body_index]["earthly_branch"]
 
     # 将字典列表转换为 Palace 对象列表
     palace_objects: List[Palace] = [Palace(**p) for p in palaces]
@@ -152,7 +186,7 @@ def by_solar(
         raw_chinese_date=chinese_date,
     )
 
-    # 14. 转换为FunctionalAstrolabe
+    # 17. 转换为FunctionalAstrolabe
     return FunctionalAstrolabe(astrolabe)
 
 

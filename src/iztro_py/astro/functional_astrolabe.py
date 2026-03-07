@@ -180,10 +180,7 @@ class FunctionalAstrolabe(Astrolabe):
         Returns:
             命宫对象
         """
-        for palace in self.palaces:
-            if palace.is_original_palace:
-                return cast(FunctionalPalace, palace)
-        return None
+        return self.palace("soulPalace")
 
     def get_body_palace(self) -> Optional[FunctionalPalace]:
         """
@@ -259,6 +256,8 @@ class FunctionalAstrolabe(Astrolabe):
             gender=self.gender,
             year_branch_yin_yang=year_branch_yin_yang,
             birth_year=birth_year,
+            birth_lunar_date=self.raw_lunar_date,
+            birth_time_branch=self.raw_chinese_date.time_branch if self.raw_chinese_date else None,
         )
 
     def __str__(self) -> str:
@@ -323,6 +322,10 @@ class FunctionalAstrolabe(Astrolabe):
                     "majorStars": [star_dict(s) for s in fp.major_stars],
                     "minorStars": [star_dict(s) for s in fp.minor_stars],
                     "adjectiveStars": [star_dict(s) for s in fp.adjective_stars],
+                    "changsheng12": fp.changsheng12,
+                    "boshi12": fp.boshi12,
+                    "jiangqian12": fp.jiangqian12,
+                    "suiqian12": fp.suiqian12,
                 }
             )
 
