@@ -65,7 +65,9 @@ def get_soul_and_body(
     yin_month_stem = TIGER_RULE[heavenly_stem_of_year]
     heavenly_stem_of_soul_index = fix_index(HEAVENLY_STEMS.index(yin_month_stem) + soul_index, 10)
     heavenly_stem_of_soul = HEAVENLY_STEMS[heavenly_stem_of_soul_index]
-    earthly_branch_of_soul = EARTHLY_BRANCHES[fix_index(soul_index + EARTHLY_BRANCHES.index("yinEarthly"))]
+    earthly_branch_of_soul = EARTHLY_BRANCHES[
+        fix_index(soul_index + EARTHLY_BRANCHES.index("yinEarthly"))
+    ]
 
     return SoulAndBody(
         soul_index=soul_index,
@@ -232,16 +234,16 @@ def populate_decadal_and_ages(
     按 iztro 的 birth-chart 规则填充每个宫位的大限和小限锚点。
     """
     start_heavenly_stem = TIGER_RULE[year_stem]
-    same_yin_yang = (
-        gender == "男" and get_branch_yin_yang(year_branch) == "阳"
-    ) or (
+    same_yin_yang = (gender == "男" and get_branch_yin_yang(year_branch) == "阳") or (
         gender == "女" and get_branch_yin_yang(year_branch) == "阴"
     )
 
     for i in range(12):
         palace_index = fix_index(soul_index + i) if same_yin_yang else fix_index(soul_index - i)
         start_age = five_elements_class.value + 10 * i
-        heavenly_stem_index = fix_index(HEAVENLY_STEMS.index(start_heavenly_stem) + palace_index, 10)
+        heavenly_stem_index = fix_index(
+            HEAVENLY_STEMS.index(start_heavenly_stem) + palace_index, 10
+        )
         earthly_branch_index = fix_index(EARTHLY_BRANCHES.index("yinEarthly") + palace_index)
         palaces[palace_index]["decadal"] = Decadal(
             range=(start_age, start_age + 9),

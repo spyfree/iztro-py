@@ -13,9 +13,41 @@ if str(SRC_ROOT) not in sys.path:
 from iztro_py import astro  # noqa: E402
 
 
-JS_PACKAGE_PATH = Path(
-    os.environ.get("IZTRO_JS_PACKAGE", "/tmp/iztro-2.5.8/node_modules/iztro")
-)
+EXPECTED_JS_VERSION = "2.5.8"
+
+
+def _resolve_js_package_path() -> Path:
+    candidate_paths = []
+    env_path = os.environ.get("IZTRO_JS_PACKAGE")
+    if env_path:
+        candidate_paths.append(Path(env_path))
+    candidate_paths.extend(
+        [
+            Path(f"/tmp/iztro-{EXPECTED_JS_VERSION}/node_modules/iztro"),
+            REPO_ROOT / "node_modules" / "iztro",
+        ]
+    )
+
+    problems = []
+    for path in candidate_paths:
+        package_json = path / "package.json"
+        if not package_json.exists():
+            problems.append(f"{path} (missing package.json)")
+            continue
+        package = json.loads(package_json.read_text(encoding="utf-8"))
+        version = package.get("version")
+        if version == EXPECTED_JS_VERSION:
+            return path
+        problems.append(f"{path} (found {version}, expected {EXPECTED_JS_VERSION})")
+
+    searched = "\n".join(f"- {problem}" for problem in problems) or "- <no candidates>"
+    raise AssertionError(
+        "Missing iztro JS reference package.\n"
+        f"Expected version: {EXPECTED_JS_VERSION}\n"
+        "Searched:\n"
+        f"{searched}\n"
+        "Install iztro or set IZTRO_JS_PACKAGE explicitly."
+    )
 
 
 def _summarize(chart):
@@ -38,14 +70,12 @@ def _summarize(chart):
 
 
 def test_core_alignment_against_js_snapshot():
-    if not JS_PACKAGE_PATH.exists():
-        raise AssertionError(f"Missing JS reference package at {JS_PACKAGE_PATH}")
-
+    js_package_path = _resolve_js_package_path()
     script = REPO_ROOT / "scripts" / "compare_iztro_alignment.py"
     result = subprocess.run(
         [sys.executable, str(script)],
         cwd=REPO_ROOT,
-        env={**os.environ, "IZTRO_JS_PACKAGE": str(JS_PACKAGE_PATH)},
+        env={**os.environ, "IZTRO_JS_PACKAGE": str(js_package_path)},
         capture_output=True,
         text=True,
     )

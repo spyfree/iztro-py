@@ -141,7 +141,11 @@ def get_decadal_horoscope(
         大限运势项
     """
     palace = next(
-        (item for item in palaces if item.decadal and item.decadal.range[0] <= age <= item.decadal.range[1]),
+        (
+            item
+            for item in palaces
+            if item.decadal and item.decadal.range[0] <= age <= item.decadal.range[1]
+        ),
         None,
     )
 
@@ -154,7 +158,9 @@ def get_decadal_horoscope(
             "spiritPalace",
             "careerPalace",
         ]
-        palace = next((item for item in palaces if item.name == childhood_order[age - 1]), palaces[0])
+        palace = next(
+            (item for item in palaces if item.name == childhood_order[age - 1]), palaces[0]
+        )
         item_name = "童限"
     elif palace is None:
         palace = palaces[0]
@@ -237,7 +243,9 @@ def get_monthly_horoscope_index(
     target_lunar_date: LunarDate,
 ) -> int:
     birth_leap_addition = 1 if birth_lunar_date.is_leap_month and birth_lunar_date.day > 15 else 0
-    target_leap_addition = 1 if target_lunar_date.is_leap_month and target_lunar_date.day > 15 else 0
+    target_leap_addition = (
+        1 if target_lunar_date.is_leap_month and target_lunar_date.day > 15 else 0
+    )
     return fix_index(
         fix_earthly_branch_index(year_branch)
         - (birth_lunar_date.month + birth_leap_addition)

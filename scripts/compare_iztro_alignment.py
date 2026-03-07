@@ -31,10 +31,50 @@ if str(SRC_ROOT) not in sys.path:
 from iztro_py import astro  # noqa: E402
 
 
-JS_PACKAGE_PATH = os.environ.get(
-    "IZTRO_JS_PACKAGE",
-    "/tmp/iztro-2.5.8/node_modules/iztro",
-)
+EXPECTED_JS_VERSION = "2.5.8"
+
+
+def _resolve_js_package_path() -> Path:
+    candidate_paths = []
+    env_path = os.environ.get("IZTRO_JS_PACKAGE")
+    if env_path:
+        candidate_paths.append(Path(env_path))
+    candidate_paths.extend(
+        [
+            Path(f"/tmp/iztro-{EXPECTED_JS_VERSION}/node_modules/iztro"),
+            REPO_ROOT / "node_modules" / "iztro",
+        ]
+    )
+
+    problems = []
+    for path in candidate_paths:
+        package_json = path / "package.json"
+        if not package_json.exists():
+            problems.append(f"{path} (missing package.json)")
+            continue
+        try:
+            package = json.loads(package_json.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as exc:
+            problems.append(f"{path} (invalid package.json: {exc})")
+            continue
+
+        version = package.get("version")
+        if version == EXPECTED_JS_VERSION:
+            return path
+
+        problems.append(f"{path} (found {version}, expected {EXPECTED_JS_VERSION})")
+
+    searched = "\n".join(f"- {problem}" for problem in problems) or "- <no candidates>"
+    raise FileNotFoundError(
+        "Unable to locate iztro JS reference package.\n"
+        f"Expected version: {EXPECTED_JS_VERSION}\n"
+        "Searched:\n"
+        f"{searched}\n"
+        "Set IZTRO_JS_PACKAGE to a directory containing iztro's package.json."
+    )
+
+
+JS_PACKAGE_PATH = _resolve_js_package_path()
 
 
 CASES: List[Dict[str, Any]] = [
@@ -142,7 +182,7 @@ def _normalize_python(case: Dict[str, Any]) -> Dict[str, Any]:
 def _normalize_js(case: Dict[str, Any]) -> Dict[str, Any]:
     payload = json.dumps(case, ensure_ascii=False)
     script = f"""
-const iztro = require({json.dumps(JS_PACKAGE_PATH)});
+const iztro = require({json.dumps(str(JS_PACKAGE_PATH))});
 const payload = JSON.parse(process.argv[1]);
 const chart = iztro.astro.bySolar(payload.solar_date, payload.time_index, payload.gender, true, 'zh-CN');
 const horoscope = chart.horoscope(payload.solar_date, payload.time_index);

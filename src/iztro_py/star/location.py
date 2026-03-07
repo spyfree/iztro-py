@@ -14,7 +14,11 @@ from iztro_py.utils.calendar import (
     solar_to_lunar,
     get_heavenly_stem_and_earthly_branch_date,
 )
-from iztro_py.utils.helpers import fix_earthly_branch_index, fix_lunar_month_index, fix_lunar_day_index
+from iztro_py.utils.helpers import (
+    fix_earthly_branch_index,
+    fix_lunar_month_index,
+    fix_lunar_day_index,
+)
 
 
 def get_ziwei_index(five_elements_class: FiveElementsClass, lunar_day: int) -> int:

@@ -68,7 +68,9 @@ def place_minor_stars(
     huo_index, ling_index = get_minor_star_positions_huoling(year_branch_index, time_index)
 
     palaces[huo_index]["minor_stars"].append(Star(name="huoxingMin", type="tough", scope="origin"))
-    palaces[ling_index]["minor_stars"].append(Star(name="lingxingMin", type="tough", scope="origin"))
+    palaces[ling_index]["minor_stars"].append(
+        Star(name="lingxingMin", type="tough", scope="origin")
+    )
 
     # 5. 地空、地劫（按时辰）
     kong_index, jie_index = get_minor_star_positions_kongjie(time_index)
@@ -82,7 +84,9 @@ def place_minor_stars(
     )
 
     palaces[lucun_index]["minor_stars"].append(Star(name="lucunMin", type="lucun", scope="origin"))
-    palaces[yang_index]["minor_stars"].append(Star(name="qingyangMin", type="tough", scope="origin"))
+    palaces[yang_index]["minor_stars"].append(
+        Star(name="qingyangMin", type="tough", scope="origin")
+    )
     palaces[tuo_index]["minor_stars"].append(Star(name="tuoluoMin", type="tough", scope="origin"))
     palaces[tianma_index]["minor_stars"].append(
         Star(name="tianmaMin", type="tianma", scope="origin")
