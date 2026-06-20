@@ -149,7 +149,10 @@ def get_decadal_horoscope(
         None,
     )
 
-    if palace is None and age <= five_elements_class.value:
+    if palace is None and 1 <= age <= five_elements_class.value:
+        # 童限：第一个大限之前的幼年（虚岁 1 到 五行局数-1）。
+        # 限定 age>=1，避免 childhood_order[age-1] 在出生前查询（虚岁<=0）时
+        # 发生负索引回绕而静默返回错误宫位。
         childhood_order = [
             "soulPalace",
             "wealthPalace",
