@@ -71,6 +71,11 @@ target-version = "py38"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+# Ensure the in-repo `src/` layout always shadows any globally-installed
+# iztro-py (e.g. an older PyPI build in site-packages). pytest prepends these
+# to sys.path before collection, so every test imports the working tree
+# deterministically, regardless of collection order or per-file path hacks.
+pythonpath = ["src"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
