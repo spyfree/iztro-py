@@ -229,7 +229,10 @@
         <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">palace</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">age</span> <span class="o">&lt;=</span> <span class="n">five_elements_class</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">palace</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">age</span> <span class="o">&lt;=</span> <span class="n">five_elements_class</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+        <span class="c1"># 童限：第一个大限之前的幼年（虚岁 1 到 五行局数-1）。</span>
+        <span class="c1"># 限定 age&gt;=1，避免 childhood_order[age-1] 在出生前查询（虚岁&lt;=0）时</span>
+        <span class="c1"># 发生负索引回绕而静默返回错误宫位。</span>
         <span class="n">childhood_order</span> <span class="o">=</span> <span class="p">[</span>
             <span class="s2">&quot;soulPalace&quot;</span><span class="p">,</span>
             <span class="s2">&quot;wealthPalace&quot;</span><span class="p">,</span>
