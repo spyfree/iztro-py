@@ -153,8 +153,8 @@ All tests use pytest framework.
 
 ## Known Limitations
 
-1. **i18n**: Currently only zh-CN is fully implemented (language parameter accepted but not used)
-2. **Not yet on PyPI**: Package is ready but not published yet
+1. **i18n**: Six locales ship (zh-CN, zh-TW, en-US, ja-JP, ko-KR, vi-VN); zh-CN is the most complete and untranslated keys fall back to zh-CN.
+2. **PyPI**: Published as `iztro-py` (latest 0.3.4). Install released builds with `pip install -U iztro-py`; for development use `pip install -e .` so imports resolve to the working tree.
 3. **Documentation site**: Planned but not yet implemented
 
 ## Development Priorities
