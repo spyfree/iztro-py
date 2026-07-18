@@ -33,10 +33,7 @@ def get_horoscope(
     solar_date_str: str,
     time_index: int,
     palaces: List[Palace],
-    soul_palace_index: int,
     five_elements_class: FiveElementsClass,
-    gender: str,
-    year_branch_yin_yang: str,
     birth_year: int,
     birth_lunar_date: Optional[LunarDate] = None,
     birth_time_branch: Optional[EarthlyBranchName] = None,
@@ -44,15 +41,17 @@ def get_horoscope(
     """
     获取指定日期的运势信息
 
+    大限/小限的顺逆和年龄锚点在生盘时已写入各宫位
+    （palace.decadal / palace.ages），此处只按虚岁查表。
+
     Args:
         solar_date_str: 阳历日期 (YYYY-M-D or YYYY-MM-DD)
         time_index: 时辰索引 (0-12)
         palaces: 宫位列表
-        soul_palace_index: 命宫索引
         five_elements_class: 五行局
-        gender: 性别
-        year_branch_yin_yang: 出生年支阴阳
-        birth_year: 出生年份
+        birth_year: 出生农历年份（birth_lunar_date 缺省时的兜底值）
+        birth_lunar_date: 出生农历日期
+        birth_time_branch: 出生时辰地支
 
     Returns:
         完整的运势信息
@@ -78,8 +77,10 @@ def get_horoscope(
     hour_stem = stems_branches.time_stem
     hour_branch = stems_branches.time_branch
 
-    # 计算虚岁
-    nominal_age = calculate_nominal_age(birth_year, year)
+    # 计算虚岁：与 iztro（ageDivide='normal'）一致，按农历年差计算
+    # 出生或目标日期落在元旦与春节之间时，阳历年差会多算/少算一岁
+    birth_lunar_year = birth_lunar_date.year if birth_lunar_date is not None else birth_year
+    nominal_age = calculate_nominal_age(birth_lunar_year, lunar_info.year)
 
     decadal = get_decadal_horoscope(
         nominal_age,

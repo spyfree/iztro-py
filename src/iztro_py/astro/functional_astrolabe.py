@@ -49,6 +49,7 @@ class FunctionalAstrolabe(Astrolabe):
             body=astrolabe.body,
             five_elements_class=astrolabe.five_elements_class,
             palaces=functional_palaces,
+            language=astrolabe.language,
             raw_lunar_date=astrolabe.raw_lunar_date,
             raw_chinese_date=astrolabe.raw_chinese_date,
         )
@@ -78,18 +79,24 @@ class FunctionalAstrolabe(Astrolabe):
                 return cast(FunctionalPalace, self.palaces[index_or_name])
             return None
         else:
-            # 按名称查询
-            # 先尝试英文名
-            for palace in self.palaces:
-                if palace.name == index_or_name:
-                    return cast(FunctionalPalace, palace)
-
-            # 再尝试中文名
+            # 按名称查询：先归一化为内部 key（支持各语言译名和别名），
+            # 再按宫位实际名称匹配。注意 palaces 列表以寅宫为索引 0，
+            # 不能把宫名序号当作列表下标使用。
+            from iztro_py.i18n import normalize_palace_name
             from iztro_py.utils.helpers import get_palace_index_by_name
+            from iztro_py.data.constants import PALACES
 
-            palace_index = get_palace_index_by_name(index_or_name)
-            if palace_index is not None:
-                return cast(FunctionalPalace, self.palaces[palace_index])
+            palace_key = normalize_palace_name(index_or_name)
+            if palace_key is None:
+                # 兼容简写别名（如 '命'、'财帛'、'事业'）
+                name_offset = get_palace_index_by_name(index_or_name)
+                if name_offset is not None:
+                    palace_key = PALACES[name_offset]
+
+            target_name = palace_key or index_or_name
+            for palace in self.palaces:
+                if palace.name == target_name:
+                    return cast(FunctionalPalace, palace)
 
             return None
 
@@ -107,9 +114,12 @@ class FunctionalAstrolabe(Astrolabe):
             >>> astrolabe.star('ziweiMaj')
             >>> astrolabe.star('紫微')
         """
+        from iztro_py.i18n import normalize_star_name
+
+        star_key = normalize_star_name(star_name) or star_name
         for palace in self.palaces:
             fp = cast(FunctionalPalace, palace)
-            star = fp.get_star(star_name)
+            star = fp.get_star(star_key)
             if star:
                 return star
 
@@ -214,12 +224,8 @@ class FunctionalAstrolabe(Astrolabe):
         from iztro_py.astro.horoscope import get_horoscope
         from iztro_py.data.types import FiveElementsClass
 
-        # 获取出生年份
+        # 获取出生年份（birth_lunar_date 缺省时的兜底值）
         birth_year = int(self.solar_date.split("-")[0])
-
-        # 获取命宫索引
-        soul_palace = self.get_soul_palace()
-        soul_palace_index = soul_palace.index if soul_palace else 0
 
         # 获取五行局
         five_elements_class_map = {
@@ -233,17 +239,6 @@ class FunctionalAstrolabe(Astrolabe):
             self.five_elements_class, FiveElementsClass.WATER_2
         )
 
-        # 获取出生年支阴阳
-        if self.raw_chinese_date:
-            year_branch = self.raw_chinese_date.year_branch
-            # 从地支获取阴阳
-            from iztro_py.data.earthly_branches import EARTHLY_BRANCHES_CONFIG
-
-            branch_config = EARTHLY_BRANCHES_CONFIG.get(year_branch)
-            year_branch_yin_yang = branch_config.yin_yang if branch_config else "阳"
-        else:
-            year_branch_yin_yang = "阳"
-
         # Cast palaces to List[Palace] for horoscope function compatibility
         palaces_for_horoscope: List[Palace] = [cast(Palace, p) for p in self.palaces]
 
@@ -251,10 +246,7 @@ class FunctionalAstrolabe(Astrolabe):
             solar_date_str=solar_date,
             time_index=time_index,
             palaces=palaces_for_horoscope,
-            soul_palace_index=soul_palace_index,
             five_elements_class=five_elements,
-            gender=self.gender,
-            year_branch_yin_yang=year_branch_yin_yang,
             birth_year=birth_year,
             birth_lunar_date=self.raw_lunar_date,
             birth_time_branch=self.raw_chinese_date.time_branch if self.raw_chinese_date else None,

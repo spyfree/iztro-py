@@ -207,9 +207,12 @@ def calculate_nominal_age(birth_year: int, target_year: int, age_divide: str = "
     """
     计算虚岁
 
+    与 iztro 一致，两个入参都应传农历年份（以正月初一分界），
+    传阳历年份会在元旦到春节之间产生一岁误差。
+
     Args:
-        birth_year: 出生年份
-        target_year: 目标年份
+        birth_year: 出生农历年份
+        target_year: 目标农历年份
         age_divide: 年龄划分方式
             - 'normal': 按自然年计算
             - 'birthday': 按生日计算（需要完整日期，此处简化处理）
@@ -217,7 +220,7 @@ def calculate_nominal_age(birth_year: int, target_year: int, age_divide: str = "
     Returns:
         虚岁
     """
-    # 虚岁 = 当前年份 - 出生年份 + 1
+    # 虚岁 = 目标农历年 - 出生农历年 + 1
     return target_year - birth_year + 1
 
 

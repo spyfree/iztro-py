@@ -7,9 +7,15 @@ Provides a rich API for querying palace properties and stars.
 from typing import Optional, List, TYPE_CHECKING, cast
 from iztro_py.data.types import Palace, StarName, Mutagen, Star
 from iztro_py.astro.functional_star import FunctionalStar
+from iztro_py.i18n import normalize_star_name
 
 if TYPE_CHECKING:
     from iztro_py.astro.functional_astrolabe import FunctionalAstrolabe
+
+
+def _to_star_key(name: str) -> str:
+    """把任意语言的星曜名称归一化为内部 key；无法识别时原样返回。"""
+    return normalize_star_name(name) or name
 
 
 class FunctionalPalace(Palace):
@@ -94,7 +100,7 @@ class FunctionalPalace(Palace):
         all_stars = self.major_stars + self.minor_stars + self.adjective_stars
         star_names = [s.name for s in all_stars]
 
-        return all(star in star_names for star in stars)
+        return all(_to_star_key(star) in star_names for star in stars)
 
     def has_one_of(self, stars: List[StarName]) -> bool:
         """
@@ -112,7 +118,7 @@ class FunctionalPalace(Palace):
         all_stars = self.major_stars + self.minor_stars + self.adjective_stars
         star_names = [s.name for s in all_stars]
 
-        return any(star in star_names for star in stars)
+        return any(_to_star_key(star) in star_names for star in stars)
 
     def not_have(self, stars: List[StarName]) -> bool:
         """
@@ -130,7 +136,7 @@ class FunctionalPalace(Palace):
         all_stars = self.major_stars + self.minor_stars + self.adjective_stars
         star_names = [s.name for s in all_stars]
 
-        return all(star not in star_names for star in stars)
+        return all(_to_star_key(star) not in star_names for star in stars)
 
     def has_mutagen(self, mutagen: Mutagen) -> bool:
         """
@@ -180,7 +186,8 @@ class FunctionalPalace(Palace):
         major_stars = self.major_stars
 
         if exclude_stars:
-            major_stars = [s for s in major_stars if s.name not in exclude_stars]
+            exclude_keys = {_to_star_key(s) for s in exclude_stars}
+            major_stars = [s for s in major_stars if s.name not in exclude_keys]
 
         return len(major_stars) == 0
 
@@ -194,10 +201,11 @@ class FunctionalPalace(Palace):
         Returns:
             星曜对象，如果不存在则返回None
         """
+        star_key = _to_star_key(star_name)
         all_stars = self.major_stars + self.minor_stars + self.adjective_stars
 
         for star in all_stars:
-            if star.name == star_name:
+            if star.name == star_key:
                 return cast(FunctionalStar, star)
 
         return None

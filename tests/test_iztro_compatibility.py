@@ -247,9 +247,10 @@ class TestKnownTestCases:
         assert chart.zodiac == "龙"
 
         # Female charts have different decadal progression
+        # 2024-1-1 仍在农历癸卯（2023）年，虚岁按农历年差 = 2023 - 2000 + 1 = 24
         horoscope = chart.horoscope("2024-1-1", 6)
         assert horoscope is not None
-        assert horoscope.nominal_age == 25
+        assert horoscope.nominal_age == 24
 
     def test_lunar_solar_consistency(self):
         """Test that lunar and solar dates produce same chart"""

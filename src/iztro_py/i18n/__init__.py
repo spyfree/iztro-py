@@ -16,8 +16,59 @@ from typing import Dict, Any, Optional
 # 当前语言设置
 _current_language = "zh-CN"
 
+# 支持的语言
+SUPPORTED_LANGUAGES = ["zh-CN", "zh-TW", "en-US", "ja-JP", "ko-KR", "vi-VN"]
+
 # 语言资源缓存
 _locales: Dict[str, Dict[str, Any]] = {}
+
+# 星曜/宫位名称反查索引（任意语言译名 -> 内部 key），懒加载
+_star_name_index: Optional[Dict[str, str]] = None
+_palace_name_index: Optional[Dict[str, str]] = None
+
+# 会作为 Star.name 出现的杂曜 key（顶层翻译键）
+_ADJECTIVE_STAR_KEYS = [
+    "hongluan",
+    "tianxi",
+    "tianyao",
+    "xianchi",
+    "jieshen",
+    "santai",
+    "bazuo",
+    "enguang",
+    "tiangui",
+    "longchi",
+    "fengge",
+    "tiancai",
+    "tianshou",
+    "taifu",
+    "fenggao",
+    "tianwu",
+    "huagai",
+    "tianguan",
+    "tianfuAdj",
+    "tianchu",
+    "tianyue",
+    "tiande",
+    "yuede",
+    "tiankong",
+    "xunkong",
+    "jielu",
+    "kongwang",
+    "guchen",
+    "guasu",
+    "feilian",
+    "posui",
+    "tianxing",
+    "yinsha",
+    "tianku",
+    "tianxu",
+    "tianshi",
+    "tianshang",
+    "nianjie",
+    "jieshaAdj",
+    "dahaoAdj",
+]
 
 
 def _lookup(locale: Dict[str, Any], key: str) -> Optional[str]:
@@ -39,14 +90,14 @@ def set_language(lang: str) -> None:
               不支持的语言将降级为 'zh-CN'
     """
     global _current_language
-    supported = ["zh-CN", "zh-TW", "en-US", "ja-JP", "ko-KR", "vi-VN"]
 
     # 如果语言不支持，降级到中文，但不报错
-    if lang not in supported:
+    if lang not in SUPPORTED_LANGUAGES:
         import warnings
 
         warnings.warn(
-            f"Language '{lang}' is not fully supported yet. Falling back to 'zh-CN'. Supported: {supported}",
+            f"Language '{lang}' is not fully supported yet. Falling back to 'zh-CN'. "
+            f"Supported: {SUPPORTED_LANGUAGES}",
             UserWarning,
         )
         lang = "zh-CN"
@@ -155,8 +206,72 @@ def translate_dict(data: Dict[str, Any], lang: Optional[str] = None) -> Dict[str
     return result
 
 
+def normalize_star_name(name: str) -> Optional[str]:
+    """
+    将星曜名称归一化为内部 key（类似 iztro 的 kot）。
+
+    接受内部 key（如 'ziweiMaj'）或任意受支持语言的译名（如 '紫微'）。
+    无法识别时返回 None。
+    """
+    global _star_name_index
+    if _star_name_index is None:
+        index: Dict[str, str] = {}
+        for lang in SUPPORTED_LANGUAGES:
+            _load_locale(lang)
+            locale = _locales.get(lang, {})
+            stars = locale.get("stars", {}) if isinstance(locale.get("stars"), dict) else {}
+            for section in ("major", "minor"):
+                entries = stars.get(section, {})
+                if isinstance(entries, dict):
+                    for key, value in entries.items():
+                        index.setdefault(key, key)
+                        if isinstance(value, str):
+                            index.setdefault(value, key)
+            for key in _ADJECTIVE_STAR_KEYS:
+                index.setdefault(key, key)
+                value = locale.get(key)
+                if isinstance(value, str):
+                    index.setdefault(value, key)
+        _star_name_index = index
+    return _star_name_index.get(name)
+
+
+def normalize_palace_name(name: str) -> Optional[str]:
+    """
+    将宫位名称归一化为内部 key。
+
+    接受内部 key（如 'soulPalace'）或任意受支持语言的译名（如 '命宫'）。
+    无法识别时返回 None。
+    """
+    global _palace_name_index
+    if _palace_name_index is None:
+        index: Dict[str, str] = {}
+        for lang in SUPPORTED_LANGUAGES:
+            _load_locale(lang)
+            palaces = _locales.get(lang, {}).get("palaces", {})
+            if isinstance(palaces, dict):
+                for key, value in palaces.items():
+                    index.setdefault(key, key)
+                    if isinstance(value, str):
+                        index.setdefault(value, key)
+        # 常见中文别名
+        index.setdefault("仆役宫", "friendsPalace")
+        index.setdefault("奴仆宫", "friendsPalace")
+        index.setdefault("事业宫", "careerPalace")
+        _palace_name_index = index
+    return _palace_name_index.get(name)
+
+
 # 默认加载中文
 _load_locale("zh-CN")
 
 
-__all__ = ["set_language", "get_language", "t", "translate_dict"]
+__all__ = [
+    "set_language",
+    "get_language",
+    "t",
+    "translate_dict",
+    "normalize_star_name",
+    "normalize_palace_name",
+    "SUPPORTED_LANGUAGES",
+]
