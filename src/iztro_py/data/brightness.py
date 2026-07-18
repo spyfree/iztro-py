@@ -10,41 +10,53 @@ from iztro_py.data.constants import EARTHLY_BRANCHES
 
 
 # ============================================================================
-# Brightness Data for Major Stars
+# Brightness Data (与 iztro lib/data/stars.js 的 STARS_INFO.brightness 逐行对齐)
 # ============================================================================
-# 亮度顺序：寅卯辰巳午未申酉戌亥子丑
+# 亮度顺序：寅卯辰巳午未申酉戌亥子丑（以寅宫为索引 0，与宫位索引一致）
 # Brightness levels: 庙(miao)、旺(wang)、得(de)、利(li)、平(ping)、不(bu)、陷(xian)
+# None 表示该位置不标亮度（如擎羊在四马地、陀罗在四败地不标）
 
 STAR_BRIGHTNESS: Dict[StarName, List[Optional[Brightness]]] = {
-    # 紫微星
+    # 紫微
     "ziweiMaj": ["旺", "旺", "得", "旺", "庙", "庙", "旺", "旺", "得", "旺", "平", "庙"],
-    # 天机星
-    "tianjiMaj": ["旺", "旺", "平", "陷", "平", "平", "平", "平", "平", "平", "庙", "庙"],
-    # 太阳星
-    "taiyangMaj": ["庙", "庙", "庙", "庙", "旺", "利", "平", "陷", "陷", "陷", "陷", "得"],
-    # 武曲星
-    "wuquMaj": ["平", "陷", "得", "利", "陷", "旺", "旺", "旺", "庙", "庙", "得", "得"],
-    # 天同星
-    "tiantongMaj": ["得", "陷", "陷", "得", "利", "旺", "得", "得", "利", "旺", "庙", "庙"],
-    # 廉贞星
-    "lianzhenMaj": ["陷", "陷", "陷", "庙", "旺", "利", "平", "平", "平", "平", "庙", "旺"],
-    # 天府星
-    "tianfuMaj": ["庙", "庙", "庙", "庙", "庙", "庙", "庙", "庙", "庙", "庙", "庙", "庙"],
-    # 太阴星
-    "taiyinMaj": ["得", "得", "平", "陷", "旺", "庙", "平", "得", "平", "陷", "庙", "庙"],
-    # 贪狼星
-    "tanlangMaj": ["旺", "旺", "陷", "陷", "利", "得", "庙", "旺", "庙", "旺", "陷", "得"],
-    # 巨门星
-    "jumenMaj": ["得", "得", "陷", "陷", "陷", "平", "庙", "旺", "平", "得", "旺", "得"],
-    # 天相星
-    "tianxiangMaj": ["旺", "旺", "平", "平", "庙", "庙", "旺", "旺", "平", "平", "庙", "庙"],
-    # 天梁星
-    "tianliangMaj": ["庙", "庙", "平", "平", "旺", "旺", "平", "平", "利", "利", "得", "得"],
-    # 七杀星
-    "qishaMaj": ["庙", "庙", "平", "平", "陷", "陷", "旺", "旺", "得", "得", "利", "利"],
-    # 破军星
-    "pojunMaj": ["得", "得", "陷", "旺", "庙", "平", "陷", "平", "旺", "庙", "陷", "得"],
-    # 辅星的亮度通常不标注，这里可以留空或使用默认值
+    # 天机
+    "tianjiMaj": ["得", "旺", "利", "平", "庙", "陷", "得", "旺", "利", "平", "庙", "陷"],
+    # 太阳
+    "taiyangMaj": ["旺", "庙", "旺", "旺", "旺", "得", "得", "陷", "不", "陷", "陷", "不"],
+    # 武曲
+    "wuquMaj": ["得", "利", "庙", "平", "旺", "庙", "得", "利", "庙", "平", "旺", "庙"],
+    # 天同
+    "tiantongMaj": ["利", "平", "平", "庙", "陷", "不", "旺", "平", "平", "庙", "旺", "不"],
+    # 廉贞
+    "lianzhenMaj": ["庙", "平", "利", "陷", "平", "利", "庙", "平", "利", "陷", "平", "利"],
+    # 天府
+    "tianfuMaj": ["庙", "得", "庙", "得", "旺", "庙", "得", "旺", "庙", "得", "庙", "庙"],
+    # 太阴
+    "taiyinMaj": ["旺", "陷", "陷", "陷", "不", "不", "利", "不", "旺", "庙", "庙", "庙"],
+    # 贪狼
+    "tanlangMaj": ["平", "利", "庙", "陷", "旺", "庙", "平", "利", "庙", "陷", "旺", "庙"],
+    # 巨门
+    "jumenMaj": ["庙", "庙", "陷", "旺", "旺", "不", "庙", "庙", "陷", "旺", "旺", "不"],
+    # 天相
+    "tianxiangMaj": ["庙", "陷", "得", "得", "庙", "得", "庙", "陷", "得", "得", "庙", "庙"],
+    # 天梁
+    "tianliangMaj": ["庙", "庙", "庙", "陷", "庙", "旺", "陷", "得", "庙", "陷", "庙", "旺"],
+    # 七杀
+    "qishaMaj": ["庙", "旺", "庙", "平", "旺", "庙", "庙", "庙", "庙", "平", "旺", "庙"],
+    # 破军
+    "pojunMaj": ["得", "陷", "旺", "平", "庙", "旺", "得", "陷", "旺", "平", "庙", "旺"],
+    # 文昌
+    "wenchangMin": ["陷", "利", "得", "庙", "陷", "利", "得", "庙", "陷", "利", "得", "庙"],
+    # 文曲
+    "wenquMin": ["平", "旺", "得", "庙", "陷", "旺", "得", "庙", "陷", "旺", "得", "庙"],
+    # 火星
+    "huoxingMin": ["庙", "利", "陷", "得", "庙", "利", "陷", "得", "庙", "利", "陷", "得"],
+    # 铃星
+    "lingxingMin": ["庙", "利", "陷", "得", "庙", "利", "陷", "得", "庙", "利", "陷", "得"],
+    # 擎羊
+    "qingyangMin": [None, "陷", "庙", None, "陷", "庙", None, "陷", "庙", None, "陷", "庙"],
+    # 陀罗
+    "tuoluoMin": ["陷", None, "庙", "陷", None, "庙", "陷", None, "庙", "陷", None, "庙"],
 }
 
 
@@ -66,28 +78,8 @@ def get_star_brightness(
 
     brightness_list = STAR_BRIGHTNESS[star_name]
 
-    # 地支索引：子丑寅卯辰巳午未申酉戌亥 (0-11)
-    # 亮度列表索引：寅卯辰巳午未申酉戌亥子丑 (0-11)
-    # 需要转换索引
-    branch_index = EARTHLY_BRANCHES.index(palace_branch)
-
-    # 转换索引：子(0)->10, 丑(1)->11, 寅(2)->0, ...
-    brightness_index_map = {
-        0: 10,  # 子
-        1: 11,  # 丑
-        2: 0,  # 寅
-        3: 1,  # 卯
-        4: 2,  # 辰
-        5: 3,  # 巳
-        6: 4,  # 午
-        7: 5,  # 未
-        8: 6,  # 申
-        9: 7,  # 酉
-        10: 8,  # 戌
-        11: 9,  # 亥
-    }
-
-    brightness_index = brightness_index_map[branch_index]
+    # 地支索引（子=0）转换为亮度表索引（寅=0）
+    brightness_index = (EARTHLY_BRANCHES.index(palace_branch) - 2) % 12
 
     return brightness_list[brightness_index]
 
@@ -105,17 +97,11 @@ def apply_brightness_to_palaces(palaces: List[Dict[str, Any]]) -> None:
     for palace in palaces:
         palace_branch = palace["earthly_branch"]
 
-        # 为主星添加亮度
-        for star in palace["major_stars"]:
+        # 主星与有亮度表的辅星（文昌、文曲、火星、铃星、擎羊、陀罗）都赋亮度
+        for star in palace["major_stars"] + palace["minor_stars"]:
             brightness = get_star_brightness(star.name, palace_branch)
             if brightness:
                 star.brightness = brightness
-
-        # 辅星通常不标注亮度，但可以预留接口
-        # for star in palace['minor_stars']:
-        #     brightness = get_star_brightness(star.name, palace_branch)
-        #     if brightness:
-        #         star.brightness = brightness
 
 
 def get_brightness_score(brightness: Optional[Brightness]) -> int:
