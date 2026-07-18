@@ -33,7 +33,18 @@ pytest tests/test_api.py
 
 # Run specific test function
 pytest tests/test_api.py::test_by_solar_basic
+
+# Full-field diff against the iztro JS reference (exit 0 = aligned)
+python scripts/compare_iztro_alignment.py
 ```
+
+The alignment script and `tests/test_alignment_core.py` need `iztro@2.5.8` as
+a JS reference. It is auto-discovered from `/tmp/iztro-2.5.8/node_modules/iztro`
+or the repo's tracked `node_modules/iztro`; override with `IZTRO_JS_PACKAGE`.
+
+Note: plain `python somescript.py` resolves `iztro_py` from site-packages, which
+may shadow the working tree with an older release. Use `pip install -e .` or
+`PYTHONPATH=src`. pytest is unaffected (`pythonpath = src` in pyproject).
 
 ### Code Quality
 ```bash
@@ -144,6 +155,14 @@ if chart.star('紫微').surrounded_palaces().have_mutagen('忌'):
 - Functional* classes wrap these with query methods
 - Keeps data layer clean while adding API convenience
 
+**Name Normalization**:
+- Star/palace lookups (`star()`, `palace()`, `palace.has()` etc.) accept internal
+  keys (`'ziweiMaj'`, `'soulPalace'`) or translated names from any of the six
+  locales (`'紫微'`, `'命宫'`), via `i18n.normalize_star_name` /
+  `normalize_palace_name` (the iztro `kot()` equivalent)
+- Internally `Star.name` / `Palace.name` always store keys; the `palaces` list is
+  anchored at 寅宫 = index 0, so never use palace-name offsets as list indices
+
 ## Testing Strategy
 
 Test files in `tests/` directory:
@@ -153,14 +172,25 @@ Test files in `tests/` directory:
 - `test_integration.py`: End-to-end tests
 - `test_palace.py`: Palace positioning
 - `test_stars.py`: Star placement
+- `test_alignment_core.py`: Runs `scripts/compare_iztro_alignment.py` against the JS reference (12 blocking cases)
+- `test_iztro_compatibility.py`: Known-chart expectations and API parity checks
+- `test_regressions.py`: Pins iztro-verified values for the 2026-07 alignment fixes (year-pillar divide, nominal age, brightness, name lookups)
+- `test_coverage_improvements.py`: Additional branch coverage
 
 All tests use pytest framework.
 
 ## Known Limitations
 
-1. **i18n**: Six locales ship (zh-CN, zh-TW, en-US, ja-JP, ko-KR, vi-VN); zh-CN is the most complete and untranslated keys fall back to zh-CN.
+1. **i18n**: Six locales ship (zh-CN, zh-TW, en-US, ja-JP, ko-KR, vi-VN); zh-CN is the most complete and untranslated keys fall back to zh-CN. The language setting is process-global (`i18n.set_language`), so charts created with different languages share translation state.
 2. **PyPI**: Published as `iztro-py` (latest 0.4.0). Install released builds with `pip install -U iztro-py`; for development use `pip install -e .` so imports resolve to the working tree.
 3. **Documentation site**: Planned but not yet implemented
+4. **Horoscope feature gaps vs iztro**: no 流曜 (`stars` is always `None` on horoscope items), no 流年将前/岁前十二神 (`yearlyDecStar`), and no config system (`yearDivide`/`ageDivide` etc. are fixed to iztro defaults). `horoscope()` returns a plain data model, not a chainable FunctionalHoroscope.
+
+## Releasing
+
+1. Bump the version in `pyproject.toml` and `src/iztro_py/__init__.py`; add a `CHANGELOG.md` entry.
+2. Commit, push, and wait for CI (`ci.yml`) to pass.
+3. `gh release create vX.Y.Z ...` — publishing the GitHub release triggers `.github/workflows/publish.yml`, which builds and uploads to PyPI automatically (secret `PYPI_API_TOKEN`). No manual `twine upload`.
 
 ## Development Priorities
 
