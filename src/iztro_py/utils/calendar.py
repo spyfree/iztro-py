@@ -30,15 +30,18 @@ from iztro_py.data.constants import (
 # ============================================================================
 
 
-def solar_to_lunar(year: int, month: int, day: int, fix_leap: bool = True) -> LunarDate:
+def solar_to_lunar(year: int, month: int, day: int) -> LunarDate:
     """
     阳历转农历
+
+    返回原始农历日期（闰月以 is_leap_month 标记）。
+    斗数排盘所需的闰月修正在 `fix_lunar_month_index` 中处理，
+    与 iztro 的 solar2lunar / fixLunarMonthIndex 分工一致。
 
     Args:
         year: 阳历年
         month: 阳历月
         day: 阳历日
-        fix_leap: 是否修正闰月（如果在闰月前半月则调整为前一个月）
 
     Returns:
         LunarDate对象
@@ -267,6 +270,11 @@ def get_heavenly_stem_and_earthly_branch_date(
     """
     获取完整的四柱（年月日时的天干地支）
 
+    对齐 iztro 默认配置（yearDivide='normal'、horoscopeDivide='normal'）：
+    - 年柱以农历正月初一为分界（非立春）
+    - 月柱按农历月序自年干起五虎遁（闰月下半月算下月）
+    - 日柱晚子时（23:00 后）按次日计算（dayDivide='forward'）
+
     Args:
         year: 阳历年
         month: 阳历月
@@ -280,8 +288,8 @@ def get_heavenly_stem_and_earthly_branch_date(
     solar = LunarSolar.fromYmdHms(year, month, day, _time_index_to_hour(time_index), 0, 0)
     lunar = solar.getLunar()
 
-    year_stem, year_branch = _parse_ganzhi(lunar.getYearInGanZhiExact())
-    month_stem, month_branch = _parse_ganzhi(lunar.getMonthInGanZhiExact())
+    year_stem, year_branch = _parse_ganzhi(lunar.getYearInGanZhi())
+    month_stem, month_branch = _get_normal_month_stem_branch(year_stem, lunar)
     day_stem, day_branch = _parse_ganzhi(lunar.getDayInGanZhiExact())
     time_stem, time_branch = _parse_ganzhi(lunar.getTimeInGanZhi())
 
@@ -295,6 +303,23 @@ def get_heavenly_stem_and_earthly_branch_date(
         time_stem=time_stem,
         time_branch=time_branch,
     )
+
+
+def _get_normal_month_stem_branch(
+    year_stem: HeavenlyStemName, lunar: "LunarDateValue"
+) -> Tuple[HeavenlyStemName, EarthlyBranchName]:
+    """按农历月序（初一分界）计算月干支，对齐 lunar-lite 的 normal 模式。"""
+    raw_month = lunar.getMonth()
+    month_num = abs(raw_month)
+    # 闰月下半月按下一个月计算
+    leap_addition = 1 if raw_month < 0 and lunar.getDay() > 15 else 0
+
+    first_month_stem = TIGER_RULE[year_stem]
+    stem_index = fix_index(
+        HEAVENLY_STEMS.index(first_month_stem) + month_num - 1 + leap_addition, 10
+    )
+    branch_index = fix_index(EARTHLY_BRANCHES.index("yinEarthly") + month_num - 1 + leap_addition)
+    return HEAVENLY_STEMS[stem_index], EARTHLY_BRANCHES[branch_index]
 
 
 # ============================================================================

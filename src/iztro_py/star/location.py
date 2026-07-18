@@ -141,10 +141,10 @@ def get_start_indices(
     # 晚子时按次日计算农历日
     if time_index == 12:
         d = date(year, month, day) + timedelta(days=1)
-        lunar = solar_to_lunar(d.year, d.month, d.day, fix_leap)
+        lunar = solar_to_lunar(d.year, d.month, d.day)
         lunar_day = lunar.day
     else:
-        lunar = solar_to_lunar(year, month, day, fix_leap)
+        lunar = solar_to_lunar(year, month, day)
         lunar_day = lunar.day
 
     # 五行局数值

@@ -80,7 +80,7 @@ def by_solar(
     year, month, day = parse_solar_date(solar_date)
 
     # 2. 阳历转农历
-    lunar_date = solar_to_lunar(year, month, day, fix_leap)
+    lunar_date = solar_to_lunar(year, month, day)
 
     # 3. 计算四柱
     chinese_date = get_heavenly_stem_and_earthly_branch_date(year, month, day, time_index)
