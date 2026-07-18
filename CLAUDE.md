@@ -104,6 +104,11 @@ ruff check src tests
 2. **Major Stars**: Ziwei (紫微) position determined by five elements class and lunar day; other stars follow fixed offsets
 3. **Five Elements Class (五行局)**: Determined by soul palace's heavenly stem and earthly branch
 4. **Horoscope System**: Multi-level fortune analysis (decadal/yearly/monthly/daily/hourly)
+5. **Calendar Conventions** (aligned with iztro@2.5.8 defaults; do not change without re-running `scripts/compare_iztro_alignment.py`):
+   - Year/month pillars split at 农历正月初一 (`yearDivide/horoscopeDivide='normal'`), NOT at 立春
+   - Day pillar rolls to the next day for 晚子时 (`dayDivide='forward'`)
+   - Nominal age (虚岁) = target lunar year − birth lunar year + 1
+   - Star brightness tables mirror iztro `STARS_INFO` (indexed from 寅=0), including minor stars 昌曲火铃羊陀
 
 ### Type System
 
@@ -154,7 +159,7 @@ All tests use pytest framework.
 ## Known Limitations
 
 1. **i18n**: Six locales ship (zh-CN, zh-TW, en-US, ja-JP, ko-KR, vi-VN); zh-CN is the most complete and untranslated keys fall back to zh-CN.
-2. **PyPI**: Published as `iztro-py` (latest 0.3.4). Install released builds with `pip install -U iztro-py`; for development use `pip install -e .` so imports resolve to the working tree.
+2. **PyPI**: Published as `iztro-py` (latest 0.4.0). Install released builds with `pip install -U iztro-py`; for development use `pip install -e .` so imports resolve to the working tree.
 3. **Documentation site**: Planned but not yet implemented
 
 ## Development Priorities

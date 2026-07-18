@@ -5,6 +5,50 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2026-07-18
+
+Full-field alignment with `iztro@2.5.8` defaults. A 36-case random/edge sweep
+now matches the JS reference on every compared field (star placement with
+brightness and in-palace order, adjective stars, 12-god cycles, decadal/age
+anchors, and all horoscope indices).
+
+### 🔧 Correctness Fixes (behavior changes)
+
+- **Year/month pillars now split at 农历正月初一** (`yearDivide/horoscopeDivide='normal'`),
+  matching iztro defaults. Previously the 立春-based exact divide was used, which
+  produced entirely wrong charts for births between Lunar New Year and 立春
+- **Nominal age (虚岁) is now computed from lunar years** (`target lunar year −
+  birth lunar year + 1`). Previously solar years were used, shifting 大限/小限
+  palaces by one year for dates between Jan 1 and Lunar New Year
+- **Star brightness tables rewritten from iztro `STARS_INFO`**: every major star
+  except 紫微 had incorrect rows; brightness is now also applied to
+  文昌/文曲/火星/铃星/擎羊/陀罗 (with the unrated positions left empty)
+- **Minor stars are placed in iztro's push order** so stars sharing a palace
+  keep the same in-palace ordering as the JS reference
+
+### 🐛 API Fixes
+
+- `astrolabe.star('紫微')`, `palace.has(['紫微'])` and related queries now accept
+  translated star names from all six locales (previously only internal keys
+  matched, and Chinese names silently returned `None`/`False`)
+- `astrolabe.palace('命宫')` returned the wrong palace whenever the soul palace
+  was not at index 0 (palace-name offsets were misused as list indices); palace
+  lookups now resolve by actual palace name and accept all locale translations
+- `FunctionalAstrolabe` now preserves the `language` requested via
+  `by_solar(..., language=...)`
+- Removed the no-op `fix_leap` parameter from `solar_to_lunar()` and unused
+  parameters from `get_horoscope()`
+
+### 🧪 Verification
+
+- Alignment script expanded from 6 to 12 blocking cases: both genders, births
+  in the 春节-立春 window, leap-month (闰二月) births, late 子时 births, and
+  horoscope targets across lunar-year boundaries; brightness and in-palace star
+  order are now compared as blocking fields, and horoscope comparison covers
+  小限/流月/流日/流时 indices plus nominal age
+- Added `tests/test_regressions.py` covering all fixes above
+- Bundled iztro JS reference upgraded from 2.5.3 to 2.5.8
+
 ## [0.3.4] - 2026-03-07
 
 ### 🔧 Alignment Fixes
