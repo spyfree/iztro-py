@@ -1,5 +1,5 @@
 {
-  "dependencies": {
-    "iztro": "2.5.8"
+  "devDependencies": {
+    "iztro": "^2.5.8"
   }
 }
