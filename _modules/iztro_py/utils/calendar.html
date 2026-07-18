@@ -107,15 +107,18 @@
 
 <div class="viewcode-block" id="solar_to_lunar">
 <a class="viewcode-back" href="../../../api/utils.html#iztro_py.utils.calendar.solar_to_lunar">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">solar_to_lunar</span><span class="p">(</span><span class="n">year</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">month</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">day</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">fix_leap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LunarDate</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">solar_to_lunar</span><span class="p">(</span><span class="n">year</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">month</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">day</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LunarDate</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    阳历转农历</span>
+
+<span class="sd">    返回原始农历日期（闰月以 is_leap_month 标记）。</span>
+<span class="sd">    斗数排盘所需的闰月修正在 `fix_lunar_month_index` 中处理，</span>
+<span class="sd">    与 iztro 的 solar2lunar / fixLunarMonthIndex 分工一致。</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        year: 阳历年</span>
 <span class="sd">        month: 阳历月</span>
 <span class="sd">        day: 阳历日</span>
-<span class="sd">        fix_leap: 是否修正闰月（如果在闰月前半月则调整为前一个月）</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        LunarDate对象</span>
@@ -368,6 +371,11 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    获取完整的四柱（年月日时的天干地支）</span>
 
+<span class="sd">    对齐 iztro 默认配置（yearDivide=&#39;normal&#39;、horoscopeDivide=&#39;normal&#39;）：</span>
+<span class="sd">    - 年柱以农历正月初一为分界（非立春）</span>
+<span class="sd">    - 月柱按农历月序自年干起五虎遁（闰月下半月算下月）</span>
+<span class="sd">    - 日柱晚子时（23:00 后）按次日计算（dayDivide=&#39;forward&#39;）</span>
+
 <span class="sd">    Args:</span>
 <span class="sd">        year: 阳历年</span>
 <span class="sd">        month: 阳历月</span>
@@ -381,8 +389,8 @@
     <span class="n">solar</span> <span class="o">=</span> <span class="n">LunarSolar</span><span class="o">.</span><span class="n">fromYmdHms</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="p">,</span> <span class="n">_time_index_to_hour</span><span class="p">(</span><span class="n">time_index</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
     <span class="n">lunar</span> <span class="o">=</span> <span class="n">solar</span><span class="o">.</span><span class="n">getLunar</span><span class="p">()</span>
 
-    <span class="n">year_stem</span><span class="p">,</span> <span class="n">year_branch</span> <span class="o">=</span> <span class="n">_parse_ganzhi</span><span class="p">(</span><span class="n">lunar</span><span class="o">.</span><span class="n">getYearInGanZhiExact</span><span class="p">())</span>
-    <span class="n">month_stem</span><span class="p">,</span> <span class="n">month_branch</span> <span class="o">=</span> <span class="n">_parse_ganzhi</span><span class="p">(</span><span class="n">lunar</span><span class="o">.</span><span class="n">getMonthInGanZhiExact</span><span class="p">())</span>
+    <span class="n">year_stem</span><span class="p">,</span> <span class="n">year_branch</span> <span class="o">=</span> <span class="n">_parse_ganzhi</span><span class="p">(</span><span class="n">lunar</span><span class="o">.</span><span class="n">getYearInGanZhi</span><span class="p">())</span>
+    <span class="n">month_stem</span><span class="p">,</span> <span class="n">month_branch</span> <span class="o">=</span> <span class="n">_get_normal_month_stem_branch</span><span class="p">(</span><span class="n">year_stem</span><span class="p">,</span> <span class="n">lunar</span><span class="p">)</span>
     <span class="n">day_stem</span><span class="p">,</span> <span class="n">day_branch</span> <span class="o">=</span> <span class="n">_parse_ganzhi</span><span class="p">(</span><span class="n">lunar</span><span class="o">.</span><span class="n">getDayInGanZhiExact</span><span class="p">())</span>
     <span class="n">time_stem</span><span class="p">,</span> <span class="n">time_branch</span> <span class="o">=</span> <span class="n">_parse_ganzhi</span><span class="p">(</span><span class="n">lunar</span><span class="o">.</span><span class="n">getTimeInGanZhi</span><span class="p">())</span>
 
@@ -397,6 +405,23 @@
         <span class="n">time_branch</span><span class="o">=</span><span class="n">time_branch</span><span class="p">,</span>
     <span class="p">)</span></div>
 
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_normal_month_stem_branch</span><span class="p">(</span>
+    <span class="n">year_stem</span><span class="p">:</span> <span class="n">HeavenlyStemName</span><span class="p">,</span> <span class="n">lunar</span><span class="p">:</span> <span class="s2">&quot;LunarDateValue&quot;</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">HeavenlyStemName</span><span class="p">,</span> <span class="n">EarthlyBranchName</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;按农历月序（初一分界）计算月干支，对齐 lunar-lite 的 normal 模式。&quot;&quot;&quot;</span>
+    <span class="n">raw_month</span> <span class="o">=</span> <span class="n">lunar</span><span class="o">.</span><span class="n">getMonth</span><span class="p">()</span>
+    <span class="n">month_num</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">raw_month</span><span class="p">)</span>
+    <span class="c1"># 闰月下半月按下一个月计算</span>
+    <span class="n">leap_addition</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">raw_month</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">lunar</span><span class="o">.</span><span class="n">getDay</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">15</span> <span class="k">else</span> <span class="mi">0</span>
+
+    <span class="n">first_month_stem</span> <span class="o">=</span> <span class="n">TIGER_RULE</span><span class="p">[</span><span class="n">year_stem</span><span class="p">]</span>
+    <span class="n">stem_index</span> <span class="o">=</span> <span class="n">fix_index</span><span class="p">(</span>
+        <span class="n">HEAVENLY_STEMS</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">first_month_stem</span><span class="p">)</span> <span class="o">+</span> <span class="n">month_num</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">leap_addition</span><span class="p">,</span> <span class="mi">10</span>
+    <span class="p">)</span>
+    <span class="n">branch_index</span> <span class="o">=</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">EARTHLY_BRANCHES</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;yinEarthly&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">month_num</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">leap_addition</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">HEAVENLY_STEMS</span><span class="p">[</span><span class="n">stem_index</span><span class="p">],</span> <span class="n">EARTHLY_BRANCHES</span><span class="p">[</span><span class="n">branch_index</span><span class="p">]</span>
 
 
 <span class="c1"># ============================================================================</span>

@@ -227,10 +227,10 @@
     <span class="c1"># 晚子时按次日计算农历日</span>
     <span class="k">if</span> <span class="n">time_index</span> <span class="o">==</span> <span class="mi">12</span><span class="p">:</span>
         <span class="n">d</span> <span class="o">=</span> <span class="n">date</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="p">)</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">lunar</span> <span class="o">=</span> <span class="n">solar_to_lunar</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">year</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">month</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">day</span><span class="p">,</span> <span class="n">fix_leap</span><span class="p">)</span>
+        <span class="n">lunar</span> <span class="o">=</span> <span class="n">solar_to_lunar</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">year</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">month</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">day</span><span class="p">)</span>
         <span class="n">lunar_day</span> <span class="o">=</span> <span class="n">lunar</span><span class="o">.</span><span class="n">day</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">lunar</span> <span class="o">=</span> <span class="n">solar_to_lunar</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="p">,</span> <span class="n">fix_leap</span><span class="p">)</span>
+        <span class="n">lunar</span> <span class="o">=</span> <span class="n">solar_to_lunar</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="p">)</span>
         <span class="n">lunar_day</span> <span class="o">=</span> <span class="n">lunar</span><span class="o">.</span><span class="n">day</span>
 
     <span class="c1"># 五行局数值</span>

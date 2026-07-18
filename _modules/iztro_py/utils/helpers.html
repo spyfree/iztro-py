@@ -311,9 +311,12 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    计算虚岁</span>
 
+<span class="sd">    与 iztro 一致，两个入参都应传农历年份（以正月初一分界），</span>
+<span class="sd">    传阳历年份会在元旦到春节之间产生一岁误差。</span>
+
 <span class="sd">    Args:</span>
-<span class="sd">        birth_year: 出生年份</span>
-<span class="sd">        target_year: 目标年份</span>
+<span class="sd">        birth_year: 出生农历年份</span>
+<span class="sd">        target_year: 目标农历年份</span>
 <span class="sd">        age_divide: 年龄划分方式</span>
 <span class="sd">            - &#39;normal&#39;: 按自然年计算</span>
 <span class="sd">            - &#39;birthday&#39;: 按生日计算（需要完整日期，此处简化处理）</span>
@@ -321,7 +324,7 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        虚岁</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># 虚岁 = 当前年份 - 出生年份 + 1</span>
+    <span class="c1"># 虚岁 = 目标农历年 - 出生农历年 + 1</span>
     <span class="k">return</span> <span class="n">target_year</span> <span class="o">-</span> <span class="n">birth_year</span> <span class="o">+</span> <span class="mi">1</span></div>
 
 

@@ -103,15 +103,17 @@
 and calculating heavenly stems and earthly branches (天干地支).</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="iztro_py.utils.calendar.solar_to_lunar">
-<span class="sig-prename descclassname"><span class="pre">iztro_py.utils.calendar.</span></span><span class="sig-name descname"><span class="pre">solar_to_lunar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">year</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">month</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">day</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fix_leap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/iztro_py/utils/calendar.html#solar_to_lunar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#iztro_py.utils.calendar.solar_to_lunar" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">iztro_py.utils.calendar.</span></span><span class="sig-name descname"><span class="pre">solar_to_lunar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">year</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">month</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">day</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/iztro_py/utils/calendar.html#solar_to_lunar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#iztro_py.utils.calendar.solar_to_lunar" title="Link to this definition"></a></dt>
 <dd><p>阳历转农历</p>
+<p>返回原始农历日期（闰月以 is_leap_month 标记）。
+斗数排盘所需的闰月修正在 <cite>fix_lunar_month_index</cite> 中处理，
+与 iztro 的 solar2lunar / fixLunarMonthIndex 分工一致。</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>year</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – 阳历年</p></li>
 <li><p><strong>month</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – 阳历月</p></li>
 <li><p><strong>day</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – 阳历日</p></li>
-<li><p><strong>fix_leap</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – 是否修正闰月（如果在闰月前半月则调整为前一个月）</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -280,6 +282,10 @@ and calculating heavenly stems and earthly branches (天干地支).</p>
 <dt class="sig sig-object py" id="iztro_py.utils.calendar.get_heavenly_stem_and_earthly_branch_date">
 <span class="sig-prename descclassname"><span class="pre">iztro_py.utils.calendar.</span></span><span class="sig-name descname"><span class="pre">get_heavenly_stem_and_earthly_branch_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">year</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">month</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">day</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lunar_month</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/iztro_py/utils/calendar.html#get_heavenly_stem_and_earthly_branch_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#iztro_py.utils.calendar.get_heavenly_stem_and_earthly_branch_date" title="Link to this definition"></a></dt>
 <dd><p>获取完整的四柱（年月日时的天干地支）</p>
+<p>对齐 iztro 默认配置（yearDivide=’normal’、horoscopeDivide=’normal’）：
+- 年柱以农历正月初一为分界（非立春）
+- 月柱按农历月序自年干起五虎遁（闰月下半月算下月）
+- 日柱晚子时（23:00 后）按次日计算（dayDivide=’forward’）</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -543,11 +549,13 @@ and calculating heavenly stems and earthly branches (天干地支).</p>
 <dt class="sig sig-object py" id="iztro_py.utils.helpers.calculate_nominal_age">
 <span class="sig-prename descclassname"><span class="pre">iztro_py.utils.helpers.</span></span><span class="sig-name descname"><span class="pre">calculate_nominal_age</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">birth_year</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_year</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">age_divide</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'normal'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/iztro_py/utils/helpers.html#calculate_nominal_age"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#iztro_py.utils.helpers.calculate_nominal_age" title="Link to this definition"></a></dt>
 <dd><p>计算虚岁</p>
+<p>与 iztro 一致，两个入参都应传农历年份（以正月初一分界），
+传阳历年份会在元旦到春节之间产生一岁误差。</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>birth_year</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – 出生年份</p></li>
-<li><p><strong>target_year</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – 目标年份</p></li>
+<li><p><strong>birth_year</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – 出生农历年份</p></li>
+<li><p><strong>target_year</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – 目标农历年份</p></li>
 <li><p><strong>age_divide</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – 年龄划分方式
 - ‘normal’: 按自然年计算
 - ‘birthday’: 按生日计算（需要完整日期，此处简化处理）</p></li>

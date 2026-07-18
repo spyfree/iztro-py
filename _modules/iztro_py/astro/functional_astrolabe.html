@@ -128,6 +128,7 @@
             <span class="n">body</span><span class="o">=</span><span class="n">astrolabe</span><span class="o">.</span><span class="n">body</span><span class="p">,</span>
             <span class="n">five_elements_class</span><span class="o">=</span><span class="n">astrolabe</span><span class="o">.</span><span class="n">five_elements_class</span><span class="p">,</span>
             <span class="n">palaces</span><span class="o">=</span><span class="n">functional_palaces</span><span class="p">,</span>
+            <span class="n">language</span><span class="o">=</span><span class="n">astrolabe</span><span class="o">.</span><span class="n">language</span><span class="p">,</span>
             <span class="n">raw_lunar_date</span><span class="o">=</span><span class="n">astrolabe</span><span class="o">.</span><span class="n">raw_lunar_date</span><span class="p">,</span>
             <span class="n">raw_chinese_date</span><span class="o">=</span><span class="n">astrolabe</span><span class="o">.</span><span class="n">raw_chinese_date</span><span class="p">,</span>
         <span class="p">)</span>
@@ -160,18 +161,24 @@
                 <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="n">FunctionalPalace</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">palaces</span><span class="p">[</span><span class="n">index_or_name</span><span class="p">])</span>
             <span class="k">return</span> <span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># 按名称查询</span>
-            <span class="c1"># 先尝试英文名</span>
-            <span class="k">for</span> <span class="n">palace</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">palaces</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">palace</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">index_or_name</span><span class="p">:</span>
-                    <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="n">FunctionalPalace</span><span class="p">,</span> <span class="n">palace</span><span class="p">)</span>
-
-            <span class="c1"># 再尝试中文名</span>
+            <span class="c1"># 按名称查询：先归一化为内部 key（支持各语言译名和别名），</span>
+            <span class="c1"># 再按宫位实际名称匹配。注意 palaces 列表以寅宫为索引 0，</span>
+            <span class="c1"># 不能把宫名序号当作列表下标使用。</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.i18n</span><span class="w"> </span><span class="kn">import</span> <span class="n">normalize_palace_name</span>
             <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.utils.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_palace_index_by_name</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">PALACES</span>
 
-            <span class="n">palace_index</span> <span class="o">=</span> <span class="n">get_palace_index_by_name</span><span class="p">(</span><span class="n">index_or_name</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">palace_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="n">FunctionalPalace</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">palaces</span><span class="p">[</span><span class="n">palace_index</span><span class="p">])</span>
+            <span class="n">palace_key</span> <span class="o">=</span> <span class="n">normalize_palace_name</span><span class="p">(</span><span class="n">index_or_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">palace_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># 兼容简写别名（如 &#39;命&#39;、&#39;财帛&#39;、&#39;事业&#39;）</span>
+                <span class="n">name_offset</span> <span class="o">=</span> <span class="n">get_palace_index_by_name</span><span class="p">(</span><span class="n">index_or_name</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">name_offset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">palace_key</span> <span class="o">=</span> <span class="n">PALACES</span><span class="p">[</span><span class="n">name_offset</span><span class="p">]</span>
+
+            <span class="n">target_name</span> <span class="o">=</span> <span class="n">palace_key</span> <span class="ow">or</span> <span class="n">index_or_name</span>
+            <span class="k">for</span> <span class="n">palace</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">palaces</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">palace</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">target_name</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="n">FunctionalPalace</span><span class="p">,</span> <span class="n">palace</span><span class="p">)</span>
 
             <span class="k">return</span> <span class="kc">None</span></div>
 
@@ -192,9 +199,12 @@
 <span class="sd">            &gt;&gt;&gt; astrolabe.star(&#39;ziweiMaj&#39;)</span>
 <span class="sd">            &gt;&gt;&gt; astrolabe.star(&#39;紫微&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.i18n</span><span class="w"> </span><span class="kn">import</span> <span class="n">normalize_star_name</span>
+
+        <span class="n">star_key</span> <span class="o">=</span> <span class="n">normalize_star_name</span><span class="p">(</span><span class="n">star_name</span><span class="p">)</span> <span class="ow">or</span> <span class="n">star_name</span>
         <span class="k">for</span> <span class="n">palace</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">palaces</span><span class="p">:</span>
             <span class="n">fp</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">FunctionalPalace</span><span class="p">,</span> <span class="n">palace</span><span class="p">)</span>
-            <span class="n">star</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">get_star</span><span class="p">(</span><span class="n">star_name</span><span class="p">)</span>
+            <span class="n">star</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">get_star</span><span class="p">(</span><span class="n">star_key</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">star</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">star</span>
 
@@ -317,12 +327,8 @@
         <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.astro.horoscope</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_horoscope</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">FiveElementsClass</span>
 
-        <span class="c1"># 获取出生年份</span>
+        <span class="c1"># 获取出生年份（birth_lunar_date 缺省时的兜底值）</span>
         <span class="n">birth_year</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">solar_date</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
-
-        <span class="c1"># 获取命宫索引</span>
-        <span class="n">soul_palace</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_soul_palace</span><span class="p">()</span>
-        <span class="n">soul_palace_index</span> <span class="o">=</span> <span class="n">soul_palace</span><span class="o">.</span><span class="n">index</span> <span class="k">if</span> <span class="n">soul_palace</span> <span class="k">else</span> <span class="mi">0</span>
 
         <span class="c1"># 获取五行局</span>
         <span class="n">five_elements_class_map</span> <span class="o">=</span> <span class="p">{</span>
@@ -336,17 +342,6 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">five_elements_class</span><span class="p">,</span> <span class="n">FiveElementsClass</span><span class="o">.</span><span class="n">WATER_2</span>
         <span class="p">)</span>
 
-        <span class="c1"># 获取出生年支阴阳</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw_chinese_date</span><span class="p">:</span>
-            <span class="n">year_branch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw_chinese_date</span><span class="o">.</span><span class="n">year_branch</span>
-            <span class="c1"># 从地支获取阴阳</span>
-            <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.earthly_branches</span><span class="w"> </span><span class="kn">import</span> <span class="n">EARTHLY_BRANCHES_CONFIG</span>
-
-            <span class="n">branch_config</span> <span class="o">=</span> <span class="n">EARTHLY_BRANCHES_CONFIG</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">year_branch</span><span class="p">)</span>
-            <span class="n">year_branch_yin_yang</span> <span class="o">=</span> <span class="n">branch_config</span><span class="o">.</span><span class="n">yin_yang</span> <span class="k">if</span> <span class="n">branch_config</span> <span class="k">else</span> <span class="s2">&quot;阳&quot;</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">year_branch_yin_yang</span> <span class="o">=</span> <span class="s2">&quot;阳&quot;</span>
-
         <span class="c1"># Cast palaces to List[Palace] for horoscope function compatibility</span>
         <span class="n">palaces_for_horoscope</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Palace</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">cast</span><span class="p">(</span><span class="n">Palace</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">palaces</span><span class="p">]</span>
 
@@ -354,10 +349,7 @@
             <span class="n">solar_date_str</span><span class="o">=</span><span class="n">solar_date</span><span class="p">,</span>
             <span class="n">time_index</span><span class="o">=</span><span class="n">time_index</span><span class="p">,</span>
             <span class="n">palaces</span><span class="o">=</span><span class="n">palaces_for_horoscope</span><span class="p">,</span>
-            <span class="n">soul_palace_index</span><span class="o">=</span><span class="n">soul_palace_index</span><span class="p">,</span>
             <span class="n">five_elements_class</span><span class="o">=</span><span class="n">five_elements</span><span class="p">,</span>
-            <span class="n">gender</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">gender</span><span class="p">,</span>
-            <span class="n">year_branch_yin_yang</span><span class="o">=</span><span class="n">year_branch_yin_yang</span><span class="p">,</span>
             <span class="n">birth_year</span><span class="o">=</span><span class="n">birth_year</span><span class="p">,</span>
             <span class="n">birth_lunar_date</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_lunar_date</span><span class="p">,</span>
             <span class="n">birth_time_branch</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_chinese_date</span><span class="o">.</span><span class="n">time_branch</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw_chinese_date</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>

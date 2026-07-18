@@ -110,10 +110,7 @@
     <span class="n">solar_date_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">time_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">palaces</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Palace</span><span class="p">],</span>
-    <span class="n">soul_palace_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">five_elements_class</span><span class="p">:</span> <span class="n">FiveElementsClass</span><span class="p">,</span>
-    <span class="n">gender</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">year_branch_yin_yang</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">birth_year</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">birth_lunar_date</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">LunarDate</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">birth_time_branch</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">EarthlyBranchName</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -121,15 +118,17 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    获取指定日期的运势信息</span>
 
+<span class="sd">    大限/小限的顺逆和年龄锚点在生盘时已写入各宫位</span>
+<span class="sd">    （palace.decadal / palace.ages），此处只按虚岁查表。</span>
+
 <span class="sd">    Args:</span>
 <span class="sd">        solar_date_str: 阳历日期 (YYYY-M-D or YYYY-MM-DD)</span>
 <span class="sd">        time_index: 时辰索引 (0-12)</span>
 <span class="sd">        palaces: 宫位列表</span>
-<span class="sd">        soul_palace_index: 命宫索引</span>
 <span class="sd">        five_elements_class: 五行局</span>
-<span class="sd">        gender: 性别</span>
-<span class="sd">        year_branch_yin_yang: 出生年支阴阳</span>
-<span class="sd">        birth_year: 出生年份</span>
+<span class="sd">        birth_year: 出生农历年份（birth_lunar_date 缺省时的兜底值）</span>
+<span class="sd">        birth_lunar_date: 出生农历日期</span>
+<span class="sd">        birth_time_branch: 出生时辰地支</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        完整的运势信息</span>
@@ -155,8 +154,10 @@
     <span class="n">hour_stem</span> <span class="o">=</span> <span class="n">stems_branches</span><span class="o">.</span><span class="n">time_stem</span>
     <span class="n">hour_branch</span> <span class="o">=</span> <span class="n">stems_branches</span><span class="o">.</span><span class="n">time_branch</span>
 
-    <span class="c1"># 计算虚岁</span>
-    <span class="n">nominal_age</span> <span class="o">=</span> <span class="n">calculate_nominal_age</span><span class="p">(</span><span class="n">birth_year</span><span class="p">,</span> <span class="n">year</span><span class="p">)</span>
+    <span class="c1"># 计算虚岁：与 iztro（ageDivide=&#39;normal&#39;）一致，按农历年差计算</span>
+    <span class="c1"># 出生或目标日期落在元旦与春节之间时，阳历年差会多算/少算一岁</span>
+    <span class="n">birth_lunar_year</span> <span class="o">=</span> <span class="n">birth_lunar_date</span><span class="o">.</span><span class="n">year</span> <span class="k">if</span> <span class="n">birth_lunar_date</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">birth_year</span>
+    <span class="n">nominal_age</span> <span class="o">=</span> <span class="n">calculate_nominal_age</span><span class="p">(</span><span class="n">birth_lunar_year</span><span class="p">,</span> <span class="n">lunar_info</span><span class="o">.</span><span class="n">year</span><span class="p">)</span>
 
     <span class="n">decadal</span> <span class="o">=</span> <span class="n">get_decadal_horoscope</span><span class="p">(</span>
         <span class="n">nominal_age</span><span class="p">,</span>
