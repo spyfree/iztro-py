@@ -6,11 +6,14 @@ Core fields are treated as blocking:
 - lunar/chinese date
 - five elements class
 - soul/body palace anchors
-- 12-palace major/minor stars
-- decadal ranges
-- yearly horoscope anchor and mutagen
+- 12-palace major/minor stars (含亮度) and adjective stars
+- changsheng12/boshi12/jiangqian12/suiqian12
+- decadal ranges and age anchors
+- horoscope anchors: decadal/age/yearly/monthly/daily/hourly indices,
+  nominal age, and decadal/yearly mutagen
 
-Adjective stars are included in the output as non-blocking diffs for now.
+Cases cover both genders, 春节-立春 window births, leap-month births,
+late-rat-hour births, and horoscope targets across lunar-year boundaries.
 """
 
 from __future__ import annotations
@@ -120,12 +123,70 @@ CASES: List[Dict[str, Any]] = [
         "gender": "女",
         "source_time": "15:30",
     },
+    {
+        # 男命，大限顺行方向
+        "label": "1990-10-21 15:30 男",
+        "solar_date": "1990-10-21",
+        "time_index": 8,
+        "gender": "男",
+        "source_time": "15:30",
+    },
+    {
+        # 出生日落在春节（1-23）与立春（2-4）之间：验证年柱以正月初一分界
+        "label": "1993-02-03 12:30 男",
+        "solar_date": "1993-02-03",
+        "time_index": 6,
+        "gender": "男",
+        "source_time": "12:30",
+    },
+    {
+        # 闰二月上半月出生
+        "label": "2023-03-25 08:30 男",
+        "solar_date": "2023-03-25",
+        "time_index": 4,
+        "gender": "男",
+        "source_time": "08:30",
+    },
+    {
+        # 闰二月下半月 + 晚子时出生
+        "label": "2023-04-10 23:30 女",
+        "solar_date": "2023-04-10",
+        "time_index": 12,
+        "gender": "女",
+        "source_time": "23:30",
+    },
+    {
+        # 元旦-春节间出生（农历仍是己卯年），运限目标日跨农历年：验证虚岁按农历年差
+        "label": "2000-01-20 12:30 男 → 2024-06-01",
+        "solar_date": "2000-01-20",
+        "time_index": 6,
+        "gender": "男",
+        "source_time": "12:30",
+        "horoscope_date": "2024-06-01",
+        "horoscope_time_index": 6,
+    },
+    {
+        # 运限目标日在元旦-春节之间（农历仍是癸卯年）：验证运限分界与虚岁
+        "label": "2000-08-16 12:30 男 → 2024-01-15",
+        "solar_date": "2000-08-16",
+        "time_index": 6,
+        "gender": "男",
+        "source_time": "12:30",
+        "horoscope_date": "2024-01-15",
+        "horoscope_time_index": 6,
+    },
 ]
 
 
 def _normalize_python(case: Dict[str, Any]) -> Dict[str, Any]:
     chart = astro.by_solar(case["solar_date"], case["time_index"], case["gender"])
-    horoscope = chart.horoscope(case["solar_date"], case["time_index"])
+    horoscope = chart.horoscope(
+        case.get("horoscope_date", case["solar_date"]),
+        case.get("horoscope_time_index", case["time_index"]),
+    )
+
+    def star_with_brightness(star: Any) -> str:
+        return star.translate_name("zh-CN") + (star.brightness or "")
 
     def palace_dict(palace: Any) -> Dict[str, Any]:
         return {
@@ -135,8 +196,8 @@ def _normalize_python(case: Dict[str, Any]) -> Dict[str, Any]:
             "earthly_branch": palace.translate_earthly_branch("zh-CN"),
             "is_body_palace": palace.is_body_palace,
             "is_original_palace": palace.is_original_palace,
-            "major_stars": [star.translate_name("zh-CN") for star in palace.major_stars],
-            "minor_stars": [star.translate_name("zh-CN") for star in palace.minor_stars],
+            "major_stars": [star_with_brightness(star) for star in palace.major_stars],
+            "minor_stars": [star_with_brightness(star) for star in palace.minor_stars],
             "adjective_stars": [star.translate_name("zh-CN") for star in palace.adjective_stars],
             "changsheng12": palace.changsheng12,
             "boshi12": palace.boshi12,
@@ -163,11 +224,15 @@ def _normalize_python(case: Dict[str, Any]) -> Dict[str, Any]:
         "body_palace": palace_dict(chart.get_body_palace()),
         "palaces": [palace_dict(palace) for palace in chart.palaces],
         "horoscope": {
+            "nominal_age": horoscope.nominal_age,
             "decadal": {
                 "index": horoscope.decadal.index,
                 "name": horoscope.decadal.name,
                 "palace_names": [_translate_palace_name(name) for name in horoscope.decadal.palace_names],
                 "mutagen": [_translate_star_name(name) for name in horoscope.decadal.mutagen],
+            },
+            "age": {
+                "index": horoscope.age.index,
             },
             "yearly": {
                 "index": horoscope.yearly.index,
@@ -175,6 +240,9 @@ def _normalize_python(case: Dict[str, Any]) -> Dict[str, Any]:
                 "palace_names": [_translate_palace_name(name) for name in horoscope.yearly.palace_names],
                 "mutagen": [_translate_star_name(name) for name in horoscope.yearly.mutagen],
             },
+            "monthly": {"index": horoscope.monthly.index},
+            "daily": {"index": horoscope.daily.index},
+            "hourly": {"index": horoscope.hourly.index},
         },
     }
 
@@ -185,7 +253,15 @@ def _normalize_js(case: Dict[str, Any]) -> Dict[str, Any]:
 const iztro = require({json.dumps(str(JS_PACKAGE_PATH))});
 const payload = JSON.parse(process.argv[1]);
 const chart = iztro.astro.bySolar(payload.solar_date, payload.time_index, payload.gender, true, 'zh-CN');
-const horoscope = chart.horoscope(payload.solar_date, payload.time_index);
+const horoscopeDate = payload.horoscope_date || payload.solar_date;
+const horoscopeTimeIndex = payload.horoscope_time_index !== undefined
+  ? payload.horoscope_time_index
+  : payload.time_index;
+const horoscope = chart.horoscope(horoscopeDate, horoscopeTimeIndex);
+
+function starWithBrightness(star) {{
+  return star.name + (star.brightness || '');
+}}
 
 function palaceDict(palace) {{
   return {{
@@ -195,8 +271,8 @@ function palaceDict(palace) {{
     earthly_branch: palace.earthlyBranch,
     is_body_palace: palace.isBodyPalace,
     is_original_palace: palace.isOriginalPalace,
-    major_stars: palace.majorStars.map((star) => star.name),
-    minor_stars: palace.minorStars.map((star) => star.name),
+    major_stars: palace.majorStars.map(starWithBrightness),
+    minor_stars: palace.minorStars.map(starWithBrightness),
     adjective_stars: palace.adjectiveStars.map((star) => star.name),
     changsheng12: palace.changsheng12,
     boshi12: palace.boshi12,
@@ -224,11 +300,15 @@ console.log(JSON.stringify({{
   body_palace: palaceDict(chart.palace('身宫')),
   palaces: chart.palaces.map(palaceDict),
   horoscope: {{
+    nominal_age: horoscope.age.nominalAge,
     decadal: {{
       index: horoscope.decadal.index,
       name: horoscope.decadal.name,
       palace_names: horoscope.decadal.palaceNames,
       mutagen: horoscope.decadal.mutagen,
+    }},
+    age: {{
+      index: horoscope.age.index,
     }},
     yearly: {{
       index: horoscope.yearly.index,
@@ -236,6 +316,9 @@ console.log(JSON.stringify({{
       palace_names: horoscope.yearly.palaceNames,
       mutagen: horoscope.yearly.mutagen,
     }},
+    monthly: {{ index: horoscope.monthly.index }},
+    daily: {{ index: horoscope.daily.index }},
+    hourly: {{ index: horoscope.hourly.index }},
   }},
 }}, null, 2));
 """
