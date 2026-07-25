@@ -167,8 +167,9 @@ def get_decadal_horoscope(
         )
         item_name = "童限"
     elif palace is None:
-        palace = palaces[0]
-        item_name = "大限"
+        # 虚岁不在任何大限区间（出生前查询虚岁 <= 0，或超过末个大限约 125 岁）。
+        # 与 iztro 一致返回 index=-1 表示「无对应宫位」，而不是静默落回命宫。
+        return _no_palace_item("大限")
     else:
         item_name = "大限"
 
@@ -199,7 +200,10 @@ def get_age_horoscope(
     Returns:
         小限运势项
     """
-    palace = next((item for item in palaces if age in item.ages), palaces[0])
+    palace = next((item for item in palaces if age in item.ages), None)
+    if palace is None:
+        # 同 get_decadal_horoscope：越界时返回 index=-1，不静默落回命宫。
+        return _no_palace_item("小限")
 
     return HoroscopeItem(
         index=palace.index,
@@ -336,6 +340,26 @@ def get_hourly_horoscope(
 # ============================================================================
 # Helper Functions
 # ============================================================================
+
+# 越界（虚岁不落在任何大限/小限区间）时 iztro 返回的退化取值：index=-1，
+# 干支恒为甲子、四化恒为甲干四化。这些派生字段没有实际含义，唯一有效的
+# 信号是 index == -1；调用方应据此判断「无对应宫位」。
+NO_PALACE_INDEX = -1
+_NO_PALACE_STEM: HeavenlyStemName = "jiaHeavenly"
+_NO_PALACE_BRANCH: EarthlyBranchName = "ziEarthly"
+
+
+def _no_palace_item(name: str) -> HoroscopeItem:
+    """构造 index=-1 的运限项（对齐 iztro 的越界行为）。"""
+    return HoroscopeItem(
+        index=NO_PALACE_INDEX,
+        name=name,
+        heavenly_stem=_NO_PALACE_STEM,
+        earthly_branch=_NO_PALACE_BRANCH,
+        palace_names=_get_palace_names(NO_PALACE_INDEX),
+        mutagen=_get_mutagen_stars(_NO_PALACE_STEM),
+        stars=None,
+    )
 
 
 def _get_mutagen_stars(stem: HeavenlyStemName) -> List[StarName]:

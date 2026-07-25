@@ -475,9 +475,16 @@ class SurroundedPalaces(BaseModel):
 
 
 class HoroscopeItem(BaseModel):
-    """运限项"""
+    """运限项
 
-    index: int = Field(..., ge=0, le=11)
+    Note:
+        ``index`` 为 ``-1`` 表示**没有对应宫位**（虚岁不落在任何大限/小限区间，
+        例如查询出生之前的日期，或超过末个大限约 125 岁），与 iztro 行为一致。
+        此时 ``heavenly_stem`` / ``earthly_branch`` / ``mutagen`` 均为退化取值
+        （甲子及甲干四化），不具备实际含义——请先判断 ``index != -1``。
+    """
+
+    index: int = Field(..., ge=-1, le=11)
     name: str
     heavenly_stem: HeavenlyStemName
     earthly_branch: EarthlyBranchName

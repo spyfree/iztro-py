@@ -197,3 +197,69 @@ class TestExportedCalendarHelpers:
                 expected.time_stem,
                 expected.time_branch,
             ), f"time pillar mismatch at time_index={time_index}"
+
+
+class TestHoroscopeOutOfRange:
+    """虚岁不落在任何大限/小限区间时返回 index=-1，而不是静默落回命宫。
+
+    此前越界会 fallback 到 `palaces[0]`，于是「出生前」「虚岁 0」「超过末个
+    大限」三种查询都会安静地给出命宫，调用方无从分辨。期望值取自 iztro@2.5.8。
+    """
+
+    def test_date_before_birth(self):
+        chart = astro.by_solar("2000-8-16", 6, "男")
+        horoscope = chart.horoscope("1990-1-1", 6)
+        assert horoscope.nominal_age == -10
+        assert horoscope.decadal.index == -1
+        assert horoscope.age.index == -1
+
+    def test_nominal_age_zero(self):
+        # 2000-1-1 仍是农历己卯年：1999 - 2000 + 1 = 0，第一个大限尚未开始
+        chart = astro.by_solar("2000-8-16", 6, "男")
+        horoscope = chart.horoscope("2000-1-1", 6)
+        assert horoscope.nominal_age == 0
+        assert horoscope.decadal.index == -1
+        assert horoscope.age.index == -1
+
+    def test_age_beyond_last_decadal(self):
+        chart = astro.by_solar("2000-8-16", 6, "男")
+        horoscope = chart.horoscope("2130-1-1", 6)
+        assert horoscope.nominal_age == 130
+        assert horoscope.decadal.index == -1
+        assert horoscope.age.index == -1
+
+    def test_in_range_still_resolves(self):
+        chart = astro.by_solar("2000-8-16", 6, "男")
+        horoscope = chart.horoscope("2024-1-15", 6)
+        assert horoscope.decadal.index == 1
+        assert horoscope.age.index == 7
+
+    def test_childhood_limit_still_resolves(self):
+        # 虚岁 1 落在童限，不应被越界分支吃掉
+        chart = astro.by_solar("2000-8-16", 6, "男")
+        horoscope = chart.horoscope("2000-8-16", 6)
+        assert horoscope.nominal_age == 1
+        assert horoscope.decadal.name == "童限"
+        assert horoscope.decadal.index == 0
+        assert horoscope.age.index == 8
+
+    def test_out_of_range_degenerate_fields_match_iztro(self):
+        chart = astro.by_solar("2000-8-16", 6, "男")
+        decadal = chart.horoscope("1990-1-1", 6).decadal
+        # iztro 对 index=-1 恒返回甲子及甲干四化
+        assert decadal.heavenly_stem == "jiaHeavenly"
+        assert decadal.earthly_branch == "ziEarthly"
+        assert decadal.palace_names[0] == "parentsPalace"
+        assert decadal.palace_names[-1] == "soulPalace"
+
+
+class TestTimeName:
+    """早子时与晚子时必须区分：两者日柱不同（晚子时按次日计算）。"""
+
+    def test_early_and_late_rat_hour_are_distinct(self):
+        assert astro.by_solar("1990-10-21", 0, "女").time == "早子时"
+        assert astro.by_solar("1990-10-21", 12, "女").time == "晚子时"
+
+    def test_other_hours_unchanged(self):
+        assert astro.by_solar("1990-10-21", 6, "女").time == "午时"
+        assert astro.by_solar("1990-10-21", 8, "女").time == "申时"

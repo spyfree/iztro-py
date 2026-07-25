@@ -104,9 +104,14 @@ def get_time_name(time_index: int) -> str:
 
     Returns:
         时辰中文名称，如 "午时"
+
+    Note:
+        索引 0 与 12 分别是早子时和晚子时，名称必须区分——两者的日柱不同
+        （晚子时按次日计算），返回同一个 "子时" 会丢失这个区别。取值与
+        iztro 的 ``astrolabe.time`` 一致。
     """
     time_names = [
-        "子时",  # 0 早子时
+        "早子时",  # 0  00:00~01:00
         "丑时",  # 1
         "寅时",  # 2
         "卯时",  # 3
@@ -118,7 +123,7 @@ def get_time_name(time_index: int) -> str:
         "酉时",  # 9
         "戌时",  # 10
         "亥时",  # 11
-        "子时",  # 12 晚子时
+        "晚子时",  # 12 23:00~00:00
     ]
 
     if 0 <= time_index < len(time_names):
