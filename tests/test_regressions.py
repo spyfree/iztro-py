@@ -8,10 +8,19 @@ Regression tests for bugs found in the iztro 2.5.8 alignment audit (2026-07).
 4. 中文星名/宫名查询（palace 列表以寅宫为索引 0，宫名不能当列表下标）
 5. FunctionalAstrolabe 保留 language 字段
 6. 同宫辅星按 iztro push 顺序排列
+7. `utils` 导出的历法函数与生产路径（四柱计算）保持一致
 """
+
+from datetime import date, timedelta
 
 from iztro_py import astro
 from iztro_py.data.brightness import get_star_brightness
+from iztro_py.utils.calendar import (
+    get_day_stem_branch,
+    get_heavenly_stem_and_earthly_branch_date,
+    get_time_stem_branch,
+    get_year_stem_branch,
+)
 
 
 class TestYearDivide:
@@ -122,3 +131,69 @@ class TestMinorStarOrder:
         palace = chart.palace(6)
         names = [star.name for star in palace.minor_stars]
         assert names == ["lucunMin", "huoxingMin"]
+
+
+class TestExportedCalendarHelpers:
+    """`iztro_py.utils` 导出的历法函数必须与生产路径（四柱计算）一致。
+
+    这几个函数库内部并不调用，所以对齐测试覆盖不到它们。此前
+    `get_day_stem_branch` 用自制的公元元年偏移量，锚点算错，**每一个日期**
+    的日柱都偏了 51 天，却因为无人断言其返回值而长期存活。
+    """
+
+    def test_day_stem_branch_matches_production_path(self):
+        """跨 150 年抽样比对，任一日期都不得与四柱计算分叉。"""
+        start = date(1900, 1, 1)
+        checked = 0
+        for offset in range(0, 55000, 97):
+            day = start + timedelta(days=offset)
+            # time_index=6（午时）：远离晚子时进位，日柱即该日历日的日柱
+            expected = get_heavenly_stem_and_earthly_branch_date(day.year, day.month, day.day, 6)
+            assert get_day_stem_branch(day) == (
+                expected.day_stem,
+                expected.day_branch,
+            ), f"day pillar mismatch on {day.isoformat()}"
+            checked += 1
+        assert checked > 500
+
+    def test_day_stem_branch_known_values(self):
+        # 用 iztro@2.5.8 核对过的固定值
+        assert get_day_stem_branch(date(1900, 1, 1)) == ("jiaHeavenly", "xuEarthly")  # 甲戌
+        assert get_day_stem_branch(date(2000, 8, 16)) == ("bingHeavenly", "wuEarthly")  # 丙午
+        assert get_day_stem_branch(date(1990, 10, 21)) == ("jiHeavenly", "weiEarthly")  # 己未
+
+    def test_day_stem_branch_does_not_roll_for_late_rat_hour(self):
+        """本函数只认日历日；晚子时进位是四柱计算的职责，不在这里发生。"""
+        day = date(1990, 10, 21)
+        assert get_day_stem_branch(day) == ("jiHeavenly", "weiEarthly")  # 己未
+        late_rat = get_heavenly_stem_and_earthly_branch_date(1990, 10, 21, 12)
+        assert (late_rat.day_stem, late_rat.day_branch) == ("gengHeavenly", "shenEarthly")  # 庚申
+
+    def test_year_stem_branch_takes_lunar_year_not_solar_year(self):
+        """入参是农历年。传阳历年在元旦-春节之间会差一年——这是函数契约，不是 bug。"""
+        assert get_year_stem_branch(2000) == ("gengHeavenly", "chenEarthly")  # 庚辰
+
+        # 2000-01-20 当天农历仍是己卯年，生产路径给出己卯
+        actual = get_heavenly_stem_and_earthly_branch_date(2000, 1, 20, 6)
+        assert (actual.year_stem, actual.year_branch) == ("jiHeavenly", "maoEarthly")  # 己卯
+        # 传该日所属的农历年才对得上
+        assert get_year_stem_branch(1999) == (actual.year_stem, actual.year_branch)
+
+    def test_time_stem_branch_needs_next_day_stem_for_late_rat_hour(self):
+        """晚子时须传次日日干；文档已明确，此处把行为钉死。"""
+        expected = get_heavenly_stem_and_earthly_branch_date(1990, 10, 21, 12)
+        assert (expected.time_stem, expected.time_branch) == ("bingHeavenly", "ziEarthly")  # 丙子
+
+        same_day = get_day_stem_branch(date(1990, 10, 21))[0]  # 己
+        next_day = get_day_stem_branch(date(1990, 10, 22))[0]  # 庚
+        assert get_time_stem_branch(next_day, 12) == (expected.time_stem, expected.time_branch)
+        assert get_time_stem_branch(same_day, 12) != (expected.time_stem, expected.time_branch)
+
+    def test_time_stem_branch_matches_production_for_normal_hours(self):
+        for time_index in range(0, 12):
+            expected = get_heavenly_stem_and_earthly_branch_date(2000, 8, 16, time_index)
+            day_stem = get_day_stem_branch(date(2000, 8, 16))[0]
+            assert get_time_stem_branch(day_stem, time_index) == (
+                expected.time_stem,
+                expected.time_branch,
+            ), f"time pillar mismatch at time_index={time_index}"

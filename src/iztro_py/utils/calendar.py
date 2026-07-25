@@ -144,21 +144,33 @@ def parse_lunar_date(date_str: str) -> Tuple[int, int, int]:
 # ============================================================================
 
 
-def get_year_stem_branch(year: int) -> Tuple[HeavenlyStemName, EarthlyBranchName]:
+def get_year_stem_branch(lunar_year: int) -> Tuple[HeavenlyStemName, EarthlyBranchName]:
     """
-    根据年份计算年干支
+    根据**农历**年份计算年干支
 
-    年干 = (年份 - 4) % 10
-    年支 = (年份 - 4) % 12
+    年干 = (农历年 - 4) % 10
+    年支 = (农历年 - 4) % 12
+
+    .. warning::
+        入参必须是**农历年**，不是阳历年。本库的年柱以正月初一分界
+        （对齐 iztro ``yearDivide='normal'``），元旦到春节之间阳历年已经
+        进位、农历年还没有，此时传阳历年会整整差一年：
+
+        >>> get_year_stem_branch(2000)          # 农历庚辰年 → 正确
+        ('gengHeavenly', 'chenEarthly')
+        >>> # 但 2000-01-20 当天农历仍是己卯年，传 2000 会得到错误的庚辰
+
+        要从**阳历日期**得到年柱，请用
+        :func:`get_heavenly_stem_and_earthly_branch_date`，它会正确处理分界。
 
     Args:
-        year: 年份
+        lunar_year: 农历年份
 
     Returns:
         (天干, 地支) 元组
     """
-    stem_index = (year - 4) % 10
-    branch_index = (year - 4) % 12
+    stem_index = (lunar_year - 4) % 10
+    branch_index = (lunar_year - 4) % 12
 
     return HEAVENLY_STEMS[stem_index], EARTHLY_BRANCHES[branch_index]
 
@@ -201,27 +213,25 @@ def get_day_stem_branch(solar_date: date) -> Tuple[HeavenlyStemName, EarthlyBran
     """
     根据阳历日期计算日干支
 
-    使用公元元年1月1日为甲子日的算法
+    返回该**日历日**的日柱（正午取值，不做晚子时进位）。晚子时按次日计算
+    的规则由 :func:`get_heavenly_stem_and_earthly_branch_date` 处理
+    （对齐 iztro ``dayDivide='forward'``）。
 
     Args:
         solar_date: 日期对象
 
     Returns:
         (天干, 地支) 元组
+
+    Note:
+        实现委托给 ``lunar_python``，与
+        :func:`get_heavenly_stem_and_earthly_branch_date` 走同一套历法数据，
+        两者不会再分叉。此前这里用「公元元年1月1日为甲子日后第37天」的自
+        制偏移量，锚点是错的，导致**每一个日期**的日柱都偏了 51 天。
     """
-    # 计算从公元元年1月1日到指定日期的天数
-    # 公元元年1月1日是甲子日后的第37天
-    base_date = date(1, 1, 1)
-    days_diff = (solar_date - base_date).days
-
-    # 甲子日是第37天（索引36）
-    # 所以实际偏移是 days_diff - 36
-    offset = days_diff - 36
-
-    stem_index = offset % 10
-    branch_index = offset % 12
-
-    return HEAVENLY_STEMS[stem_index], EARTHLY_BRANCHES[branch_index]
+    # 固定取正午：避开 23:00 之后的晚子时进位，得到的就是该日历日的日柱。
+    solar = LunarSolar.fromYmdHms(solar_date.year, solar_date.month, solar_date.day, 12, 0, 0)
+    return _parse_ganzhi(solar.getLunar().getDayInGanZhi())
 
 
 def get_time_stem_branch(
@@ -235,8 +245,22 @@ def get_time_stem_branch(
     丙辛从戊起，丁壬庚子居
     戊癸何方发，壬子是真途
 
+    .. warning::
+        ``time_index=12``（晚子时，23:00~00:00）时，本库的日柱已经进位到次日
+        （对齐 iztro ``dayDivide='forward'``），因此**必须传次日的日干**，
+        传当天日干会得到错误的时柱：
+
+        >>> # 1990-10-21 当天日干为己、次日为庚
+        >>> get_time_stem_branch('jiHeavenly', 12)      # 传当天 → 甲子（错）
+        ('jiaHeavenly', 'ziEarthly')
+        >>> get_time_stem_branch('gengHeavenly', 12)    # 传次日 → 丙子（对）
+        ('bingHeavenly', 'ziEarthly')
+
+        要从阳历日期直接得到时柱，请用
+        :func:`get_heavenly_stem_and_earthly_branch_date`，它已处理好进位。
+
     Args:
-        day_stem: 日干
+        day_stem: 日干（晚子时须传次日日干，见上方警告）
         time_index: 时辰索引 (0-12)
 
     Returns:

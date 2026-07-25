@@ -40,9 +40,7 @@ def _resolve_js_package_path() -> Path:
 
     # Reuse the script's resolver so the search paths and the "is it actually
     # requireable" check can never drift between the test and the script.
-    spec = importlib.util.spec_from_file_location(
-        "_iztro_alignment_script", _ALIGNMENT_SCRIPT
-    )
+    spec = importlib.util.spec_from_file_location("_iztro_alignment_script", _ALIGNMENT_SCRIPT)
     module = importlib.util.module_from_spec(spec)
     try:
         spec.loader.exec_module(module)
