@@ -240,7 +240,9 @@ def _normalize_python(case: Dict[str, Any]) -> Dict[str, Any]:
             "decadal": {
                 "index": horoscope.decadal.index,
                 "name": horoscope.decadal.name,
-                "palace_names": [_translate_palace_name(name) for name in horoscope.decadal.palace_names],
+                "palace_names": [
+                    _translate_palace_name(name) for name in horoscope.decadal.palace_names
+                ],
                 "mutagen": [_translate_star_name(name) for name in horoscope.decadal.mutagen],
             },
             "age": {
@@ -249,7 +251,9 @@ def _normalize_python(case: Dict[str, Any]) -> Dict[str, Any]:
             "yearly": {
                 "index": horoscope.yearly.index,
                 "name": horoscope.yearly.name,
-                "palace_names": [_translate_palace_name(name) for name in horoscope.yearly.palace_names],
+                "palace_names": [
+                    _translate_palace_name(name) for name in horoscope.yearly.palace_names
+                ],
                 "mutagen": [_translate_star_name(name) for name in horoscope.yearly.mutagen],
             },
             "monthly": {"index": horoscope.monthly.index},

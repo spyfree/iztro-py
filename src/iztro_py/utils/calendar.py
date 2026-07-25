@@ -350,78 +350,87 @@ def _get_normal_month_stem_branch(
 # Zodiac and Sign Calculation
 # ============================================================================
 
-# 生肖对应地支
+# 生肖对应地支（值为 i18n 翻译键）
 ZODIAC_NAMES = {
-    "ziEarthly": "鼠",
-    "chouEarthly": "牛",
-    "yinEarthly": "虎",
-    "maoEarthly": "兔",
-    "chenEarthly": "龙",
-    "siEarthly": "蛇",
-    "wuEarthly": "马",
-    "weiEarthly": "羊",
-    "shenEarthly": "猴",
-    "youEarthly": "鸡",
-    "xuEarthly": "狗",
-    "haiEarthly": "猪",
+    "ziEarthly": "rat",  # 鼠
+    "chouEarthly": "ox",  # 牛
+    "yinEarthly": "tiger",  # 虎
+    "maoEarthly": "rabbit",  # 兔
+    "chenEarthly": "dragon",  # 龙
+    "siEarthly": "snake",  # 蛇
+    "wuEarthly": "horse",  # 马
+    "weiEarthly": "sheep",  # 羊
+    "shenEarthly": "monkey",  # 猴
+    "youEarthly": "rooster",  # 鸡
+    "xuEarthly": "dog",  # 狗
+    "haiEarthly": "pig",  # 猪
 }
 
-# 星座日期范围 (月, 日)
+# 星座日期范围 (月, 日)，值为 i18n 翻译键
 SIGN_DATES = [
-    ((3, 21), (4, 19), "白羊座"),  # Aries
-    ((4, 20), (5, 20), "金牛座"),  # Taurus
-    ((5, 21), (6, 21), "双子座"),  # Gemini
-    ((6, 22), (7, 22), "巨蟹座"),  # Cancer
-    ((7, 23), (8, 22), "狮子座"),  # Leo
-    ((8, 23), (9, 22), "处女座"),  # Virgo
-    ((9, 23), (10, 23), "天秤座"),  # Libra
-    ((10, 24), (11, 22), "天蝎座"),  # Scorpio
-    ((11, 23), (12, 21), "射手座"),  # Sagittarius
-    ((12, 22), (12, 31), "摩羯座"),  # Capricorn
-    ((1, 1), (1, 19), "摩羯座"),  # Capricorn (continued)
-    ((1, 20), (2, 18), "水瓶座"),  # Aquarius
-    ((2, 19), (3, 20), "双鱼座"),  # Pisces
+    ((3, 21), (4, 19), "aries"),  # 白羊座
+    ((4, 20), (5, 20), "taurus"),  # 金牛座
+    ((5, 21), (6, 21), "gemini"),  # 双子座
+    ((6, 22), (7, 22), "cancer"),  # 巨蟹座
+    ((7, 23), (8, 22), "leo"),  # 狮子座
+    ((8, 23), (9, 22), "virgo"),  # 处女座
+    ((9, 23), (10, 23), "libra"),  # 天秤座
+    ((10, 24), (11, 22), "scorpio"),  # 天蝎座
+    ((11, 23), (12, 21), "sagittarius"),  # 射手座
+    ((12, 22), (12, 31), "capricorn"),  # 摩羯座
+    ((1, 1), (1, 19), "capricorn"),  # 摩羯座（跨年后半段）
+    ((1, 20), (2, 18), "aquarius"),  # 水瓶座
+    ((2, 19), (3, 20), "pisces"),  # 双鱼座
 ]
 
 
-def get_zodiac(year_branch: EarthlyBranchName) -> str:
+def get_zodiac(year_branch: EarthlyBranchName, lang: Optional[str] = None) -> str:
     """
     根据年支获取生肖
 
     Args:
         year_branch: 年支
+        lang: 目标语言代码，默认使用当前全局语言
 
     Returns:
-        生肖名称
+        本地化生肖名称，如 "龙" / "dragon"
     """
-    return ZODIAC_NAMES.get(year_branch, "未知")
+    from iztro_py.i18n import t
+
+    key = ZODIAC_NAMES.get(year_branch)
+    if key is None:
+        return "未知"
+    return t(f"zodiac.{key}", lang)
 
 
-def get_sign(month: int, day: int) -> str:
+def get_sign(month: int, day: int, lang: Optional[str] = None) -> str:
     """
     根据阳历月日获取星座
 
     Args:
         month: 月份 (1-12)
         day: 日期 (1-31)
+        lang: 目标语言代码，默认使用当前全局语言
 
     Returns:
-        星座名称
+        本地化星座名称，如 "狮子座" / "leo"
     """
-    for start, end, sign_name in SIGN_DATES:
+    from iztro_py.i18n import t
+
+    for start, end, sign_key in SIGN_DATES:
         start_month, start_day = start
         end_month, end_day = end
 
         if start_month == end_month:
             # 同一个月内
             if month == start_month and start_day <= day <= end_day:
-                return sign_name
+                return t(f"sign.{sign_key}", lang)
         else:
             # 跨月
             if (month == start_month and day >= start_day) or (
                 month == end_month and day <= end_day
             ):
-                return sign_name
+                return t(f"sign.{sign_key}", lang)
 
     return "未知"
 

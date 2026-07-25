@@ -85,9 +85,9 @@ def by_solar(
     # 3. 计算四柱
     chinese_date = get_heavenly_stem_and_earthly_branch_date(year, month, day, time_index)
 
-    # 4. 生肖星座
-    zodiac = get_zodiac(chinese_date.year_branch)
-    sign = get_sign(month, day)
+    # 4. 生肖星座（显式绑定本盘语言，不依赖全局状态）
+    zodiac = get_zodiac(chinese_date.year_branch, language)
+    sign = get_sign(month, day, language)
 
     # 5. 计算命宫身宫
     soul_and_body = get_soul_and_body(solar_date, time_index, fix_leap=fix_leap)
@@ -171,7 +171,7 @@ def by_solar(
         solar_date=solar_date,
         lunar_date=format_lunar_date(lunar_date),
         chinese_date=format_chinese_date(chinese_date),
-        time=get_time_name(time_index),
+        time=get_time_name(time_index, language),
         time_range=get_time_range(time_index),
         sign=sign,
         zodiac=zodiac,
@@ -179,11 +179,12 @@ def by_solar(
         earthly_branch_of_body_palace=body_palace_branch,
         soul=soul_star,
         body=body_star,
-        five_elements_class=get_five_elements_class_name(five_class),
+        five_elements_class=get_five_elements_class_name(five_class, language),
         palaces=palace_objects,
         language=language,
         raw_lunar_date=lunar_date,
         raw_chinese_date=chinese_date,
+        raw_five_elements_class=five_class,
     )
 
     # 17. 转换为FunctionalAstrolabe
@@ -276,7 +277,7 @@ def get_zodiac_by_solar_date(solar_date: str, language: Language = "zh-CN") -> s
     """
     year, month, day = parse_solar_date(solar_date)
     chinese_date = get_heavenly_stem_and_earthly_branch_date(year, month, day, 0)
-    return get_zodiac(chinese_date.year_branch)
+    return get_zodiac(chinese_date.year_branch, language)
 
 
 def get_sign_by_solar_date(solar_date: str, language: Language = "zh-CN") -> str:
@@ -291,4 +292,4 @@ def get_sign_by_solar_date(solar_date: str, language: Language = "zh-CN") -> str
         星座名称
     """
     year, month, day = parse_solar_date(solar_date)
-    return get_sign(month, day)
+    return get_sign(month, day, language)

@@ -20,7 +20,7 @@ print("=" * 80)
 # - gender: '男'
 # - fix_leap: True
 # - language: 'zh-CN'
-py_result = py_by_solar('1989-10-17', 6, '男', True, 'zh-CN')
+py_result = py_by_solar("1989-10-17", 6, "男", True, "zh-CN")
 
 print(f"\n输入参数:")
 print(f"  date: '1989-10-17'")
@@ -35,7 +35,7 @@ print(f"  命宫地支: {py_result.earthly_branch_of_soul_palace}")
 print(f"  身宫地支: {py_result.earthly_branch_of_body_palace}")
 
 print(f"\n父母宫:")
-parents = py_result.palace('父母宫')
+parents = py_result.palace("父母宫")
 if parents:
     stars = [s.name for s in parents.major_stars]
     print(f"  地支: {parents.earthly_branch}")
@@ -64,7 +64,7 @@ try:
     # - gender: 'male'
     # - fix_leap: True
     # - language: 'zh-CN'
-    js_result = astro.by_solar('1989-10-17', 12, 'male', True, 'zh-CN')
+    js_result = astro.by_solar("1989-10-17", 12, "male", True, "zh-CN")
 
     print(f"\n输入参数:")
     print(f"  date: '1989-10-17'")
@@ -80,7 +80,7 @@ try:
 
     print(f"\n父母宫:")
     for p in js_result.palaces:
-        if p.name == '父母':
+        if p.name == "父母":
             stars = [s.name for s in p.major_stars] if p.major_stars else []
             print(f"  地支: {p.earthly_branch}")
             print(f"  天干: {p.heavenly_stem}")
@@ -95,6 +95,7 @@ try:
 except Exception as e:
     print(f"错误: {e}")
     import traceback
+
     traceback.print_exc()
 
 # ============================================================================
@@ -114,12 +115,12 @@ print(f"  - py-iztro 使用小时数 (0-23)，午时可以用 11、12 或 13")
 print(f"  - 两个库的性别参数格式不同：'男' vs 'male'")
 
 # 检查命宫地支是否一致
-if 'js_result' in locals():
+if "js_result" in locals():
     py_soul = py_result.earthly_branch_of_soul_palace
     js_soul = js_result.earthly_branch_of_soul_palace
 
     # 去掉后缀比较
-    py_soul_simple = py_soul.replace('Earthly', '')
+    py_soul_simple = py_soul.replace("Earthly", "")
 
     print(f"\n命宫地支对比:")
     print(f"  iztro-py: {py_soul}")

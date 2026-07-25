@@ -43,24 +43,31 @@ def get_five_elements_class(
     return mapping[class_index]
 
 
-def get_five_elements_class_name(five_elements_class: FiveElementsClass) -> str:
+FIVE_ELEMENTS_CLASS_KEYS = {
+    FiveElementsClass.WATER_2: "water2nd",
+    FiveElementsClass.WOOD_3: "wood3rd",
+    FiveElementsClass.METAL_4: "metal4th",
+    FiveElementsClass.EARTH_5: "earth5th",
+    FiveElementsClass.FIRE_6: "fire6th",
+}
+
+
+def get_five_elements_class_name(
+    five_elements_class: FiveElementsClass, lang: Optional[str] = None
+) -> str:
     """
-    获取五行局的中文名称
+    获取五行局名称
 
     Args:
         five_elements_class: 五行局枚举
+        lang: 目标语言代码，默认使用当前全局语言
 
     Returns:
-        中文名称，如 "水二局"
+        本地化名称，如 "水二局" / "water 2nd"
     """
-    names = {
-        FiveElementsClass.WATER_2: "水二局",
-        FiveElementsClass.WOOD_3: "木三局",
-        FiveElementsClass.METAL_4: "金四局",
-        FiveElementsClass.EARTH_5: "土五局",
-        FiveElementsClass.FIRE_6: "火六局",
-    }
-    return names[five_elements_class]
+    from iztro_py.i18n import t
+
+    return t(f"fiveElementsClass.{FIVE_ELEMENTS_CLASS_KEYS[five_elements_class]}", lang)
 
 
 def get_time_range(time_index: int) -> str:
@@ -95,41 +102,29 @@ def get_time_range(time_index: int) -> str:
         raise ValueError(f"Invalid time index: {time_index}. Must be 0-12.")
 
 
-def get_time_name(time_index: int) -> str:
+def get_time_name(time_index: int, lang: Optional[str] = None) -> str:
     """
-    获取时辰的中文名称
+    获取时辰名称
 
     Args:
         time_index: 时辰索引 (0-12)
+        lang: 目标语言代码，默认使用当前全局语言
 
     Returns:
-        时辰中文名称，如 "午时"
+        本地化时辰名称，如 "午时" / "Horse hour"
 
     Note:
         索引 0 与 12 分别是早子时和晚子时，名称必须区分——两者的日柱不同
         （晚子时按次日计算），返回同一个 "子时" 会丢失这个区别。取值与
         iztro 的 ``astrolabe.time`` 一致。
     """
-    time_names = [
-        "早子时",  # 0  00:00~01:00
-        "丑时",  # 1
-        "寅时",  # 2
-        "卯时",  # 3
-        "辰时",  # 4
-        "巳时",  # 5
-        "午时",  # 6
-        "未时",  # 7
-        "申时",  # 8
-        "酉时",  # 9
-        "戌时",  # 10
-        "亥时",  # 11
-        "晚子时",  # 12 23:00~00:00
-    ]
+    from iztro_py.data.constants import CHINESE_TIME
+    from iztro_py.i18n import t
 
-    if 0 <= time_index < len(time_names):
-        return time_names[time_index]
-    else:
+    if not (0 <= time_index < len(CHINESE_TIME)):
         raise ValueError(f"Invalid time index: {time_index}. Must be 0-12.")
+
+    return t(f"time.{CHINESE_TIME[time_index]}", lang)
 
 
 def hour_to_time_index(hour: int) -> int:

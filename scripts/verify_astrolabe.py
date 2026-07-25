@@ -13,13 +13,7 @@ try:
 
     # 1989-10-17 午时
     py_astro = Astro()
-    py_result = py_astro.by_solar(
-        '1989-10-17',
-        11,  # 午时
-        'male',
-        True,
-        'zh-CN'
-    )
+    py_result = py_astro.by_solar("1989-10-17", 11, "male", True, "zh-CN")  # 午时
 
     print(f"\n命宫: {py_result.palace.name[0]}")
     print(f"身宫: {py_result.palace.name[1]}")
@@ -32,7 +26,7 @@ try:
         print(f"  {palace_name}: {stars_str}")
 
     print("\n父母宫详情:")
-    parents_palace = py_result.palaces['父母']
+    parents_palace = py_result.palaces["父母"]
     print(f"  地支: {parents_palace.earthly_branch}")
     print(f"  天干: {parents_palace.heavenly_stem}")
     major_stars = [s.name for s in parents_palace.major_stars]
@@ -41,6 +35,7 @@ try:
 except Exception as e:
     print(f"py-iztro 错误: {e}")
     import traceback
+
     traceback.print_exc()
 
 print("\n" + "=" * 80)
@@ -51,7 +46,7 @@ print("=" * 80)
 try:
     from iztro_py import by_solar
 
-    result = by_solar('1989-10-17', 11, '男', True, 'zh-CN')
+    result = by_solar("1989-10-17", 11, "男", True, "zh-CN")
 
     print(f"\n命宫: {result.get_soul_palace()}")
     print(f"身宫: {result.get_body_palace()}")
@@ -64,7 +59,7 @@ try:
         print(f"  {palace.name}: {stars_str}")
 
     print("\n父母宫详情:")
-    parents_palace = result.palace('父母宫')
+    parents_palace = result.palace("父母宫")
     if parents_palace:
         print(f"  地支: {parents_palace.earthly_branch}")
         print(f"  天干: {parents_palace.heavenly_stem}")
@@ -74,4 +69,5 @@ try:
 except Exception as e:
     print(f"iztro-py 错误: {e}")
     import traceback
+
     traceback.print_exc()

@@ -459,9 +459,13 @@ class Astrolabe(BaseModel):
     # Language setting
     language: Language = "zh-CN"
 
-    # Raw dates for internal use
+    # Raw values for internal use. `five_elements_class` above is a *localized
+    # display string*; keeping the enum here means nothing has to reverse-parse
+    # that string back into a value (which silently broke once the field stopped
+    # always being Chinese).
     raw_lunar_date: Optional[LunarDate] = None
     raw_chinese_date: Optional[HeavenlyStemAndEarthlyBranchDate] = None
+    raw_five_elements_class: Optional[FiveElementsClass] = None
 
     model_config = ConfigDict(frozen=False)
 

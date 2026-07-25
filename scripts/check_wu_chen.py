@@ -6,8 +6,8 @@ from iztro_py.utils.helpers import get_five_elements_class, get_five_elements_cl
 # 命宫天干：戊
 # 命宫地支：辰
 
-stem = 'wuHeavenly'  # 戊
-branch = 'chenEarthly'  # 辰
+stem = "wuHeavenly"  # 戊
+branch = "chenEarthly"  # 辰
 
 stem_idx = HEAVENLY_STEMS.index(stem)
 branch_idx = EARTHLY_BRANCHES.index(branch)
@@ -15,7 +15,9 @@ branch_idx = EARTHLY_BRANCHES.index(branch)
 print(f"命宫天干: {stem} (索引: {stem_idx})")
 print(f"命宫地支: {branch} (索引: {branch_idx})")
 print(f"\n查找表:")
-print(f"FIVE_ELEMENTS_CLASS_LOOKUP[{stem_idx}][{branch_idx}] = {FIVE_ELEMENTS_CLASS_LOOKUP[stem_idx][branch_idx]}")
+print(
+    f"FIVE_ELEMENTS_CLASS_LOOKUP[{stem_idx}][{branch_idx}] = {FIVE_ELEMENTS_CLASS_LOOKUP[stem_idx][branch_idx]}"
+)
 
 five_class = get_five_elements_class(stem, branch)
 class_name = get_five_elements_class_name(five_class)

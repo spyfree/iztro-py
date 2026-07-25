@@ -52,6 +52,7 @@ class FunctionalAstrolabe(Astrolabe):
             language=astrolabe.language,
             raw_lunar_date=astrolabe.raw_lunar_date,
             raw_chinese_date=astrolabe.raw_chinese_date,
+            raw_five_elements_class=astrolabe.raw_five_elements_class,
         )
 
         # 设置宫位的星盘引用
@@ -227,17 +228,19 @@ class FunctionalAstrolabe(Astrolabe):
         # 获取出生年份（birth_lunar_date 缺省时的兜底值）
         birth_year = int(self.solar_date.split("-")[0])
 
-        # 获取五行局
-        five_elements_class_map = {
-            "水二局": FiveElementsClass.WATER_2,
-            "木三局": FiveElementsClass.WOOD_3,
-            "金四局": FiveElementsClass.METAL_4,
-            "土五局": FiveElementsClass.EARTH_5,
-            "火六局": FiveElementsClass.FIRE_6,
-        }
-        five_elements = five_elements_class_map.get(
-            self.five_elements_class, FiveElementsClass.WATER_2
-        )
+        # 五行局取自建盘时保存的枚举值。此前这里用中文名反查，
+        # 非中文星盘的 five_elements_class 是本地化字符串，反查必然落空并
+        # 静默退回水二局，导致整个大限算错。
+        five_elements = self.raw_five_elements_class
+        if five_elements is None:
+            # 兼容手工构造、未带 raw 值的 Astrolabe
+            five_elements = {
+                "水二局": FiveElementsClass.WATER_2,
+                "木三局": FiveElementsClass.WOOD_3,
+                "金四局": FiveElementsClass.METAL_4,
+                "土五局": FiveElementsClass.EARTH_5,
+                "火六局": FiveElementsClass.FIRE_6,
+            }.get(self.five_elements_class, FiveElementsClass.WATER_2)
 
         # Cast palaces to List[Palace] for horoscope function compatibility
         palaces_for_horoscope: List[Palace] = [cast(Palace, p) for p in self.palaces]

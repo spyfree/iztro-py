@@ -9,17 +9,21 @@ print("=" * 80)
 
 # py-iztro
 py_astro = Astro()
-py_result = py_astro.by_solar('1989-10-17', 11, 'male', True, 'zh-CN')
+py_result = py_astro.by_solar("1989-10-17", 11, "male", True, "zh-CN")
 
 # iztro-py
-iz_result = by_solar('1989-10-17', 11, '男', True, 'zh-CN')
+iz_result = by_solar("1989-10-17", 11, "男", True, "zh-CN")
 
 print("\n基本信息对比:")
 print(f"{'项目':<20} {'py-iztro':<20} {'iztro-py':<20}")
 print("-" * 60)
 print(f"{'五行局':<20} {py_result.five_elements_class:<20} {iz_result.five_elements_class:<20}")
-print(f"{'命宫地支':<20} {py_result.earthly_branch_of_soul_palace:<20} {iz_result.earthly_branch_of_soul_palace:<20}")
-print(f"{'身宫地支':<20} {py_result.earthly_branch_of_body_palace:<20} {iz_result.earthly_branch_of_body_palace:<20}")
+print(
+    f"{'命宫地支':<20} {py_result.earthly_branch_of_soul_palace:<20} {iz_result.earthly_branch_of_soul_palace:<20}"
+)
+print(
+    f"{'身宫地支':<20} {py_result.earthly_branch_of_body_palace:<20} {iz_result.earthly_branch_of_body_palace:<20}"
+)
 
 # 找到命宫
 py_soul = None
@@ -51,7 +55,7 @@ if iz_soul:
 print(f"\n父母宫详情:")
 py_parent = None
 for p in py_result.palaces:
-    if p.name == '父母':
+    if p.name == "父母":
         py_parent = p
         break
 
@@ -62,7 +66,7 @@ if py_parent:
     print(f"    天干: {py_parent.heavenly_stem}")
     print(f"    主星: {stars if stars else '无主星'}")
 
-iz_parent = iz_result.palace('父母宫')
+iz_parent = iz_result.palace("父母宫")
 if iz_parent:
     stars = [s.name for s in iz_parent.major_stars]
     print(f"  iztro-py:")

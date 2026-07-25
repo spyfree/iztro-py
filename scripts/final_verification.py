@@ -8,7 +8,7 @@ print("日期: 1989-10-17 午时")
 print("=" * 80)
 
 # 使用正确的参数
-result = by_solar('1989-10-17', 6, '男', True, 'zh-CN')
+result = by_solar("1989-10-17", 6, "男", True, "zh-CN")
 
 print(f"\n基本信息:")
 print(f"  阳历日期: {result.solar_date}")
@@ -22,7 +22,20 @@ print(f"  命宫地支: {result.earthly_branch_of_soul_palace}")
 print(f"  身宫地支: {result.earthly_branch_of_body_palace}")
 
 print(f"\n十二宫主星分布:")
-palace_names_order = ['命宫', '父母宫', '福德宫', '田宅宫', '官禄宫', '交友宫', '迁移宫', '疾厄宫', '财帛宫', '子女宫', '夫妻宫', '兄弟宫']
+palace_names_order = [
+    "命宫",
+    "父母宫",
+    "福德宫",
+    "田宅宫",
+    "官禄宫",
+    "交友宫",
+    "迁移宫",
+    "疾厄宫",
+    "财帛宫",
+    "子女宫",
+    "夫妻宫",
+    "兄弟宫",
+]
 
 for name in palace_names_order:
     palace = result.palace(name)

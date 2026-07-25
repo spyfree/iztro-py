@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-"""简体中文语言资源"""
+"""简体中文 language resources (zh-CN).
+
+Generated from the iztro@2.5.8 reference locales; zh-CN values are the
+project's own. Regenerate rather than hand-editing when syncing a new
+iztro release.
+"""
 
 translations = {
     "palaces": {
@@ -85,6 +90,61 @@ translations = {
         "bu": "不",
         "xian": "陷",
     },
+    "time": {
+        "earlyRatHour": "早子时",
+        "oxHour": "丑时",
+        "tigerHour": "寅时",
+        "rabbitHour": "卯时",
+        "dragonHour": "辰时",
+        "snakeHour": "巳时",
+        "horseHour": "午时",
+        "goatHour": "未时",
+        "monkeyHour": "申时",
+        "roosterHour": "酉时",
+        "dogHour": "戌时",
+        "pigHour": "亥时",
+        "lateRatHour": "晚子时",
+    },
+    "zodiac": {
+        "rat": "鼠",
+        "ox": "牛",
+        "tiger": "虎",
+        "rabbit": "兔",
+        "dragon": "龙",
+        "snake": "蛇",
+        "horse": "马",
+        "sheep": "羊",
+        "monkey": "猴",
+        "rooster": "鸡",
+        "dog": "狗",
+        "pig": "猪",
+    },
+    "sign": {
+        "aries": "白羊座",
+        "taurus": "金牛座",
+        "gemini": "双子座",
+        "cancer": "巨蟹座",
+        "leo": "狮子座",
+        "virgo": "处女座",
+        "libra": "天秤座",
+        "scorpio": "天蝎座",
+        "sagittarius": "射手座",
+        "capricorn": "摩羯座",
+        "aquarius": "水瓶座",
+        "pisces": "双鱼座",
+    },
+    "fiveElementsClass": {
+        "water2nd": "水二局",
+        "wood3rd": "木三局",
+        "metal4th": "金四局",
+        "earth5th": "土五局",
+        "fire6th": "火六局",
+    },
+    "gender": {
+        "male": "男",
+        "female": "女",
+    },
+    # 杂曜、长生/博士/将前/岁前十二神
     "huagai": "华盖",
     "xianchi": "咸池",
     "guchen": "孤辰",

@@ -20,7 +20,7 @@ print("13点对应的时辰索引:", hour_13)
 from iztro_py import by_solar
 
 for hour in [11, 12, 13]:
-    result = by_solar('1989-10-17', hour, '男', True, 'zh-CN')
+    result = by_solar("1989-10-17", hour, "男", True, "zh-CN")
     time_idx = get_time_index(hour)
     print(f"\nhour={hour} (时辰索引={time_idx}):")
     print(f"  命宫地支: {result.earthly_branch_of_soul_palace}")

@@ -4,8 +4,8 @@ from iztro_py.data.constants import HEAVENLY_STEMS, EARTHLY_BRANCHES, FIVE_ELEME
 from iztro_py.utils.helpers import get_five_elements_class
 
 # 测试：命宫在亥，天干是乙
-heavenly_stem = 'yiHeavenly'  # 乙
-earthly_branch = 'haiEarthly'  # 亥
+heavenly_stem = "yiHeavenly"  # 乙
+earthly_branch = "haiEarthly"  # 亥
 
 stem_index = HEAVENLY_STEMS.index(heavenly_stem)
 branch_index = EARTHLY_BRANCHES.index(earthly_branch)

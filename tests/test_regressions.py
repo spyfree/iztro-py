@@ -276,11 +276,11 @@ class TestPerChartLanguage:
     def test_building_another_chart_does_not_mutate_earlier_one(self):
         en = astro.by_solar("2000-8-16", 6, "男", language="en-US")
         before = en.get_soul_palace().translate_name()
-        assert before == "Soul"
+        assert before == "soul"
 
         astro.by_solar("2000-8-16", 6, "男", language="zh-CN")
         assert en.get_soul_palace().translate_name() == before
-        assert en.star("紫微").translate_name() == "Ziwei"
+        assert en.star("紫微").translate_name() == "emperor"
 
     def test_global_set_language_does_not_leak_into_existing_charts(self):
         import iztro_py.i18n as i18n
@@ -290,7 +290,7 @@ class TestPerChartLanguage:
             en = astro.by_solar("2000-8-16", 6, "男", language="en-US")
             zh = astro.by_solar("2000-8-16", 6, "男", language="zh-CN")
             i18n.set_language("ko-KR")
-            assert en.get_soul_palace().translate_name() == "Soul"
+            assert en.get_soul_palace().translate_name() == "soul"
             assert zh.get_soul_palace().translate_name() == "命宫"
         finally:
             i18n.set_language(previous)
@@ -304,18 +304,103 @@ class TestPerChartLanguage:
         a = astro.by_solar("2000-8-16", 6, "男", language="zh-CN")
         b = astro.by_solar("2000-8-16", 6, "男", language="zh-CN")
         a.set_language("en-US")
-        assert a.get_soul_palace().translate_name() == "Soul"
+        assert a.get_soul_palace().translate_name() == "soul"
         assert b.get_soul_palace().translate_name() == "命宫"
 
     def test_to_iztro_dict_uses_the_chart_language(self):
         en = astro.by_solar("2000-8-16", 6, "男", language="en-US")
         astro.by_solar("2000-8-16", 6, "男", language="zh-CN")
         exported = en.to_iztro_dict()
-        assert exported["palaces"][0]["name"] == "Soul"
+        assert exported["palaces"][0]["name"] == "soul"
 
     def test_detached_star_falls_back_to_global_language(self):
         from iztro_py.data.types import Star
 
         star = Star(name="ziweiMaj", type="major", scope="origin")
-        assert star.translate_name("en-US") == "Ziwei"
+        assert star.translate_name("en-US") == "emperor"
         assert star.translate_name("zh-CN") == "紫微"
+
+
+class TestLocaleCoverage:
+    """六个语言包必须覆盖同一组键。
+
+    此前 zh-TW/en-US/ja-JP/ko-KR/vi-VN 各自只有 5 个顶层段（palaces、stars、
+    heavenlyStem、earthlyBranch、brightness），比 zh-CN 少 84 个键——全部 42 个
+    杂曜和 48 个十二神在这五种语言下都会静默回退成简体中文。
+    """
+
+    LOCALES = ("zh_CN", "zh_TW", "en_US", "ja_JP", "ko_KR", "vi_VN")
+
+    def _translations(self, name):
+        import importlib
+
+        return importlib.import_module(f"iztro_py.i18n.locales.{name}").translations
+
+    def test_all_locales_have_the_same_keys(self):
+        base = self._translations("zh_CN")
+        for name in self.LOCALES:
+            other = self._translations(name)
+            assert set(other) == set(base), f"{name} top-level keys differ from zh_CN"
+            for key, value in base.items():
+                if isinstance(value, dict):
+                    assert set(other[key]) == set(value), f"{name}.{key} keys differ from zh_CN"
+
+    def test_no_locale_falls_back_to_simplified_chinese(self):
+        """非中文语言包不得残留简体中文值（brightness 等已有翻译除外）。"""
+        base = self._translations("zh_CN")
+        chinese_values = {v for v in base.values() if isinstance(v, str)}
+        for name in ("en_US", "ko_KR", "vi_VN"):
+            leaked = [
+                key
+                for key, value in self._translations(name).items()
+                if isinstance(value, str) and value in chinese_values
+            ]
+            assert not leaked, f"{name} still falls back to zh-CN for: {leaked}"
+
+    def test_adjective_stars_and_twelve_gods_are_translated(self):
+        chart = astro.by_solar("1990-10-21", 8, "女", language="en-US")
+        palace = chart.get_soul_palace()
+        for star in palace.adjective_stars:
+            assert star.translate_name().isascii(), f"{star.name} not translated in en-US"
+        for field in (palace.changsheng12, palace.boshi12, palace.jiangqian12, palace.suiqian12):
+            assert field and field.isascii(), f"{field!r} not translated in en-US"
+
+
+class TestTopLevelFieldsHonourLanguage:
+    """time / zodiac / sign / five_elements_class 此前是写死的中文，无视 language。"""
+
+    def test_fields_differ_per_language(self):
+        zh = astro.by_solar("1990-10-21", 12, "女", language="zh-CN")
+        en = astro.by_solar("1990-10-21", 12, "女", language="en-US")
+        assert (zh.time, zh.zodiac, zh.sign, zh.five_elements_class) == (
+            "晚子时",
+            "马",
+            "天秤座",
+            "土五局",
+        )
+        assert (en.time, en.zodiac, en.sign, en.five_elements_class) == (
+            "late Rat hour",
+            "horse",
+            "libra",
+            "earth 5th",
+        )
+
+    def test_time_range_stays_language_neutral(self):
+        # iztro 同样不翻译时间区间
+        for lang in ("zh-CN", "en-US", "ko-KR"):
+            assert astro.by_solar("1990-10-21", 12, "女", language=lang).time_range == "23:00~00:00"
+
+    def test_standalone_helpers_honour_their_language_argument(self):
+        assert astro.get_zodiac_by_solar_date("2000-8-16", language="zh-CN") == "龙"
+        assert astro.get_zodiac_by_solar_date("2000-8-16", language="en-US") == "dragon"
+        assert astro.get_sign_by_solar_date("2000-8-16", language="zh-CN") == "狮子座"
+        assert astro.get_sign_by_solar_date("2000-8-16", language="en-US") == "leo"
+
+    def test_horoscope_is_language_invariant(self):
+        """五行局曾靠中文名反查，非中文星盘会静默退回水二局，算错整个大限。"""
+        results = set()
+        for lang in ("zh-CN", "zh-TW", "en-US", "ja-JP", "ko-KR", "vi-VN"):
+            chart = astro.by_solar("2000-8-16", 6, "男", language=lang)
+            horoscope = chart.horoscope("2024-1-15", 6)
+            results.add((horoscope.decadal.index, horoscope.age.index, horoscope.nominal_age))
+        assert results == {(1, 7, 24)}

@@ -36,12 +36,11 @@ for hour, desc in test_cases:
     print(f"时辰索引: {time_index}")
 
     # 计算四柱
-    sizhu = get_heavenly_stem_and_earthly_branch_date(
-        1989, 10, 17, time_index, lunar.month
-    )
+    sizhu = get_heavenly_stem_and_earthly_branch_date(1989, 10, 17, time_index, lunar.month)
 
     # 获取中文表示
     from iztro_py.i18n import t
+
     year_stem = t(sizhu.year_stem)
     year_branch = t(sizhu.year_branch)
     month_stem = t(sizhu.month_stem)
@@ -51,10 +50,12 @@ for hour, desc in test_cases:
     time_stem = t(sizhu.time_stem)
     time_branch = t(sizhu.time_branch)
 
-    print(f"四柱: {year_stem}{year_branch}年 "
-          f"{month_stem}{month_branch}月 "
-          f"{day_stem}{day_branch}日 "
-          f"{time_stem}{time_branch}时")
+    print(
+        f"四柱: {year_stem}{year_branch}年 "
+        f"{month_stem}{month_branch}月 "
+        f"{day_stem}{day_branch}日 "
+        f"{time_stem}{time_branch}时"
+    )
 
 print("\n" + "=" * 80)
 print("用户提供的四柱")
