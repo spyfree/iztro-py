@@ -174,6 +174,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#iztro_py.data.types.Astrolabe.language"><code class="docutils literal notranslate"><span class="pre">Astrolabe.language</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#iztro_py.data.types.Astrolabe.raw_lunar_date"><code class="docutils literal notranslate"><span class="pre">Astrolabe.raw_lunar_date</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#iztro_py.data.types.Astrolabe.raw_chinese_date"><code class="docutils literal notranslate"><span class="pre">Astrolabe.raw_chinese_date</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#iztro_py.data.types.Astrolabe.raw_five_elements_class"><code class="docutils literal notranslate"><span class="pre">Astrolabe.raw_five_elements_class</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#iztro_py.data.types.Astrolabe.model_config"><code class="docutils literal notranslate"><span class="pre">Astrolabe.model_config</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#iztro_py.data.types.Astrolabe.set_language"><code class="docutils literal notranslate"><span class="pre">Astrolabe.set_language()</span></code></a></li>
 </ul>
@@ -671,7 +672,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="iztro_py.astro.functional_palace.FunctionalPalace">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">iztro_py.astro.functional_palace.</span></span><span class="sig-name descname"><span class="pre">FunctionalPalace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">palace</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/iztro_py/astro/functional_palace.html#FunctionalPalace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#iztro_py.astro.functional_palace.FunctionalPalace" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#iztro_py.data.types.Palace" title="iztro_py.data.types.Palace"><code class="xref py py-class docutils literal notranslate"><span class="pre">Palace</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BackRefDeepCopyMixin</span></code>, <a class="reference internal" href="#iztro_py.data.types.Palace" title="iztro_py.data.types.Palace"><code class="xref py py-class docutils literal notranslate"><span class="pre">Palace</span></code></a></p>
 <p>功能增强的宫位类</p>
 <p>继承自Palace，添加了星曜查询方法和关联星盘的能力</p>
 <dl class="field-list simple">
@@ -891,7 +892,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="iztro_py.astro.functional_star.FunctionalStar">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">iztro_py.astro.functional_star.</span></span><span class="sig-name descname"><span class="pre">FunctionalStar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">star</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/iztro_py/astro/functional_star.html#FunctionalStar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#iztro_py.astro.functional_star.FunctionalStar" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#iztro_py.data.types.Star" title="iztro_py.data.types.Star"><code class="xref py py-class docutils literal notranslate"><span class="pre">Star</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BackRefDeepCopyMixin</span></code>, <a class="reference internal" href="#iztro_py.data.types.Star" title="iztro_py.data.types.Star"><code class="xref py py-class docutils literal notranslate"><span class="pre">Star</span></code></a></p>
 <p>功能增强的星曜类</p>
 <p>继承自Star，添加了查询方法和关联宫位的能力</p>
 <dl class="field-list simple">
@@ -1165,7 +1166,8 @@ Based on the original TypeScript definitions from iztro.</p>
 <dd><p>翻译星曜名称</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>lang</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span>) – 目标语言代码，如不指定则使用当前语言</p>
+<dd class="field-odd"><p><strong>lang</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span>) – 目标语言代码；不指定时取所属星盘的语言，
+游离对象（无所属星盘）则回退到进程全局语言</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
@@ -1345,7 +1347,7 @@ Based on the original TypeScript definitions from iztro.</p>
 <dd><p>翻译宫位名称</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>lang</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span>) – 目标语言代码</p>
+<dd class="field-odd"><p><strong>lang</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span>) – 目标语言代码；不指定时取所属星盘的语言</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
@@ -1564,6 +1566,7 @@ Based on the original TypeScript definitions from iztro.</p>
 <li><p><strong>language</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.14)"><em>Literal</em></a><em>[</em><em>'en-US'</em><em>, </em><em>'ja-JP'</em><em>, </em><em>'ko-KR'</em><em>, </em><em>'zh-CN'</em><em>, </em><em>'zh-TW'</em><em>, </em><em>'vi-VN'</em><em>]</em>)</p></li>
 <li><p><strong>raw_lunar_date</strong> (<a class="reference internal" href="#iztro_py.data.types.LunarDate" title="iztro_py.data.types.LunarDate"><em>LunarDate</em></a><em> | </em><em>None</em>)</p></li>
 <li><p><strong>raw_chinese_date</strong> (<a class="reference internal" href="#iztro_py.data.types.HeavenlyStemAndEarthlyBranchDate" title="iztro_py.data.types.HeavenlyStemAndEarthlyBranchDate"><em>HeavenlyStemAndEarthlyBranchDate</em></a><em> | </em><em>None</em>)</p></li>
+<li><p><strong>raw_five_elements_class</strong> (<a class="reference internal" href="#iztro_py.data.types.FiveElementsClass" title="iztro_py.data.types.FiveElementsClass"><em>FiveElementsClass</em></a><em> | </em><em>None</em>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -1653,6 +1656,11 @@ Based on the original TypeScript definitions from iztro.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="iztro_py.data.types.Astrolabe.raw_five_elements_class">
+<span class="sig-name descname"><span class="pre">raw_five_elements_class</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#iztro_py.data.types.FiveElementsClass" title="iztro_py.data.types.FiveElementsClass"><span class="pre">FiveElementsClass</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><a class="headerlink" href="#iztro_py.data.types.Astrolabe.raw_five_elements_class" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="iztro_py.data.types.Astrolabe.model_config">
 <span class="sig-name descname"><span class="pre">model_config</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.14)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://pydantic.dev/docs/validation/latest/api/pydantic/config/#pydantic.config.ConfigDict" title="(in Pydantic v0.0.0)"><span class="pre">ConfigDict</span></a><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'frozen':</span> <span class="pre">False}</span></span><a class="headerlink" href="#iztro_py.data.types.Astrolabe.model_config" title="Link to this definition"></a></dt>
 <dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
@@ -1661,7 +1669,11 @@ Based on the original TypeScript definitions from iztro.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="iztro_py.data.types.Astrolabe.set_language">
 <span class="sig-name descname"><span class="pre">set_language</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lang</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/iztro_py/data/types.html#Astrolabe.set_language"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#iztro_py.data.types.Astrolabe.set_language" title="Link to this definition"></a></dt>
-<dd><p>设置星盘语言</p>
+<dd><p>设置**本星盘**的输出语言</p>
+<p>只影响这一张星盘：<cite>palace.translate_name()</cite> 等方法默认读取
+<cite>self.language</cite>。不再改动进程全局语言——此前这里会调用
+<cite>i18n.set_language()</cite>，导致新建一张别的语言的星盘会静默改掉已有
+星盘的输出。要切换全局默认语言请直接调用 <cite>iztro_py.i18n.set_language()</cite>。</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>lang</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code></a>[<code class="docutils literal notranslate"><span class="pre">'en-US'</span></code>, <code class="docutils literal notranslate"><span class="pre">'ja-JP'</span></code>, <code class="docutils literal notranslate"><span class="pre">'ko-KR'</span></code>, <code class="docutils literal notranslate"><span class="pre">'zh-CN'</span></code>, <code class="docutils literal notranslate"><span class="pre">'zh-TW'</span></code>, <code class="docutils literal notranslate"><span class="pre">'vi-VN'</span></code>]</span>) – 目标语言代码</p>
@@ -1722,6 +1734,13 @@ Based on the original TypeScript definitions from iztro.</p>
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">iztro_py.data.types.</span></span><span class="sig-name descname"><span class="pre">HoroscopeItem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/iztro_py/data/types.html#HoroscopeItem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#iztro_py.data.types.HoroscopeItem" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference external" href="https://pydantic.dev/docs/validation/latest/api/pydantic/base_model/#pydantic.BaseModel" title="(in Pydantic v0.0.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></a></p>
 <p>运限项</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">index</span></code> 为 <code class="docutils literal notranslate"><span class="pre">-1</span></code> 表示**没有对应宫位**（虚岁不落在任何大限/小限区间，
+例如查询出生之前的日期，或超过末个大限约 125 岁），与 iztro 行为一致。
+此时 <code class="docutils literal notranslate"><span class="pre">heavenly_stem</span></code> / <code class="docutils literal notranslate"><span class="pre">earthly_branch</span></code> / <code class="docutils literal notranslate"><span class="pre">mutagen</span></code> 均为退化取值
+（甲子及甲干四化），不具备实际含义——请先判断 <code class="docutils literal notranslate"><span class="pre">index</span> <span class="pre">!=</span> <span class="pre">-1</span></code>。</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">

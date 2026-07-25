@@ -81,16 +81,17 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EARTHLY_BRANCHES</span><span class="p">,</span> <span class="n">HEAVENLY_STEMS</span><span class="p">,</span> <span class="n">TIGER_RULE</span><span class="p">,</span> <span class="n">fix_index</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.earthly_branches</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_yin_yang</span> <span class="k">as</span> <span class="n">get_branch_yin_yang</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.types</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">SoulAndBody</span><span class="p">,</span>
-    <span class="n">HeavenlyStemName</span><span class="p">,</span>
+    <span class="n">Decadal</span><span class="p">,</span>
     <span class="n">EarthlyBranchName</span><span class="p">,</span>
     <span class="n">FiveElementsClass</span><span class="p">,</span>
     <span class="n">GenderName</span><span class="p">,</span>
-    <span class="n">Decadal</span><span class="p">,</span>
+    <span class="n">HeavenlyStemName</span><span class="p">,</span>
+    <span class="n">SoulAndBody</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">HEAVENLY_STEMS</span><span class="p">,</span> <span class="n">EARTHLY_BRANCHES</span><span class="p">,</span> <span class="n">TIGER_RULE</span><span class="p">,</span> <span class="n">fix_index</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.earthly_branches</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_yin_yang</span> <span class="k">as</span> <span class="n">get_branch_yin_yang</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.utils.calendar</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">get_heavenly_stem_and_earthly_branch_date</span><span class="p">,</span>
 <span class="p">)</span>
@@ -124,10 +125,8 @@
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lunar_month</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">solar_date</span> <span class="o">=</span> <span class="n">lunar_month</span>
         <span class="n">month_index</span> <span class="o">=</span> <span class="n">fix_lunar_month_index</span><span class="p">(</span><span class="n">solar_date</span><span class="p">,</span> <span class="n">time_index</span><span class="p">,</span> <span class="n">fix_leap</span><span class="p">)</span>
-        <span class="n">stems_and_branches</span> <span class="o">=</span> <span class="n">get_heavenly_stem_and_earthly_branch_date</span><span class="p">(</span>
-            <span class="o">*</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">part</span><span class="p">)</span> <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">solar_date</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)],</span>
-            <span class="n">time_index</span><span class="p">,</span>
-        <span class="p">)</span>
+        <span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">part</span><span class="p">)</span> <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">solar_date</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">))</span>
+        <span class="n">stems_and_branches</span> <span class="o">=</span> <span class="n">get_heavenly_stem_and_earthly_branch_date</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="p">,</span> <span class="n">time_index</span><span class="p">)</span>
         <span class="n">heavenly_stem_of_year</span> <span class="o">=</span> <span class="n">stems_and_branches</span><span class="o">.</span><span class="n">year_stem</span>
         <span class="n">earthly_branch_of_time</span> <span class="o">=</span> <span class="n">stems_and_branches</span><span class="o">.</span><span class="n">time_branch</span>
     <span class="k">else</span><span class="p">:</span>
@@ -174,89 +173,6 @@
     <span class="n">soul_stem_index</span> <span class="o">=</span> <span class="n">HEAVENLY_STEMS</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">soul_palace_stem</span><span class="p">)</span>
     <span class="n">target_stem_index</span> <span class="o">=</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">soul_stem_index</span> <span class="o">-</span> <span class="n">soul_palace_index</span> <span class="o">+</span> <span class="n">palace_index</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">HEAVENLY_STEMS</span><span class="p">[</span><span class="n">target_stem_index</span><span class="p">]</span></div>
-
-
-
-<div class="viewcode-block" id="get_palace_earthly_branch">
-<a class="viewcode-back" href="../../../api/astro.html#iztro_py.astro.palace.get_palace_earthly_branch">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_palace_earthly_branch</span><span class="p">(</span><span class="n">palace_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EarthlyBranchName</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    根据宫位索引获取地支</span>
-
-<span class="sd">    宫位地支固定：</span>
-<span class="sd">    0(命宫) - 根据命宫定位算法确定</span>
-<span class="sd">    其他宫位按地支顺序排列</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        palace_index: 宫位索引 (0-11)</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        地支名称</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">EARTHLY_BRANCHES</span><span class="p">[</span><span class="n">fix_index</span><span class="p">(</span><span class="n">EARTHLY_BRANCHES</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;yinEarthly&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">palace_index</span><span class="p">)]</span></div>
-
-
-
-<div class="viewcode-block" id="get_body_palace_index">
-<a class="viewcode-back" href="../../../api/astro.html#iztro_py.astro.palace.get_body_palace_index">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_body_palace_index</span><span class="p">(</span><span class="n">soul_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">body_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    确定身宫所在的宫位</span>
-
-<span class="sd">    身宫会落在某个宫位上，该宫位标记为身宫</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        soul_index: 命宫索引</span>
-<span class="sd">        body_index: 身宫索引（通过算法计算出的地支位置）</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        身宫所在的宫位索引</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">body_index</span></div>
-
-
-
-<div class="viewcode-block" id="calculate_palace_ages">
-<a class="viewcode-back" href="../../../api/astro.html#iztro_py.astro.palace.calculate_palace_ages">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">calculate_palace_ages</span><span class="p">(</span>
-    <span class="n">palace_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">soul_palace_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">five_elements_class_value</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">is_forward</span><span class="p">:</span> <span class="nb">bool</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    计算宫位的小限年龄数组</span>
-
-<span class="sd">    小限从命宫开始，每年走一宫</span>
-<span class="sd">    顺逆根据性别和年支阴阳决定</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        palace_index: 宫位索引</span>
-<span class="sd">        soul_palace_index: 命宫索引</span>
-<span class="sd">        five_elements_class_value: 五行局数值 (2-6)</span>
-<span class="sd">        is_forward: 是否顺行</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        该宫位对应的年龄列表</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ages</span> <span class="o">=</span> <span class="p">[]</span>
-
-    <span class="c1"># 小限从命宫开始，起始年龄 = 五行局数值</span>
-    <span class="n">start_age</span> <span class="o">=</span> <span class="n">five_elements_class_value</span>
-
-    <span class="c1"># 计算当前宫位是从命宫数起的第几个宫位</span>
-    <span class="k">if</span> <span class="n">is_forward</span><span class="p">:</span>
-        <span class="c1"># 顺行</span>
-        <span class="n">offset</span> <span class="o">=</span> <span class="p">(</span><span class="n">palace_index</span> <span class="o">-</span> <span class="n">soul_palace_index</span><span class="p">)</span> <span class="o">%</span> <span class="mi">12</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="c1"># 逆行</span>
-        <span class="n">offset</span> <span class="o">=</span> <span class="p">(</span><span class="n">soul_palace_index</span> <span class="o">-</span> <span class="n">palace_index</span><span class="p">)</span> <span class="o">%</span> <span class="mi">12</span>
-
-    <span class="c1"># 该宫位对应的年龄：起始年龄 + 偏移，然后每隔12年一次</span>
-    <span class="n">first_age</span> <span class="o">=</span> <span class="n">start_age</span> <span class="o">+</span> <span class="n">offset</span>
-
-    <span class="c1"># 生成年龄列表（通常到120岁）</span>
-    <span class="k">for</span> <span class="n">age</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">first_age</span><span class="p">,</span> <span class="mi">121</span><span class="p">,</span> <span class="mi">12</span><span class="p">):</span>
-        <span class="n">ages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">age</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">ages</span></div>
 
 
 

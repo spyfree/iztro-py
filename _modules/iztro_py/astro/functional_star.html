@@ -79,8 +79,10 @@
 <span class="sd">Provides a rich API for querying star properties and relationships.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Star</span><span class="p">,</span> <span class="n">Brightness</span><span class="p">,</span> <span class="n">Mutagen</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.astro._backref</span><span class="w"> </span><span class="kn">import</span> <span class="n">BackRefDeepCopyMixin</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Brightness</span><span class="p">,</span> <span class="n">Mutagen</span><span class="p">,</span> <span class="n">Star</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.astro.functional_palace</span><span class="w"> </span><span class="kn">import</span> <span class="n">FunctionalPalace</span>
@@ -89,12 +91,14 @@
 
 <div class="viewcode-block" id="FunctionalStar">
 <a class="viewcode-back" href="../../../api/index.html#iztro_py.astro.functional_star.FunctionalStar">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">FunctionalStar</span><span class="p">(</span><span class="n">Star</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FunctionalStar</span><span class="p">(</span><span class="n">BackRefDeepCopyMixin</span><span class="p">,</span> <span class="n">Star</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    功能增强的星曜类</span>
 
 <span class="sd">    继承自Star，添加了查询方法和关联宫位的能力</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_BACKREF_ATTR</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;_palace&quot;</span>
 
 <div class="viewcode-block" id="FunctionalStar.__init__">
 <a class="viewcode-back" href="../../../api/index.html#iztro_py.astro.functional_star.FunctionalStar.__init__">[docs]</a>
@@ -138,6 +142,16 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_palace</span></div>
 
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_effective_language</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lang</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;未显式指定语言时，沿宫位取所属星盘的语言而非进程全局语言。&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">lang</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">lang</span>
+        <span class="n">palace</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_palace</span>
+        <span class="k">if</span> <span class="n">palace</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">astrolabe</span> <span class="o">=</span> <span class="n">palace</span><span class="o">.</span><span class="n">astrolabe</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">astrolabe</span><span class="o">.</span><span class="n">language</span> <span class="k">if</span> <span class="n">astrolabe</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="FunctionalStar.with_brightness">
 <a class="viewcode-back" href="../../../api/index.html#iztro_py.astro.functional_star.FunctionalStar.with_brightness">[docs]</a>

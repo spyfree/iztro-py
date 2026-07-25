@@ -80,8 +80,9 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">HeavenlyStemName</span><span class="p">,</span> <span class="n">StarName</span><span class="p">,</span> <span class="n">Mutagen</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.heavenly_stems</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_mutagen</span><span class="p">,</span> <span class="n">get_mutagen_type</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">HeavenlyStemName</span><span class="p">,</span> <span class="n">Mutagen</span><span class="p">,</span> <span class="n">StarName</span>
 
 
 <div class="viewcode-block" id="apply_mutagen_to_palaces">
@@ -163,17 +164,12 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        [(星曜名称, 四化类型), ...] 列表</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">mutagen_stars</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">mutagen_stars</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">StarName</span><span class="p">,</span> <span class="n">Mutagen</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="c1"># 检查主星</span>
-    <span class="k">for</span> <span class="n">star</span> <span class="ow">in</span> <span class="n">palace</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;major_stars&quot;</span><span class="p">,</span> <span class="p">[]):</span>
-        <span class="k">if</span> <span class="n">star</span><span class="o">.</span><span class="n">mutagen</span><span class="p">:</span>
-            <span class="n">mutagen_stars</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">star</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">star</span><span class="o">.</span><span class="n">mutagen</span><span class="p">))</span>
-
-    <span class="c1"># 检查辅星</span>
-    <span class="k">for</span> <span class="n">star</span> <span class="ow">in</span> <span class="n">palace</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;minor_stars&quot;</span><span class="p">,</span> <span class="p">[]):</span>
-        <span class="k">if</span> <span class="n">star</span><span class="o">.</span><span class="n">mutagen</span><span class="p">:</span>
-            <span class="n">mutagen_stars</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">star</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">star</span><span class="o">.</span><span class="n">mutagen</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;major_stars&quot;</span><span class="p">,</span> <span class="s2">&quot;minor_stars&quot;</span><span class="p">):</span>
+        <span class="n">mutagen_stars</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">star</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">star</span><span class="o">.</span><span class="n">mutagen</span><span class="p">)</span> <span class="k">for</span> <span class="n">star</span> <span class="ow">in</span> <span class="n">palace</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="p">[])</span> <span class="k">if</span> <span class="n">star</span><span class="o">.</span><span class="n">mutagen</span>
+        <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">mutagen_stars</span></div>
 

@@ -80,20 +80,31 @@
 <span class="sd">especially Ziwei (紫微) and Tianfu (天府).</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Tuple</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">date</span><span class="p">,</span> <span class="n">timedelta</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">FiveElementsClass</span><span class="p">,</span> <span class="n">HeavenlyStemName</span><span class="p">,</span> <span class="n">EarthlyBranchName</span><span class="p">,</span> <span class="n">GenderName</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">HEAVENLY_STEMS</span><span class="p">,</span> <span class="n">EARTHLY_BRANCHES</span><span class="p">,</span> <span class="n">PALACES</span><span class="p">,</span> <span class="n">fix_index</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">cast</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EARTHLY_BRANCHES</span><span class="p">,</span> <span class="n">HEAVENLY_STEMS</span><span class="p">,</span> <span class="n">PALACES</span><span class="p">,</span> <span class="n">fix_index</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">EarthlyBranchName</span><span class="p">,</span> <span class="n">FiveElementsClass</span><span class="p">,</span> <span class="n">GenderName</span><span class="p">,</span> <span class="n">HeavenlyStemName</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.utils.calendar</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">get_heavenly_stem_and_earthly_branch_date</span><span class="p">,</span>
     <span class="n">parse_solar_date</span><span class="p">,</span>
     <span class="n">solar_to_lunar</span><span class="p">,</span>
-    <span class="n">get_heavenly_stem_and_earthly_branch_date</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.utils.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">fix_earthly_branch_index</span><span class="p">,</span>
-    <span class="n">fix_lunar_month_index</span><span class="p">,</span>
     <span class="n">fix_lunar_day_index</span><span class="p">,</span>
+    <span class="n">fix_lunar_month_index</span><span class="p">,</span>
 <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_branch_index</span><span class="p">(</span><span class="n">branch</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;`fix_earthly_branch_index` 的 str 入口。</span>
+
+<span class="sd">    本模块大量使用「按年干/年支查表得到地支名」的写法，查表结果在类型上是</span>
+<span class="sd">    `str` 而非 `EarthlyBranchName` 字面量类型。集中在这里收敛一次，好过在</span>
+<span class="sd">    十几个调用点各写一遍 cast。</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="n">EarthlyBranchName</span><span class="p">,</span> <span class="n">branch</span><span class="p">))</span>
 
 
 <div class="viewcode-block" id="get_ziwei_index">
@@ -129,11 +140,11 @@
 
     <span class="c1"># 起始宫位索引（以寅宫为 0）</span>
     <span class="n">start_positions</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="mi">2</span><span class="p">:</span> <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;youEarthly&quot;</span><span class="p">),</span>  <span class="c1"># 水二局：酉宫</span>
-        <span class="mi">3</span><span class="p">:</span> <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;wuEarthly&quot;</span><span class="p">),</span>  <span class="c1"># 木三局：午宫</span>
-        <span class="mi">4</span><span class="p">:</span> <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;haiEarthly&quot;</span><span class="p">),</span>  <span class="c1"># 金四局：亥宫</span>
-        <span class="mi">5</span><span class="p">:</span> <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;chenEarthly&quot;</span><span class="p">),</span>  <span class="c1"># 土五局：辰宫</span>
-        <span class="mi">6</span><span class="p">:</span> <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;chouEarthly&quot;</span><span class="p">),</span>  <span class="c1"># 火六局：丑宫</span>
+        <span class="mi">2</span><span class="p">:</span> <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;youEarthly&quot;</span><span class="p">),</span>  <span class="c1"># 水二局：酉宫</span>
+        <span class="mi">3</span><span class="p">:</span> <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;wuEarthly&quot;</span><span class="p">),</span>  <span class="c1"># 木三局：午宫</span>
+        <span class="mi">4</span><span class="p">:</span> <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;haiEarthly&quot;</span><span class="p">),</span>  <span class="c1"># 金四局：亥宫</span>
+        <span class="mi">5</span><span class="p">:</span> <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;chenEarthly&quot;</span><span class="p">),</span>  <span class="c1"># 土五局：辰宫</span>
+        <span class="mi">6</span><span class="p">:</span> <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;chouEarthly&quot;</span><span class="p">),</span>  <span class="c1"># 火六局：丑宫</span>
     <span class="p">}</span>
 
     <span class="n">start_pos</span> <span class="o">=</span> <span class="n">start_positions</span><span class="p">[</span><span class="n">class_value</span><span class="p">]</span>
@@ -284,7 +295,7 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        星曜名称到宫位索引的映射字典</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">ZIWEI_GROUP</span><span class="p">,</span> <span class="n">TIANFU_GROUP</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">TIANFU_GROUP</span><span class="p">,</span> <span class="n">ZIWEI_GROUP</span>
 
     <span class="n">positions</span> <span class="o">=</span> <span class="p">{}</span>
 
@@ -322,7 +333,7 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        左辅星宫位索引</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;chenEarthly&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">lunar_month</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;chenEarthly&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">lunar_month</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span></div>
 
 
 
@@ -340,7 +351,7 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        右弼星宫位索引</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;xuEarthly&quot;</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">lunar_month</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span></div>
+    <span class="k">return</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;xuEarthly&quot;</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">lunar_month</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span></div>
 
 
 
@@ -358,7 +369,7 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        文昌星宫位索引</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;xuEarthly&quot;</span><span class="p">)</span> <span class="o">-</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">time_index</span><span class="p">))</span></div>
+    <span class="k">return</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;xuEarthly&quot;</span><span class="p">)</span> <span class="o">-</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">time_index</span><span class="p">))</span></div>
 
 
 
@@ -376,7 +387,7 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        文曲星宫位索引</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;chenEarthly&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">time_index</span><span class="p">))</span></div>
+    <span class="k">return</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;chenEarthly&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">time_index</span><span class="p">))</span></div>
 
 
 
@@ -393,28 +404,28 @@
 <span class="sd">        (天魁星索引, 天钺星索引) 元组</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">kuai_positions</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;chouEarthly&quot;</span><span class="p">),</span>
-        <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;ziEarthly&quot;</span><span class="p">),</span>
-        <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;haiEarthly&quot;</span><span class="p">),</span>
-        <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;haiEarthly&quot;</span><span class="p">),</span>
-        <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;chouEarthly&quot;</span><span class="p">),</span>
-        <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;ziEarthly&quot;</span><span class="p">),</span>
-        <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;chouEarthly&quot;</span><span class="p">),</span>
-        <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;wuEarthly&quot;</span><span class="p">),</span>
-        <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;maoEarthly&quot;</span><span class="p">),</span>
-        <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;maoEarthly&quot;</span><span class="p">),</span>
+        <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;chouEarthly&quot;</span><span class="p">),</span>
+        <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;ziEarthly&quot;</span><span class="p">),</span>
+        <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;haiEarthly&quot;</span><span class="p">),</span>
+        <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;haiEarthly&quot;</span><span class="p">),</span>
+        <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;chouEarthly&quot;</span><span class="p">),</span>
+        <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;ziEarthly&quot;</span><span class="p">),</span>
+        <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;chouEarthly&quot;</span><span class="p">),</span>
+        <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;wuEarthly&quot;</span><span class="p">),</span>
+        <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;maoEarthly&quot;</span><span class="p">),</span>
+        <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;maoEarthly&quot;</span><span class="p">),</span>
     <span class="p">]</span>
     <span class="n">yue_positions</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;weiEarthly&quot;</span><span class="p">),</span>
-        <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;shenEarthly&quot;</span><span class="p">),</span>
-        <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;youEarthly&quot;</span><span class="p">),</span>
-        <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;youEarthly&quot;</span><span class="p">),</span>
-        <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;weiEarthly&quot;</span><span class="p">),</span>
-        <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;shenEarthly&quot;</span><span class="p">),</span>
-        <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;weiEarthly&quot;</span><span class="p">),</span>
-        <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;yinEarthly&quot;</span><span class="p">),</span>
-        <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;siEarthly&quot;</span><span class="p">),</span>
-        <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;siEarthly&quot;</span><span class="p">),</span>
+        <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;weiEarthly&quot;</span><span class="p">),</span>
+        <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;shenEarthly&quot;</span><span class="p">),</span>
+        <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;youEarthly&quot;</span><span class="p">),</span>
+        <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;youEarthly&quot;</span><span class="p">),</span>
+        <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;weiEarthly&quot;</span><span class="p">),</span>
+        <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;shenEarthly&quot;</span><span class="p">),</span>
+        <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;weiEarthly&quot;</span><span class="p">),</span>
+        <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;yinEarthly&quot;</span><span class="p">),</span>
+        <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;siEarthly&quot;</span><span class="p">),</span>
+        <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;siEarthly&quot;</span><span class="p">),</span>
     <span class="p">]</span>
 
     <span class="k">return</span> <span class="n">kuai_positions</span><span class="p">[</span><span class="n">year_stem_index</span><span class="p">],</span> <span class="n">yue_positions</span><span class="p">[</span><span class="n">year_stem_index</span><span class="p">]</span></div>
@@ -437,17 +448,17 @@
     <span class="n">fixed_time_index</span> <span class="o">=</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">time_index</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">year_branch_index</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">10</span><span class="p">]:</span>  <span class="c1"># 寅午戌</span>
-        <span class="n">huo_base</span> <span class="o">=</span> <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;chouEarthly&quot;</span><span class="p">)</span>
-        <span class="n">ling_base</span> <span class="o">=</span> <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;maoEarthly&quot;</span><span class="p">)</span>
+        <span class="n">huo_base</span> <span class="o">=</span> <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;chouEarthly&quot;</span><span class="p">)</span>
+        <span class="n">ling_base</span> <span class="o">=</span> <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;maoEarthly&quot;</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">year_branch_index</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">]:</span>  <span class="c1"># 申子辰</span>
-        <span class="n">huo_base</span> <span class="o">=</span> <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;yinEarthly&quot;</span><span class="p">)</span>
-        <span class="n">ling_base</span> <span class="o">=</span> <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;xuEarthly&quot;</span><span class="p">)</span>
+        <span class="n">huo_base</span> <span class="o">=</span> <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;yinEarthly&quot;</span><span class="p">)</span>
+        <span class="n">ling_base</span> <span class="o">=</span> <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;xuEarthly&quot;</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">year_branch_index</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">1</span><span class="p">]:</span>  <span class="c1"># 巳酉丑</span>
-        <span class="n">huo_base</span> <span class="o">=</span> <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;maoEarthly&quot;</span><span class="p">)</span>
-        <span class="n">ling_base</span> <span class="o">=</span> <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;xuEarthly&quot;</span><span class="p">)</span>
+        <span class="n">huo_base</span> <span class="o">=</span> <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;maoEarthly&quot;</span><span class="p">)</span>
+        <span class="n">ling_base</span> <span class="o">=</span> <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;xuEarthly&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>  <span class="c1"># 亥卯未 [11, 3, 7]</span>
-        <span class="n">huo_base</span> <span class="o">=</span> <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;youEarthly&quot;</span><span class="p">)</span>
-        <span class="n">ling_base</span> <span class="o">=</span> <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;xuEarthly&quot;</span><span class="p">)</span>
+        <span class="n">huo_base</span> <span class="o">=</span> <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;youEarthly&quot;</span><span class="p">)</span>
+        <span class="n">ling_base</span> <span class="o">=</span> <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;xuEarthly&quot;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">huo_base</span> <span class="o">+</span> <span class="n">fixed_time_index</span><span class="p">),</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">ling_base</span> <span class="o">+</span> <span class="n">fixed_time_index</span><span class="p">)</span></div>
 
@@ -466,7 +477,7 @@
 <span class="sd">        (地空索引, 地劫索引) 元组</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">fixed_time_index</span> <span class="o">=</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">time_index</span><span class="p">)</span>
-    <span class="n">hai_index</span> <span class="o">=</span> <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;haiEarthly&quot;</span><span class="p">)</span>
+    <span class="n">hai_index</span> <span class="o">=</span> <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;haiEarthly&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">hai_index</span> <span class="o">-</span> <span class="n">fixed_time_index</span><span class="p">),</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">hai_index</span> <span class="o">+</span> <span class="n">fixed_time_index</span><span class="p">)</span></div>
 
 
@@ -487,16 +498,16 @@
 <span class="sd">        (禄存索引, 擎羊索引, 陀罗索引, 天马索引) 元组</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">lucun_positions</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;yinEarthly&quot;</span><span class="p">),</span>
-        <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;maoEarthly&quot;</span><span class="p">),</span>
-        <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;siEarthly&quot;</span><span class="p">),</span>
-        <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;wuEarthly&quot;</span><span class="p">),</span>
-        <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;siEarthly&quot;</span><span class="p">),</span>
-        <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;wuEarthly&quot;</span><span class="p">),</span>
-        <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;shenEarthly&quot;</span><span class="p">),</span>
-        <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;youEarthly&quot;</span><span class="p">),</span>
-        <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;haiEarthly&quot;</span><span class="p">),</span>
-        <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;ziEarthly&quot;</span><span class="p">),</span>
+        <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;yinEarthly&quot;</span><span class="p">),</span>
+        <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;maoEarthly&quot;</span><span class="p">),</span>
+        <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;siEarthly&quot;</span><span class="p">),</span>
+        <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;wuEarthly&quot;</span><span class="p">),</span>
+        <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;siEarthly&quot;</span><span class="p">),</span>
+        <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;wuEarthly&quot;</span><span class="p">),</span>
+        <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;shenEarthly&quot;</span><span class="p">),</span>
+        <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;youEarthly&quot;</span><span class="p">),</span>
+        <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;haiEarthly&quot;</span><span class="p">),</span>
+        <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;ziEarthly&quot;</span><span class="p">),</span>
     <span class="p">]</span>
 
     <span class="n">lucun_index</span> <span class="o">=</span> <span class="n">lucun_positions</span><span class="p">[</span><span class="n">year_stem_index</span><span class="p">]</span>
@@ -510,13 +521,13 @@
     <span class="c1"># 天马位置（按年支）</span>
     <span class="c1"># 寅午戌年在申、申子辰年在寅、巳酉丑年在亥、亥卯未年在巳</span>
     <span class="k">if</span> <span class="n">year_branch_index</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">10</span><span class="p">]:</span>  <span class="c1"># 寅午戌</span>
-        <span class="n">tianma_index</span> <span class="o">=</span> <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;shenEarthly&quot;</span><span class="p">)</span>
+        <span class="n">tianma_index</span> <span class="o">=</span> <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;shenEarthly&quot;</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">year_branch_index</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">]:</span>  <span class="c1"># 申子辰</span>
-        <span class="n">tianma_index</span> <span class="o">=</span> <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;yinEarthly&quot;</span><span class="p">)</span>
+        <span class="n">tianma_index</span> <span class="o">=</span> <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;yinEarthly&quot;</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">year_branch_index</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">1</span><span class="p">]:</span>  <span class="c1"># 巳酉丑</span>
-        <span class="n">tianma_index</span> <span class="o">=</span> <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;haiEarthly&quot;</span><span class="p">)</span>
+        <span class="n">tianma_index</span> <span class="o">=</span> <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;haiEarthly&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>  <span class="c1"># 亥卯未</span>
-        <span class="n">tianma_index</span> <span class="o">=</span> <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;siEarthly&quot;</span><span class="p">)</span>
+        <span class="n">tianma_index</span> <span class="o">=</span> <span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;siEarthly&quot;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">lucun_index</span><span class="p">,</span> <span class="n">yang_index</span><span class="p">,</span> <span class="n">tuo_index</span><span class="p">,</span> <span class="n">tianma_index</span></div>
 
@@ -548,8 +559,8 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;获取时系杂曜索引。&quot;&quot;&quot;</span>
     <span class="n">fixed_time_index</span> <span class="o">=</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">time_index</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">{</span>
-        <span class="s2">&quot;taifu_index&quot;</span><span class="p">:</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;wuEarthly&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">fixed_time_index</span><span class="p">),</span>
-        <span class="s2">&quot;fenggao_index&quot;</span><span class="p">:</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;yinEarthly&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">fixed_time_index</span><span class="p">),</span>
+        <span class="s2">&quot;taifu_index&quot;</span><span class="p">:</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;wuEarthly&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">fixed_time_index</span><span class="p">),</span>
+        <span class="s2">&quot;fenggao_index&quot;</span><span class="p">:</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;yinEarthly&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">fixed_time_index</span><span class="p">),</span>
     <span class="p">}</span></div>
 
 
@@ -559,7 +570,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">get_luan_xi_indices</span><span class="p">(</span><span class="n">year_branch</span><span class="p">:</span> <span class="n">EarthlyBranchName</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;获取红鸾、天喜索引。&quot;&quot;&quot;</span>
     <span class="n">year_branch_index</span> <span class="o">=</span> <span class="n">EARTHLY_BRANCHES</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">year_branch</span><span class="p">)</span>
-    <span class="n">hongluan_index</span> <span class="o">=</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;maoEarthly&quot;</span><span class="p">)</span> <span class="o">-</span> <span class="n">year_branch_index</span><span class="p">)</span>
+    <span class="n">hongluan_index</span> <span class="o">=</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;maoEarthly&quot;</span><span class="p">)</span> <span class="o">-</span> <span class="n">year_branch_index</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">{</span>
         <span class="s2">&quot;hongluan_index&quot;</span><span class="p">:</span> <span class="n">hongluan_index</span><span class="p">,</span>
         <span class="s2">&quot;tianxi_index&quot;</span><span class="p">:</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">hongluan_index</span> <span class="o">+</span> <span class="mi">6</span><span class="p">),</span>
@@ -580,8 +591,8 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">huagai_branch</span><span class="p">,</span> <span class="n">xianchi_branch</span> <span class="o">=</span> <span class="s2">&quot;weiEarthly&quot;</span><span class="p">,</span> <span class="s2">&quot;ziEarthly&quot;</span>
     <span class="k">return</span> <span class="p">{</span>
-        <span class="s2">&quot;huagai_index&quot;</span><span class="p">:</span> <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="n">huagai_branch</span><span class="p">),</span>
-        <span class="s2">&quot;xianchi_index&quot;</span><span class="p">:</span> <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="n">xianchi_branch</span><span class="p">),</span>
+        <span class="s2">&quot;huagai_index&quot;</span><span class="p">:</span> <span class="n">_branch_index</span><span class="p">(</span><span class="n">huagai_branch</span><span class="p">),</span>
+        <span class="s2">&quot;xianchi_index&quot;</span><span class="p">:</span> <span class="n">_branch_index</span><span class="p">(</span><span class="n">xianchi_branch</span><span class="p">),</span>
     <span class="p">}</span></div>
 
 
@@ -599,8 +610,8 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">guchen_branch</span><span class="p">,</span> <span class="n">guasu_branch</span> <span class="o">=</span> <span class="s2">&quot;yinEarthly&quot;</span><span class="p">,</span> <span class="s2">&quot;xuEarthly&quot;</span>
     <span class="k">return</span> <span class="p">{</span>
-        <span class="s2">&quot;guchen_index&quot;</span><span class="p">:</span> <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="n">guchen_branch</span><span class="p">),</span>
-        <span class="s2">&quot;guasu_index&quot;</span><span class="p">:</span> <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="n">guasu_branch</span><span class="p">),</span>
+        <span class="s2">&quot;guchen_index&quot;</span><span class="p">:</span> <span class="n">_branch_index</span><span class="p">(</span><span class="n">guchen_branch</span><span class="p">),</span>
+        <span class="s2">&quot;guasu_index&quot;</span><span class="p">:</span> <span class="n">_branch_index</span><span class="p">(</span><span class="n">guasu_branch</span><span class="p">),</span>
     <span class="p">}</span></div>
 
 
@@ -637,7 +648,10 @@
         <span class="s2">&quot;siEarthly&quot;</span><span class="p">,</span>
         <span class="s2">&quot;chenEarthly&quot;</span><span class="p">,</span>
     <span class="p">][</span><span class="n">EARTHLY_BRANCHES</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">year_branch</span><span class="p">)]</span>
-    <span class="k">return</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">EARTHLY_BRANCHES</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">matched</span><span class="p">)</span> <span class="o">-</span> <span class="n">EARTHLY_BRANCHES</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;yinEarthly&quot;</span><span class="p">))</span></div>
+    <span class="k">return</span> <span class="n">fix_index</span><span class="p">(</span>
+        <span class="n">EARTHLY_BRANCHES</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="n">EarthlyBranchName</span><span class="p">,</span> <span class="n">matched</span><span class="p">))</span>
+        <span class="o">-</span> <span class="n">EARTHLY_BRANCHES</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;yinEarthly&quot;</span><span class="p">)</span>
+    <span class="p">)</span></div>
 
 
 
@@ -661,7 +675,7 @@
 <a class="viewcode-back" href="../../../api/star.html#iztro_py.star.location.get_nianjie_index">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_nianjie_index</span><span class="p">(</span><span class="n">year_branch</span><span class="p">:</span> <span class="n">EarthlyBranchName</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;获取年解索引。&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">fix_earthly_branch_index</span><span class="p">(</span>
+    <span class="k">return</span> <span class="n">_branch_index</span><span class="p">(</span>
         <span class="p">[</span>
             <span class="s2">&quot;xuEarthly&quot;</span><span class="p">,</span>
             <span class="s2">&quot;youEarthly&quot;</span><span class="p">,</span>
@@ -686,14 +700,14 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;获取月系杂曜索引。&quot;&quot;&quot;</span>
     <span class="n">month_index</span> <span class="o">=</span> <span class="n">fix_lunar_month_index</span><span class="p">(</span><span class="n">solar_date</span><span class="p">,</span> <span class="n">time_index</span><span class="p">,</span> <span class="n">fix_leap</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">{</span>
-        <span class="s2">&quot;yuejie_index&quot;</span><span class="p">:</span> <span class="n">fix_earthly_branch_index</span><span class="p">(</span>
+        <span class="s2">&quot;yuejie_index&quot;</span><span class="p">:</span> <span class="n">_branch_index</span><span class="p">(</span>
             <span class="p">[</span><span class="s2">&quot;shenEarthly&quot;</span><span class="p">,</span> <span class="s2">&quot;xuEarthly&quot;</span><span class="p">,</span> <span class="s2">&quot;ziEarthly&quot;</span><span class="p">,</span> <span class="s2">&quot;yinEarthly&quot;</span><span class="p">,</span> <span class="s2">&quot;chenEarthly&quot;</span><span class="p">,</span> <span class="s2">&quot;wuEarthly&quot;</span><span class="p">][</span>
                 <span class="n">month_index</span> <span class="o">//</span> <span class="mi">2</span>
             <span class="p">]</span>
         <span class="p">),</span>
-        <span class="s2">&quot;tianyao_index&quot;</span><span class="p">:</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;chouEarthly&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">month_index</span><span class="p">),</span>
-        <span class="s2">&quot;tianxing_index&quot;</span><span class="p">:</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;youEarthly&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">month_index</span><span class="p">),</span>
-        <span class="s2">&quot;yinsha_index&quot;</span><span class="p">:</span> <span class="n">fix_earthly_branch_index</span><span class="p">(</span>
+        <span class="s2">&quot;tianyao_index&quot;</span><span class="p">:</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;chouEarthly&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">month_index</span><span class="p">),</span>
+        <span class="s2">&quot;tianxing_index&quot;</span><span class="p">:</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;youEarthly&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">month_index</span><span class="p">),</span>
+        <span class="s2">&quot;yinsha_index&quot;</span><span class="p">:</span> <span class="n">_branch_index</span><span class="p">(</span>
             <span class="p">[</span>
                 <span class="s2">&quot;yinEarthly&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;ziEarthly&quot;</span><span class="p">,</span>
@@ -703,7 +717,7 @@
                 <span class="s2">&quot;chenEarthly&quot;</span><span class="p">,</span>
             <span class="p">][</span><span class="n">month_index</span> <span class="o">%</span> <span class="mi">6</span><span class="p">]</span>
         <span class="p">),</span>
-        <span class="s2">&quot;tianyue_index&quot;</span><span class="p">:</span> <span class="n">fix_earthly_branch_index</span><span class="p">(</span>
+        <span class="s2">&quot;tianyue_index&quot;</span><span class="p">:</span> <span class="n">_branch_index</span><span class="p">(</span>
             <span class="p">[</span>
                 <span class="s2">&quot;xuEarthly&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;siEarthly&quot;</span><span class="p">,</span>
@@ -719,7 +733,7 @@
                 <span class="s2">&quot;yinEarthly&quot;</span><span class="p">,</span>
             <span class="p">][</span><span class="n">month_index</span><span class="p">]</span>
         <span class="p">),</span>
-        <span class="s2">&quot;tianwu_index&quot;</span><span class="p">:</span> <span class="n">fix_earthly_branch_index</span><span class="p">(</span>
+        <span class="s2">&quot;tianwu_index&quot;</span><span class="p">:</span> <span class="n">_branch_index</span><span class="p">(</span>
             <span class="p">[</span><span class="s2">&quot;siEarthly&quot;</span><span class="p">,</span> <span class="s2">&quot;shenEarthly&quot;</span><span class="p">,</span> <span class="s2">&quot;yinEarthly&quot;</span><span class="p">,</span> <span class="s2">&quot;haiEarthly&quot;</span><span class="p">][</span><span class="n">month_index</span> <span class="o">%</span> <span class="mi">4</span><span class="p">]</span>
         <span class="p">),</span>
     <span class="p">}</span></div>
@@ -751,10 +765,7 @@
     <span class="n">tianshi_tianshang</span> <span class="o">=</span> <span class="n">get_tianshi_tianshang_indices</span><span class="p">(</span><span class="n">gender</span><span class="p">,</span> <span class="n">year_branch</span><span class="p">,</span> <span class="n">soul_index</span><span class="p">)</span>
 
     <span class="n">xunkong_index</span> <span class="o">=</span> <span class="n">fix_index</span><span class="p">(</span>
-        <span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="n">year_branch</span><span class="p">)</span>
-        <span class="o">+</span> <span class="n">HEAVENLY_STEMS</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;guiHeavenly&quot;</span><span class="p">)</span>
-        <span class="o">-</span> <span class="n">year_stem_index</span>
-        <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">_branch_index</span><span class="p">(</span><span class="n">year_branch</span><span class="p">)</span> <span class="o">+</span> <span class="n">HEAVENLY_STEMS</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;guiHeavenly&quot;</span><span class="p">)</span> <span class="o">-</span> <span class="n">year_stem_index</span> <span class="o">+</span> <span class="mi">1</span>
     <span class="p">)</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">year_branch_index</span> <span class="o">%</span> <span class="mi">2</span><span class="p">)</span> <span class="o">!=</span> <span class="p">(</span><span class="n">xunkong_index</span> <span class="o">%</span> <span class="mi">2</span><span class="p">):</span>
         <span class="n">xunkong_index</span> <span class="o">=</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">xunkong_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
@@ -766,7 +777,7 @@
         <span class="s2">&quot;guasu_index&quot;</span><span class="p">:</span> <span class="n">guchen_guasu</span><span class="p">[</span><span class="s2">&quot;guasu_index&quot;</span><span class="p">],</span>
         <span class="s2">&quot;tiancai_index&quot;</span><span class="p">:</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">soul_index</span> <span class="o">+</span> <span class="n">year_branch_index</span><span class="p">),</span>
         <span class="s2">&quot;tianshou_index&quot;</span><span class="p">:</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">body_index</span> <span class="o">+</span> <span class="n">year_branch_index</span><span class="p">),</span>
-        <span class="s2">&quot;tianchu_index&quot;</span><span class="p">:</span> <span class="n">fix_earthly_branch_index</span><span class="p">(</span>
+        <span class="s2">&quot;tianchu_index&quot;</span><span class="p">:</span> <span class="n">_branch_index</span><span class="p">(</span>
             <span class="p">[</span>
                 <span class="s2">&quot;siEarthly&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;wuEarthly&quot;</span><span class="p">,</span>
@@ -780,10 +791,10 @@
                 <span class="s2">&quot;haiEarthly&quot;</span><span class="p">,</span>
             <span class="p">][</span><span class="n">year_stem_index</span><span class="p">]</span>
         <span class="p">),</span>
-        <span class="s2">&quot;posui_index&quot;</span><span class="p">:</span> <span class="n">fix_earthly_branch_index</span><span class="p">(</span>
+        <span class="s2">&quot;posui_index&quot;</span><span class="p">:</span> <span class="n">_branch_index</span><span class="p">(</span>
             <span class="p">[</span><span class="s2">&quot;siEarthly&quot;</span><span class="p">,</span> <span class="s2">&quot;chouEarthly&quot;</span><span class="p">,</span> <span class="s2">&quot;youEarthly&quot;</span><span class="p">][</span><span class="n">year_branch_index</span> <span class="o">%</span> <span class="mi">3</span><span class="p">]</span>
         <span class="p">),</span>
-        <span class="s2">&quot;feilian_index&quot;</span><span class="p">:</span> <span class="n">fix_earthly_branch_index</span><span class="p">(</span>
+        <span class="s2">&quot;feilian_index&quot;</span><span class="p">:</span> <span class="n">_branch_index</span><span class="p">(</span>
             <span class="p">[</span>
                 <span class="s2">&quot;shenEarthly&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;youEarthly&quot;</span><span class="p">,</span>
@@ -799,11 +810,11 @@
                 <span class="s2">&quot;chouEarthly&quot;</span><span class="p">,</span>
             <span class="p">][</span><span class="n">year_branch_index</span><span class="p">]</span>
         <span class="p">),</span>
-        <span class="s2">&quot;longchi_index&quot;</span><span class="p">:</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;chenEarthly&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">year_branch_index</span><span class="p">),</span>
-        <span class="s2">&quot;fengge_index&quot;</span><span class="p">:</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;xuEarthly&quot;</span><span class="p">)</span> <span class="o">-</span> <span class="n">year_branch_index</span><span class="p">),</span>
-        <span class="s2">&quot;tianku_index&quot;</span><span class="p">:</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;wuEarthly&quot;</span><span class="p">)</span> <span class="o">-</span> <span class="n">year_branch_index</span><span class="p">),</span>
-        <span class="s2">&quot;tianxu_index&quot;</span><span class="p">:</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;wuEarthly&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">year_branch_index</span><span class="p">),</span>
-        <span class="s2">&quot;tianguan_index&quot;</span><span class="p">:</span> <span class="n">fix_earthly_branch_index</span><span class="p">(</span>
+        <span class="s2">&quot;longchi_index&quot;</span><span class="p">:</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;chenEarthly&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">year_branch_index</span><span class="p">),</span>
+        <span class="s2">&quot;fengge_index&quot;</span><span class="p">:</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;xuEarthly&quot;</span><span class="p">)</span> <span class="o">-</span> <span class="n">year_branch_index</span><span class="p">),</span>
+        <span class="s2">&quot;tianku_index&quot;</span><span class="p">:</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;wuEarthly&quot;</span><span class="p">)</span> <span class="o">-</span> <span class="n">year_branch_index</span><span class="p">),</span>
+        <span class="s2">&quot;tianxu_index&quot;</span><span class="p">:</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;wuEarthly&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">year_branch_index</span><span class="p">),</span>
+        <span class="s2">&quot;tianguan_index&quot;</span><span class="p">:</span> <span class="n">_branch_index</span><span class="p">(</span>
             <span class="p">[</span>
                 <span class="s2">&quot;weiEarthly&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;chenEarthly&quot;</span><span class="p">,</span>
@@ -817,7 +828,7 @@
                 <span class="s2">&quot;wuEarthly&quot;</span><span class="p">,</span>
             <span class="p">][</span><span class="n">year_stem_index</span><span class="p">]</span>
         <span class="p">),</span>
-        <span class="s2">&quot;tianfu_index&quot;</span><span class="p">:</span> <span class="n">fix_earthly_branch_index</span><span class="p">(</span>
+        <span class="s2">&quot;tianfu_index&quot;</span><span class="p">:</span> <span class="n">_branch_index</span><span class="p">(</span>
             <span class="p">[</span>
                 <span class="s2">&quot;youEarthly&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;shenEarthly&quot;</span><span class="p">,</span>
@@ -831,15 +842,15 @@
                 <span class="s2">&quot;siEarthly&quot;</span><span class="p">,</span>
             <span class="p">][</span><span class="n">year_stem_index</span><span class="p">]</span>
         <span class="p">),</span>
-        <span class="s2">&quot;tiande_index&quot;</span><span class="p">:</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;youEarthly&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">year_branch_index</span><span class="p">),</span>
-        <span class="s2">&quot;yuede_index&quot;</span><span class="p">:</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="s2">&quot;siEarthly&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">year_branch_index</span><span class="p">),</span>
-        <span class="s2">&quot;tiankong_index&quot;</span><span class="p">:</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">fix_earthly_branch_index</span><span class="p">(</span><span class="n">year_branch</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
-        <span class="s2">&quot;jielu_index&quot;</span><span class="p">:</span> <span class="n">fix_earthly_branch_index</span><span class="p">(</span>
+        <span class="s2">&quot;tiande_index&quot;</span><span class="p">:</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;youEarthly&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">year_branch_index</span><span class="p">),</span>
+        <span class="s2">&quot;yuede_index&quot;</span><span class="p">:</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">_branch_index</span><span class="p">(</span><span class="s2">&quot;siEarthly&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">year_branch_index</span><span class="p">),</span>
+        <span class="s2">&quot;tiankong_index&quot;</span><span class="p">:</span> <span class="n">fix_index</span><span class="p">(</span><span class="n">_branch_index</span><span class="p">(</span><span class="n">year_branch</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+        <span class="s2">&quot;jielu_index&quot;</span><span class="p">:</span> <span class="n">_branch_index</span><span class="p">(</span>
             <span class="p">[</span><span class="s2">&quot;shenEarthly&quot;</span><span class="p">,</span> <span class="s2">&quot;wuEarthly&quot;</span><span class="p">,</span> <span class="s2">&quot;chenEarthly&quot;</span><span class="p">,</span> <span class="s2">&quot;yinEarthly&quot;</span><span class="p">,</span> <span class="s2">&quot;ziEarthly&quot;</span><span class="p">][</span>
                 <span class="n">year_stem_index</span> <span class="o">%</span> <span class="mi">5</span>
             <span class="p">]</span>
         <span class="p">),</span>
-        <span class="s2">&quot;kongwang_index&quot;</span><span class="p">:</span> <span class="n">fix_earthly_branch_index</span><span class="p">(</span>
+        <span class="s2">&quot;kongwang_index&quot;</span><span class="p">:</span> <span class="n">_branch_index</span><span class="p">(</span>
             <span class="p">[</span><span class="s2">&quot;youEarthly&quot;</span><span class="p">,</span> <span class="s2">&quot;weiEarthly&quot;</span><span class="p">,</span> <span class="s2">&quot;siEarthly&quot;</span><span class="p">,</span> <span class="s2">&quot;maoEarthly&quot;</span><span class="p">,</span> <span class="s2">&quot;chouEarthly&quot;</span><span class="p">][</span>
                 <span class="n">year_stem_index</span> <span class="o">%</span> <span class="mi">5</span>
             <span class="p">]</span>

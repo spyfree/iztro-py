@@ -464,7 +464,7 @@ Provides rich API for querying palaces, stars, and their relationships.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="iztro_py.astro.functional_palace.FunctionalPalace">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">iztro_py.astro.functional_palace.</span></span><span class="sig-name descname"><span class="pre">FunctionalPalace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">palace</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/iztro_py/astro/functional_palace.html#FunctionalPalace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#iztro_py.astro.functional_palace.FunctionalPalace" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="index.html#iztro_py.data.types.Palace" title="iztro_py.data.types.Palace"><code class="xref py py-class docutils literal notranslate"><span class="pre">Palace</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BackRefDeepCopyMixin</span></code>, <a class="reference internal" href="index.html#iztro_py.data.types.Palace" title="iztro_py.data.types.Palace"><code class="xref py py-class docutils literal notranslate"><span class="pre">Palace</span></code></a></p>
 <p>功能增强的宫位类</p>
 <p>继承自Palace，添加了星曜查询方法和关联星盘的能力</p>
 <dl class="field-list simple">
@@ -686,7 +686,7 @@ Provides rich API for querying palaces, stars, and their relationships.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="iztro_py.astro.functional_star.FunctionalStar">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">iztro_py.astro.functional_star.</span></span><span class="sig-name descname"><span class="pre">FunctionalStar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">star</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/iztro_py/astro/functional_star.html#FunctionalStar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#iztro_py.astro.functional_star.FunctionalStar" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="index.html#iztro_py.data.types.Star" title="iztro_py.data.types.Star"><code class="xref py py-class docutils literal notranslate"><span class="pre">Star</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BackRefDeepCopyMixin</span></code>, <a class="reference internal" href="index.html#iztro_py.data.types.Star" title="iztro_py.data.types.Star"><code class="xref py py-class docutils literal notranslate"><span class="pre">Star</span></code></a></p>
 <p>功能增强的星曜类</p>
 <p>继承自Star，添加了查询方法和关联宫位的能力</p>
 <dl class="field-list simple">
@@ -1104,71 +1104,6 @@ the soul palace (命宫) and body palace (身宫).</p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>目标宫位的天干</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="iztro_py.astro.palace.get_palace_earthly_branch">
-<span class="sig-prename descclassname"><span class="pre">iztro_py.astro.palace.</span></span><span class="sig-name descname"><span class="pre">get_palace_earthly_branch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">palace_index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/iztro_py/astro/palace.html#get_palace_earthly_branch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#iztro_py.astro.palace.get_palace_earthly_branch" title="Link to this definition"></a></dt>
-<dd><p>根据宫位索引获取地支</p>
-<p>宫位地支固定：
-0(命宫) - 根据命宫定位算法确定
-其他宫位按地支顺序排列</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>palace_index</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – 宫位索引 (0-11)</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code></a>[<code class="docutils literal notranslate"><span class="pre">'ziEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'chouEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'yinEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'maoEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'chenEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'siEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'wuEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'weiEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'shenEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'youEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'xuEarthly'</span></code>, <code class="docutils literal notranslate"><span class="pre">'haiEarthly'</span></code>]</span></p>
-</dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>地支名称</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="iztro_py.astro.palace.get_body_palace_index">
-<span class="sig-prename descclassname"><span class="pre">iztro_py.astro.palace.</span></span><span class="sig-name descname"><span class="pre">get_body_palace_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">soul_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">body_index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/iztro_py/astro/palace.html#get_body_palace_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#iztro_py.astro.palace.get_body_palace_index" title="Link to this definition"></a></dt>
-<dd><p>确定身宫所在的宫位</p>
-<p>身宫会落在某个宫位上，该宫位标记为身宫</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>soul_index</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – 命宫索引</p></li>
-<li><p><strong>body_index</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – 身宫索引（通过算法计算出的地支位置）</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span></p>
-</dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>身宫所在的宫位索引</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="iztro_py.astro.palace.calculate_palace_ages">
-<span class="sig-prename descclassname"><span class="pre">iztro_py.astro.palace.</span></span><span class="sig-name descname"><span class="pre">calculate_palace_ages</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">palace_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">soul_palace_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">five_elements_class_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_forward</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/iztro_py/astro/palace.html#calculate_palace_ages"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#iztro_py.astro.palace.calculate_palace_ages" title="Link to this definition"></a></dt>
-<dd><p>计算宫位的小限年龄数组</p>
-<p>小限从命宫开始，每年走一宫
-顺逆根据性别和年支阴阳决定</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>palace_index</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – 宫位索引</p></li>
-<li><p><strong>soul_palace_index</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – 命宫索引</p></li>
-<li><p><strong>five_elements_class_value</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – 五行局数值 (2-6)</p></li>
-<li><p><strong>is_forward</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – 是否顺行</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]</span></p>
-</dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>该宫位对应的年龄列表</p>
 </dd>
 </dl>
 </dd></dl>

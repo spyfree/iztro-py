@@ -86,7 +86,7 @@
 <span class="sd">- vi-VN: Tiếng Việt</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="c1"># 当前语言设置</span>
 <span class="n">_current_language</span> <span class="o">=</span> <span class="s2">&quot;zh-CN&quot;</span>
@@ -176,6 +176,7 @@
             <span class="sa">f</span><span class="s2">&quot;Language &#39;</span><span class="si">{</span><span class="n">lang</span><span class="si">}</span><span class="s2">&#39; is not fully supported yet. Falling back to &#39;zh-CN&#39;. &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;Supported: </span><span class="si">{</span><span class="n">SUPPORTED_LANGUAGES</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="ne">UserWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">lang</span> <span class="o">=</span> <span class="s2">&quot;zh-CN&quot;</span>
 
@@ -232,8 +233,8 @@
             <span class="kn">from</span><span class="w"> </span><span class="nn">.locales</span><span class="w"> </span><span class="kn">import</span> <span class="n">vi_VN</span>
 
             <span class="n">_locales</span><span class="p">[</span><span class="n">lang</span><span class="p">]</span> <span class="o">=</span> <span class="n">vi_VN</span><span class="o">.</span><span class="n">translations</span>
-    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Language resource not found: </span><span class="si">{</span><span class="n">lang</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Language resource not found: </span><span class="si">{</span><span class="n">lang</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
 
 
 <div class="viewcode-block" id="t">

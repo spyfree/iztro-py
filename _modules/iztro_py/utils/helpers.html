@@ -80,12 +80,13 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">HeavenlyStemName</span><span class="p">,</span> <span class="n">EarthlyBranchName</span><span class="p">,</span> <span class="n">FiveElementsClass</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.constants</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">HEAVENLY_STEMS</span><span class="p">,</span>
     <span class="n">EARTHLY_BRANCHES</span><span class="p">,</span>
+    <span class="n">HEAVENLY_STEMS</span><span class="p">,</span>
     <span class="n">fix_index</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">EarthlyBranchName</span><span class="p">,</span> <span class="n">FiveElementsClass</span><span class="p">,</span> <span class="n">HeavenlyStemName</span>
 
 
 <div class="viewcode-block" id="get_five_elements_class">
@@ -121,26 +122,33 @@
 
 
 
+<span class="n">FIVE_ELEMENTS_CLASS_KEYS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">FiveElementsClass</span><span class="o">.</span><span class="n">WATER_2</span><span class="p">:</span> <span class="s2">&quot;water2nd&quot;</span><span class="p">,</span>
+    <span class="n">FiveElementsClass</span><span class="o">.</span><span class="n">WOOD_3</span><span class="p">:</span> <span class="s2">&quot;wood3rd&quot;</span><span class="p">,</span>
+    <span class="n">FiveElementsClass</span><span class="o">.</span><span class="n">METAL_4</span><span class="p">:</span> <span class="s2">&quot;metal4th&quot;</span><span class="p">,</span>
+    <span class="n">FiveElementsClass</span><span class="o">.</span><span class="n">EARTH_5</span><span class="p">:</span> <span class="s2">&quot;earth5th&quot;</span><span class="p">,</span>
+    <span class="n">FiveElementsClass</span><span class="o">.</span><span class="n">FIRE_6</span><span class="p">:</span> <span class="s2">&quot;fire6th&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+
 <div class="viewcode-block" id="get_five_elements_class_name">
 <a class="viewcode-back" href="../../../api/utils.html#iztro_py.utils.helpers.get_five_elements_class_name">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_five_elements_class_name</span><span class="p">(</span><span class="n">five_elements_class</span><span class="p">:</span> <span class="n">FiveElementsClass</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_five_elements_class_name</span><span class="p">(</span>
+    <span class="n">five_elements_class</span><span class="p">:</span> <span class="n">FiveElementsClass</span><span class="p">,</span> <span class="n">lang</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    获取五行局的中文名称</span>
+<span class="sd">    获取五行局名称</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        five_elements_class: 五行局枚举</span>
+<span class="sd">        lang: 目标语言代码，默认使用当前全局语言</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        中文名称，如 &quot;水二局&quot;</span>
+<span class="sd">        本地化名称，如 &quot;水二局&quot; / &quot;water 2nd&quot;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">names</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="n">FiveElementsClass</span><span class="o">.</span><span class="n">WATER_2</span><span class="p">:</span> <span class="s2">&quot;水二局&quot;</span><span class="p">,</span>
-        <span class="n">FiveElementsClass</span><span class="o">.</span><span class="n">WOOD_3</span><span class="p">:</span> <span class="s2">&quot;木三局&quot;</span><span class="p">,</span>
-        <span class="n">FiveElementsClass</span><span class="o">.</span><span class="n">METAL_4</span><span class="p">:</span> <span class="s2">&quot;金四局&quot;</span><span class="p">,</span>
-        <span class="n">FiveElementsClass</span><span class="o">.</span><span class="n">EARTH_5</span><span class="p">:</span> <span class="s2">&quot;土五局&quot;</span><span class="p">,</span>
-        <span class="n">FiveElementsClass</span><span class="o">.</span><span class="n">FIRE_6</span><span class="p">:</span> <span class="s2">&quot;火六局&quot;</span><span class="p">,</span>
-    <span class="p">}</span>
-    <span class="k">return</span> <span class="n">names</span><span class="p">[</span><span class="n">five_elements_class</span><span class="p">]</span></div>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.i18n</span><span class="w"> </span><span class="kn">import</span> <span class="n">t</span>
+
+    <span class="k">return</span> <span class="n">t</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;fiveElementsClass.</span><span class="si">{</span><span class="n">FIVE_ELEMENTS_CLASS_KEYS</span><span class="p">[</span><span class="n">five_elements_class</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">lang</span><span class="p">)</span></div>
 
 
 
@@ -181,36 +189,29 @@
 
 <div class="viewcode-block" id="get_time_name">
 <a class="viewcode-back" href="../../../api/utils.html#iztro_py.utils.helpers.get_time_name">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_time_name</span><span class="p">(</span><span class="n">time_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_time_name</span><span class="p">(</span><span class="n">time_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">lang</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    获取时辰的中文名称</span>
+<span class="sd">    获取时辰名称</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        time_index: 时辰索引 (0-12)</span>
+<span class="sd">        lang: 目标语言代码，默认使用当前全局语言</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        时辰中文名称，如 &quot;午时&quot;</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">time_names</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s2">&quot;子时&quot;</span><span class="p">,</span>  <span class="c1"># 0 早子时</span>
-        <span class="s2">&quot;丑时&quot;</span><span class="p">,</span>  <span class="c1"># 1</span>
-        <span class="s2">&quot;寅时&quot;</span><span class="p">,</span>  <span class="c1"># 2</span>
-        <span class="s2">&quot;卯时&quot;</span><span class="p">,</span>  <span class="c1"># 3</span>
-        <span class="s2">&quot;辰时&quot;</span><span class="p">,</span>  <span class="c1"># 4</span>
-        <span class="s2">&quot;巳时&quot;</span><span class="p">,</span>  <span class="c1"># 5</span>
-        <span class="s2">&quot;午时&quot;</span><span class="p">,</span>  <span class="c1"># 6</span>
-        <span class="s2">&quot;未时&quot;</span><span class="p">,</span>  <span class="c1"># 7</span>
-        <span class="s2">&quot;申时&quot;</span><span class="p">,</span>  <span class="c1"># 8</span>
-        <span class="s2">&quot;酉时&quot;</span><span class="p">,</span>  <span class="c1"># 9</span>
-        <span class="s2">&quot;戌时&quot;</span><span class="p">,</span>  <span class="c1"># 10</span>
-        <span class="s2">&quot;亥时&quot;</span><span class="p">,</span>  <span class="c1"># 11</span>
-        <span class="s2">&quot;子时&quot;</span><span class="p">,</span>  <span class="c1"># 12 晚子时</span>
-    <span class="p">]</span>
+<span class="sd">        本地化时辰名称，如 &quot;午时&quot; / &quot;Horse hour&quot;</span>
 
-    <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">time_index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">time_names</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">time_names</span><span class="p">[</span><span class="n">time_index</span><span class="p">]</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid time index: </span><span class="si">{</span><span class="n">time_index</span><span class="si">}</span><span class="s2">. Must be 0-12.&quot;</span><span class="p">)</span></div>
+<span class="sd">    Note:</span>
+<span class="sd">        索引 0 与 12 分别是早子时和晚子时，名称必须区分——两者的日柱不同</span>
+<span class="sd">        （晚子时按次日计算），返回同一个 &quot;子时&quot; 会丢失这个区别。取值与</span>
+<span class="sd">        iztro 的 ``astrolabe.time`` 一致。</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">CHINESE_TIME</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.i18n</span><span class="w"> </span><span class="kn">import</span> <span class="n">t</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">time_index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">CHINESE_TIME</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid time index: </span><span class="si">{</span><span class="n">time_index</span><span class="si">}</span><span class="s2">. Must be 0-12.&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">t</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;time.</span><span class="si">{</span><span class="n">CHINESE_TIME</span><span class="p">[</span><span class="n">time_index</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">lang</span><span class="p">)</span></div>
 
 
 

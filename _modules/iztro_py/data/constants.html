@@ -80,15 +80,15 @@
 <span class="sd">used for Zi Wei Dou Shu calculations.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.types</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">HeavenlyStemName</span><span class="p">,</span>
-    <span class="n">EarthlyBranchName</span><span class="p">,</span>
-    <span class="n">PalaceName</span><span class="p">,</span>
     <span class="n">ChineseTime</span><span class="p">,</span>
+    <span class="n">EarthlyBranchName</span><span class="p">,</span>
+    <span class="n">HeavenlyStemName</span><span class="p">,</span>
+    <span class="n">PalaceName</span><span class="p">,</span>
     <span class="n">StarName</span><span class="p">,</span>
 <span class="p">)</span>
-
 
 <span class="c1"># ============================================================================</span>
 <span class="c1"># Time Constants</span>
@@ -306,54 +306,6 @@
     <span class="s2">&quot;renHeavenly&quot;</span><span class="p">:</span> <span class="s2">&quot;gengHeavenly&quot;</span><span class="p">,</span>
     <span class="s2">&quot;wuHeavenly&quot;</span><span class="p">:</span> <span class="s2">&quot;renHeavenly&quot;</span><span class="p">,</span>  <span class="c1"># 戊癸何方发？壬子是真途</span>
     <span class="s2">&quot;guiHeavenly&quot;</span><span class="p">:</span> <span class="s2">&quot;renHeavenly&quot;</span><span class="p">,</span>
-<span class="p">}</span>
-
-
-<span class="c1"># ============================================================================</span>
-<span class="c1"># Five Elements Class Lookup Table (五行局)</span>
-<span class="c1"># ============================================================================</span>
-<span class="c1"># 根据命宫纳音五行确定五行局</span>
-<span class="c1"># 索引：[命宫天干索引][命宫地支索引]</span>
-
-<span class="n">FIVE_ELEMENTS_CLASS_LOOKUP</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="c1"># 地支：子   丑   寅   卯   辰   巳   午   未   申   酉   戌   亥</span>
-    <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span>  <span class="c1"># 甲</span>
-    <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>  <span class="c1"># 乙</span>
-    <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>  <span class="c1"># 丙</span>
-    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>  <span class="c1"># 丁</span>
-    <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>  <span class="c1"># 戊</span>
-    <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span>  <span class="c1"># 己</span>
-    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>  <span class="c1"># 庚</span>
-    <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>  <span class="c1"># 辛</span>
-    <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>  <span class="c1"># 壬</span>
-    <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span>  <span class="c1"># 癸</span>
-<span class="p">]</span>
-
-
-<span class="c1"># ============================================================================</span>
-<span class="c1"># Ziwei Star Position Algorithm Constants (紫微星定位算法常量)</span>
-<span class="c1"># ============================================================================</span>
-
-<span class="c1"># 紫微星定位口诀：六五四三二，酉午亥辰丑</span>
-<span class="n">ZIWEI_START_POSITIONS</span> <span class="o">=</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># 对应五行局 2,3,4,5,6 的起始宫位</span>
-
-
-<span class="c1"># ============================================================================</span>
-<span class="c1"># Star Brightness (星耀亮度)</span>
-<span class="c1"># ============================================================================</span>
-<span class="c1"># 按地支顺序：寅卯辰巳午未申酉戌亥子丑</span>
-
-<span class="n">BRIGHTNESS_ORDER</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;寅&quot;</span><span class="p">,</span> <span class="s2">&quot;卯&quot;</span><span class="p">,</span> <span class="s2">&quot;辰&quot;</span><span class="p">,</span> <span class="s2">&quot;巳&quot;</span><span class="p">,</span> <span class="s2">&quot;午&quot;</span><span class="p">,</span> <span class="s2">&quot;未&quot;</span><span class="p">,</span> <span class="s2">&quot;申&quot;</span><span class="p">,</span> <span class="s2">&quot;酉&quot;</span><span class="p">,</span> <span class="s2">&quot;戌&quot;</span><span class="p">,</span> <span class="s2">&quot;亥&quot;</span><span class="p">,</span> <span class="s2">&quot;子&quot;</span><span class="p">,</span> <span class="s2">&quot;丑&quot;</span><span class="p">]</span>
-
-<span class="c1"># Mapping brightness keywords</span>
-<span class="n">BRIGHTNESS_MAPPING</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;庙&quot;</span><span class="p">:</span> <span class="s2">&quot;miao&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;旺&quot;</span><span class="p">:</span> <span class="s2">&quot;wang&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;得&quot;</span><span class="p">:</span> <span class="s2">&quot;de&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;利&quot;</span><span class="p">:</span> <span class="s2">&quot;li&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;平&quot;</span><span class="p">:</span> <span class="s2">&quot;ping&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;不&quot;</span><span class="p">:</span> <span class="s2">&quot;bu&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;陷&quot;</span><span class="p">:</span> <span class="s2">&quot;xian&quot;</span><span class="p">,</span>
 <span class="p">}</span>
 
 

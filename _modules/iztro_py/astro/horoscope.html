@@ -83,24 +83,25 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.types</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">Horoscope</span><span class="p">,</span>
-    <span class="n">HoroscopeItem</span><span class="p">,</span>
-    <span class="n">StarName</span><span class="p">,</span>
-    <span class="n">HeavenlyStemName</span><span class="p">,</span>
     <span class="n">EarthlyBranchName</span><span class="p">,</span>
     <span class="n">FiveElementsClass</span><span class="p">,</span>
-    <span class="n">Palace</span><span class="p">,</span>
+    <span class="n">HeavenlyStemName</span><span class="p">,</span>
+    <span class="n">Horoscope</span><span class="p">,</span>
+    <span class="n">HoroscopeItem</span><span class="p">,</span>
     <span class="n">LunarDate</span><span class="p">,</span>
+    <span class="n">Palace</span><span class="p">,</span>
+    <span class="n">PalaceName</span><span class="p">,</span>
+    <span class="n">StarName</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.utils.calendar</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">solar_to_lunar</span><span class="p">,</span>
-    <span class="n">get_heavenly_stem_and_earthly_branch_date</span><span class="p">,</span>
     <span class="n">format_lunar_date</span><span class="p">,</span>
+    <span class="n">get_heavenly_stem_and_earthly_branch_date</span><span class="p">,</span>
+    <span class="n">solar_to_lunar</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.utils.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">calculate_nominal_age</span><span class="p">,</span>
-    <span class="n">fix_index</span><span class="p">,</span>
     <span class="n">fix_earthly_branch_index</span><span class="p">,</span>
+    <span class="n">fix_index</span><span class="p">,</span>
 <span class="p">)</span>
 
 
@@ -247,8 +248,9 @@
         <span class="p">)</span>
         <span class="n">item_name</span> <span class="o">=</span> <span class="s2">&quot;童限&quot;</span>
     <span class="k">elif</span> <span class="n">palace</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">palace</span> <span class="o">=</span> <span class="n">palaces</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">item_name</span> <span class="o">=</span> <span class="s2">&quot;大限&quot;</span>
+        <span class="c1"># 虚岁不在任何大限区间（出生前查询虚岁 &lt;= 0，或超过末个大限约 125 岁）。</span>
+        <span class="c1"># 与 iztro 一致返回 index=-1 表示「无对应宫位」，而不是静默落回命宫。</span>
+        <span class="k">return</span> <span class="n">_no_palace_item</span><span class="p">(</span><span class="s2">&quot;大限&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">item_name</span> <span class="o">=</span> <span class="s2">&quot;大限&quot;</span>
 
@@ -282,7 +284,10 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        小限运势项</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">palace</span> <span class="o">=</span> <span class="nb">next</span><span class="p">((</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">palaces</span> <span class="k">if</span> <span class="n">age</span> <span class="ow">in</span> <span class="n">item</span><span class="o">.</span><span class="n">ages</span><span class="p">),</span> <span class="n">palaces</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">palace</span> <span class="o">=</span> <span class="nb">next</span><span class="p">((</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">palaces</span> <span class="k">if</span> <span class="n">age</span> <span class="ow">in</span> <span class="n">item</span><span class="o">.</span><span class="n">ages</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">palace</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># 同 get_decadal_horoscope：越界时返回 index=-1，不静默落回命宫。</span>
+        <span class="k">return</span> <span class="n">_no_palace_item</span><span class="p">(</span><span class="s2">&quot;小限&quot;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">HoroscopeItem</span><span class="p">(</span>
         <span class="n">index</span><span class="o">=</span><span class="n">palace</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
@@ -436,6 +441,26 @@
 <span class="c1"># Helper Functions</span>
 <span class="c1"># ============================================================================</span>
 
+<span class="c1"># 越界（虚岁不落在任何大限/小限区间）时 iztro 返回的退化取值：index=-1，</span>
+<span class="c1"># 干支恒为甲子、四化恒为甲干四化。这些派生字段没有实际含义，唯一有效的</span>
+<span class="c1"># 信号是 index == -1；调用方应据此判断「无对应宫位」。</span>
+<span class="n">NO_PALACE_INDEX</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+<span class="n">_NO_PALACE_STEM</span><span class="p">:</span> <span class="n">HeavenlyStemName</span> <span class="o">=</span> <span class="s2">&quot;jiaHeavenly&quot;</span>
+<span class="n">_NO_PALACE_BRANCH</span><span class="p">:</span> <span class="n">EarthlyBranchName</span> <span class="o">=</span> <span class="s2">&quot;ziEarthly&quot;</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_no_palace_item</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HoroscopeItem</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;构造 index=-1 的运限项（对齐 iztro 的越界行为）。&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">HoroscopeItem</span><span class="p">(</span>
+        <span class="n">index</span><span class="o">=</span><span class="n">NO_PALACE_INDEX</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+        <span class="n">heavenly_stem</span><span class="o">=</span><span class="n">_NO_PALACE_STEM</span><span class="p">,</span>
+        <span class="n">earthly_branch</span><span class="o">=</span><span class="n">_NO_PALACE_BRANCH</span><span class="p">,</span>
+        <span class="n">palace_names</span><span class="o">=</span><span class="n">_get_palace_names</span><span class="p">(</span><span class="n">NO_PALACE_INDEX</span><span class="p">),</span>
+        <span class="n">mutagen</span><span class="o">=</span><span class="n">_get_mutagen_stars</span><span class="p">(</span><span class="n">_NO_PALACE_STEM</span><span class="p">),</span>
+        <span class="n">stars</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span>
+
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_get_mutagen_stars</span><span class="p">(</span><span class="n">stem</span><span class="p">:</span> <span class="n">HeavenlyStemName</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">StarName</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -475,7 +500,7 @@
         <span class="k">return</span> <span class="mi">0</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_get_palace_names</span><span class="p">(</span><span class="n">from_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_palace_names</span><span class="p">(</span><span class="n">from_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">PalaceName</span><span class="p">]:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">iztro_py.data.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">PALACES</span>
 
     <span class="k">return</span> <span class="p">[</span><span class="n">PALACES</span><span class="p">[</span><span class="n">fix_index</span><span class="p">(</span><span class="n">i</span> <span class="o">-</span> <span class="n">from_index</span><span class="p">)]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">12</span><span class="p">)]</span>
