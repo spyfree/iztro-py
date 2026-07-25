@@ -7,25 +7,33 @@ __pycache__/
 *.so
 
 # Distribution / packaging
+# NOTE: these are anchored with a leading slash so they only match Python build
+# artifacts at the repo root. An unanchored `lib/` also matches nested paths such
+# as `node_modules/iztro/lib/`, which silently excluded the JS reference package
+# used by the alignment suite.
 .Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
+/build/
+/develop-eggs/
+/dist/
+/downloads/
+/eggs/
+/.eggs/
+/lib/
+/lib64/
+/parts/
+/sdist/
+/var/
+/wheels/
 pip-wheel-metadata/
 share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
 MANIFEST
+
+# Node (only used to pull the iztro JS reference for the alignment suite;
+# reproduce with `npm install`)
+node_modules/
 
 # PyInstaller
 *.manifest

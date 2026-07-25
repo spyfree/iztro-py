@@ -1,9 +1,12 @@
+import importlib.util
 import json
 import os
+import shutil
 import subprocess
 import sys
 from pathlib import Path
 
+import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SRC_ROOT = REPO_ROOT / "src"
@@ -15,39 +18,37 @@ from iztro_py import astro  # noqa: E402
 
 EXPECTED_JS_VERSION = "2.5.8"
 
+# The JS reference is an optional local dev dependency (`npm install`), so a
+# developer without it gets a skip rather than a spurious failure. CI sets
+# IZTRO_REQUIRE_JS_REFERENCE=1 so a missing reference is a hard error there and
+# the alignment suite can never silently stop running.
+_REQUIRE_JS_REFERENCE = os.environ.get("IZTRO_REQUIRE_JS_REFERENCE") == "1"
+
+_ALIGNMENT_SCRIPT = REPO_ROOT / "scripts" / "compare_iztro_alignment.py"
+
+
+def _unavailable(reason: str):
+    """Fail in CI, skip elsewhere."""
+    if _REQUIRE_JS_REFERENCE:
+        pytest.fail(f"{reason}\n(IZTRO_REQUIRE_JS_REFERENCE=1 turns this skip into a failure)")
+    pytest.skip(reason)
+
 
 def _resolve_js_package_path() -> Path:
-    candidate_paths = []
-    env_path = os.environ.get("IZTRO_JS_PACKAGE")
-    if env_path:
-        candidate_paths.append(Path(env_path))
-    candidate_paths.extend(
-        [
-            Path(f"/tmp/iztro-{EXPECTED_JS_VERSION}/node_modules/iztro"),
-            REPO_ROOT / "node_modules" / "iztro",
-        ]
-    )
+    if shutil.which("node") is None:
+        _unavailable("node is not installed; cannot run the iztro JS reference.")
 
-    problems = []
-    for path in candidate_paths:
-        package_json = path / "package.json"
-        if not package_json.exists():
-            problems.append(f"{path} (missing package.json)")
-            continue
-        package = json.loads(package_json.read_text(encoding="utf-8"))
-        version = package.get("version")
-        if version == EXPECTED_JS_VERSION:
-            return path
-        problems.append(f"{path} (found {version}, expected {EXPECTED_JS_VERSION})")
-
-    searched = "\n".join(f"- {problem}" for problem in problems) or "- <no candidates>"
-    raise AssertionError(
-        "Missing iztro JS reference package.\n"
-        f"Expected version: {EXPECTED_JS_VERSION}\n"
-        "Searched:\n"
-        f"{searched}\n"
-        "Install iztro or set IZTRO_JS_PACKAGE explicitly."
+    # Reuse the script's resolver so the search paths and the "is it actually
+    # requireable" check can never drift between the test and the script.
+    spec = importlib.util.spec_from_file_location(
+        "_iztro_alignment_script", _ALIGNMENT_SCRIPT
     )
+    module = importlib.util.module_from_spec(spec)
+    try:
+        spec.loader.exec_module(module)
+    except FileNotFoundError as exc:
+        _unavailable(str(exc))
+    return module.JS_PACKAGE_PATH
 
 
 def _summarize(chart):
@@ -71,15 +72,16 @@ def _summarize(chart):
 
 def test_core_alignment_against_js_snapshot():
     js_package_path = _resolve_js_package_path()
-    script = REPO_ROOT / "scripts" / "compare_iztro_alignment.py"
     result = subprocess.run(
-        [sys.executable, str(script)],
+        [sys.executable, str(_ALIGNMENT_SCRIPT)],
         cwd=REPO_ROOT,
         env={**os.environ, "IZTRO_JS_PACKAGE": str(js_package_path)},
         capture_output=True,
         text=True,
     )
-    assert result.returncode == 0, result.stdout + result.stderr
+    # stderr first: on a harness failure (bad node, broken package) stdout is
+    # empty and the traceback is what actually matters.
+    assert result.returncode == 0, f"stderr:\n{result.stderr}\nstdout:\n{result.stdout}"
 
     payload = json.loads(result.stdout)
     assert payload, "alignment script should emit case results"

@@ -62,18 +62,30 @@ def _resolve_js_package_path() -> Path:
             continue
 
         version = package.get("version")
-        if version == EXPECTED_JS_VERSION:
-            return path
+        if version != EXPECTED_JS_VERSION:
+            problems.append(f"{path} (found {version}, expected {EXPECTED_JS_VERSION})")
+            continue
 
-        problems.append(f"{path} (found {version}, expected {EXPECTED_JS_VERSION})")
+        # A matching package.json is not enough: the package must actually be
+        # requireable. A partial checkout (e.g. one where the compiled `lib/`
+        # was excluded) has valid metadata but no code, and would otherwise
+        # only fail much later with an opaque MODULE_NOT_FOUND.
+        main_entry = package.get("main", "index.js")
+        if not (path / main_entry).exists():
+            problems.append(f"{path} (incomplete: missing main entry {main_entry!r})")
+            continue
+
+        return path
 
     searched = "\n".join(f"- {problem}" for problem in problems) or "- <no candidates>"
     raise FileNotFoundError(
-        "Unable to locate iztro JS reference package.\n"
+        "Unable to locate a usable iztro JS reference package.\n"
         f"Expected version: {EXPECTED_JS_VERSION}\n"
         "Searched:\n"
         f"{searched}\n"
-        "Set IZTRO_JS_PACKAGE to a directory containing iztro's package.json."
+        "Install it with `npm install` (repo root) or "
+        f"`npm install --prefix /tmp/iztro-{EXPECTED_JS_VERSION} iztro@{EXPECTED_JS_VERSION}`, "
+        "or set IZTRO_JS_PACKAGE to a directory containing iztro's package.json."
     )
 
 
@@ -325,10 +337,19 @@ console.log(JSON.stringify({{
     result = subprocess.run(
         ["node", "-e", script, payload],
         cwd=REPO_ROOT,
-        check=True,
+        check=False,
         capture_output=True,
         text=True,
     )
+    if result.returncode != 0:
+        # Do NOT let CalledProcessError surface here: it stringifies the whole
+        # inlined JS program and buries node's actual error (e.g. a broken or
+        # partially-installed iztro package).
+        raise RuntimeError(
+            f"node failed for case {case['label']!r} (exit {result.returncode}) "
+            f"using iztro at {JS_PACKAGE_PATH}\n"
+            f"--- stderr ---\n{result.stderr.strip() or '<empty>'}"
+        )
     return json.loads(result.stdout)
 
 
