@@ -84,6 +84,13 @@ class FunctionalPalace(Palace):
         """
         return self._astrolabe
 
+    def _effective_language(self, lang: Optional[str]) -> Optional[str]:
+        """未显式指定语言时，取所属星盘的语言而非进程全局语言。"""
+        if lang is not None:
+            return lang
+        astrolabe = self._astrolabe
+        return astrolabe.language if astrolabe is not None else None
+
     def has(self, stars: List[StarName]) -> bool:
         """
         判断宫位是否包含所有指定的星曜

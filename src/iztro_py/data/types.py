@@ -302,17 +302,27 @@ class Star(BaseModel):
 
     model_config = ConfigDict(frozen=False)  # Allow modification for mutagen/brightness
 
+    def _effective_language(self, lang: Optional[str]) -> Optional[str]:
+        """解析实际使用的语言。
+
+        基础数据模型没有星盘上下文，返回 None 表示回退到进程全局语言。
+        `FunctionalStar` / `FunctionalPalace` 会覆写本方法，改为取所属星盘的
+        `language`，这样多张不同语言的星盘并存时互不干扰。
+        """
+        return lang
+
     def translate_name(self, lang: Optional[str] = None) -> str:
         """
         翻译星曜名称
 
         Args:
-            lang: 目标语言代码，如不指定则使用当前语言
+            lang: 目标语言代码；不指定时取所属星盘的语言，
+                  游离对象（无所属星盘）则回退到进程全局语言
 
         Returns:
             翻译后的星曜名称
         """
-        return _translate_name(self.name, lang)
+        return _translate_name(self.name, self._effective_language(lang))
 
     def translate_brightness(self, lang: Optional[str] = None) -> Optional[str]:
         """
@@ -326,6 +336,7 @@ class Star(BaseModel):
         """
         if not self.brightness:
             return None
+        lang = self._effective_language(lang)
         from iztro_py.i18n import t
 
         # 亮度直接就是中文，需要映射到英文键
@@ -371,25 +382,29 @@ class Palace(BaseModel):
 
     model_config = ConfigDict(frozen=False)
 
+    def _effective_language(self, lang: Optional[str]) -> Optional[str]:
+        """见 :meth:`Star._effective_language`。"""
+        return lang
+
     def translate_name(self, lang: Optional[str] = None) -> str:
         """
         翻译宫位名称
 
         Args:
-            lang: 目标语言代码
+            lang: 目标语言代码；不指定时取所属星盘的语言
 
         Returns:
             翻译后的宫位名称
         """
-        return _translate_name(self.name, lang)
+        return _translate_name(self.name, self._effective_language(lang))
 
     def translate_heavenly_stem(self, lang: Optional[str] = None) -> str:
         """翻译天干"""
-        return _translate_name(self.heavenly_stem, lang)
+        return _translate_name(self.heavenly_stem, self._effective_language(lang))
 
     def translate_earthly_branch(self, lang: Optional[str] = None) -> str:
         """翻译地支"""
-        return _translate_name(self.earthly_branch, lang)
+        return _translate_name(self.earthly_branch, self._effective_language(lang))
 
 
 class SoulAndBody(BaseModel):
@@ -452,15 +467,20 @@ class Astrolabe(BaseModel):
 
     def set_language(self, lang: Language) -> None:
         """
-        设置星盘语言
+        设置**本星盘**的输出语言
+
+        只影响这一张星盘：`palace.translate_name()` 等方法默认读取
+        `self.language`。不再改动进程全局语言——此前这里会调用
+        `i18n.set_language()`，导致新建一张别的语言的星盘会静默改掉已有
+        星盘的输出。要切换全局默认语言请直接调用 `iztro_py.i18n.set_language()`。
 
         Args:
             lang: 目标语言代码
         """
-        from iztro_py.i18n import set_language
+        from iztro_py.i18n import _load_locale
 
+        _load_locale(lang)
         self.language = lang
-        set_language(lang)
 
 
 class SurroundedPalaces(BaseModel):

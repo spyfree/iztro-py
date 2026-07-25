@@ -53,6 +53,16 @@ class FunctionalStar(Star):
         """
         return self._palace
 
+    def _effective_language(self, lang: Optional[str]) -> Optional[str]:
+        """未显式指定语言时，沿宫位取所属星盘的语言而非进程全局语言。"""
+        if lang is not None:
+            return lang
+        palace = self._palace
+        if palace is None:
+            return None
+        astrolabe = palace.astrolabe()
+        return astrolabe.language if astrolabe is not None else None
+
     def with_brightness(self, brightness: Union[Brightness, List[Brightness]]) -> bool:
         """
         判断星曜是否具有指定亮度

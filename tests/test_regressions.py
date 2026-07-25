@@ -263,3 +263,59 @@ class TestTimeName:
     def test_other_hours_unchanged(self):
         assert astro.by_solar("1990-10-21", 6, "女").time == "午时"
         assert astro.by_solar("1990-10-21", 8, "女").time == "申时"
+
+
+class TestPerChartLanguage:
+    """翻译默认取所属星盘的语言，不再受进程全局语言影响。
+
+    此前 `translate_name()` 直接读全局 `_current_language`，于是新建一张别的
+    语言的星盘会静默改掉已有星盘的输出——而 `chart.language` 字段仍显示原
+    语言，让人以为一切正常。
+    """
+
+    def test_building_another_chart_does_not_mutate_earlier_one(self):
+        en = astro.by_solar("2000-8-16", 6, "男", language="en-US")
+        before = en.get_soul_palace().translate_name()
+        assert before == "Soul"
+
+        astro.by_solar("2000-8-16", 6, "男", language="zh-CN")
+        assert en.get_soul_palace().translate_name() == before
+        assert en.star("紫微").translate_name() == "Ziwei"
+
+    def test_global_set_language_does_not_leak_into_existing_charts(self):
+        import iztro_py.i18n as i18n
+
+        previous = i18n.get_language()
+        try:
+            en = astro.by_solar("2000-8-16", 6, "男", language="en-US")
+            zh = astro.by_solar("2000-8-16", 6, "男", language="zh-CN")
+            i18n.set_language("ko-KR")
+            assert en.get_soul_palace().translate_name() == "Soul"
+            assert zh.get_soul_palace().translate_name() == "命宫"
+        finally:
+            i18n.set_language(previous)
+
+    def test_explicit_lang_argument_still_wins(self):
+        chart = astro.by_solar("2000-8-16", 6, "男", language="en-US")
+        assert chart.get_soul_palace().translate_name("zh-CN") == "命宫"
+        assert chart.star("紫微").translate_name("zh-CN") == "紫微"
+
+    def test_set_language_is_scoped_to_the_chart(self):
+        a = astro.by_solar("2000-8-16", 6, "男", language="zh-CN")
+        b = astro.by_solar("2000-8-16", 6, "男", language="zh-CN")
+        a.set_language("en-US")
+        assert a.get_soul_palace().translate_name() == "Soul"
+        assert b.get_soul_palace().translate_name() == "命宫"
+
+    def test_to_iztro_dict_uses_the_chart_language(self):
+        en = astro.by_solar("2000-8-16", 6, "男", language="en-US")
+        astro.by_solar("2000-8-16", 6, "男", language="zh-CN")
+        exported = en.to_iztro_dict()
+        assert exported["palaces"][0]["name"] == "Soul"
+
+    def test_detached_star_falls_back_to_global_language(self):
+        from iztro_py.data.types import Star
+
+        star = Star(name="ziweiMaj", type="major", scope="origin")
+        assert star.translate_name("en-US") == "Ziwei"
+        assert star.translate_name("zh-CN") == "紫微"

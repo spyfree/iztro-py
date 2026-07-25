@@ -286,15 +286,18 @@ class FunctionalAstrolabe(Astrolabe):
         - palaces: [{ name, isBodyPalace, isOriginalPalace, heavenlyStem, earthlyBranch, majorStars, minorStars }]
         """
 
+        # 显式绑定本星盘的语言，避免受进程全局语言影响。
+        lang = self.language
+
         def tr_branch(branch_key: str) -> str:
-            return t(f"earthlyBranch.{branch_key}") if "Earthly" in branch_key else branch_key
+            return t(f"earthlyBranch.{branch_key}", lang) if "Earthly" in branch_key else branch_key
 
         def tr_stem(stem_key: str) -> str:
-            return t(f"heavenlyStem.{stem_key}") if "Heavenly" in stem_key else stem_key
+            return t(f"heavenlyStem.{stem_key}", lang) if "Heavenly" in stem_key else stem_key
 
         def star_dict(star: Star) -> dict:
             return {
-                "name": star.translate_name(),
+                "name": star.translate_name(lang),
                 "type": star.type,
                 "scope": star.scope,
                 "brightness": star.brightness,
@@ -332,8 +335,8 @@ class FunctionalAstrolabe(Astrolabe):
             "zodiac": self.zodiac,
             "earthlyBranchOfSoulPalace": tr_branch(self.earthly_branch_of_soul_palace),
             "earthlyBranchOfBodyPalace": tr_branch(self.earthly_branch_of_body_palace),
-            "soul": Star(name=self.soul, type="major", scope="origin").translate_name(),
-            "body": Star(name=self.body, type="major", scope="origin").translate_name(),
+            "soul": Star(name=self.soul, type="major", scope="origin").translate_name(lang),
+            "body": Star(name=self.body, type="major", scope="origin").translate_name(lang),
             "fiveElementsClass": self.five_elements_class,
             "palaces": palaces,
         }
