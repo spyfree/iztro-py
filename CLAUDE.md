@@ -39,8 +39,14 @@ python scripts/compare_iztro_alignment.py
 ```
 
 The alignment script and `tests/test_alignment_core.py` need `iztro@2.5.8` as
-a JS reference. It is auto-discovered from `/tmp/iztro-2.5.8/node_modules/iztro`
-or the repo's tracked `node_modules/iztro`; override with `IZTRO_JS_PACKAGE`.
+a JS reference. Install it with `npm install` at the repo root; it is
+auto-discovered from `./node_modules/iztro` or
+`/tmp/iztro-2.5.8/node_modules/iztro`, and `IZTRO_JS_PACKAGE` overrides both.
+It is NOT vendored — `node_modules/` is gitignored.
+
+Without a usable reference the alignment tests **skip**. Set
+`IZTRO_REQUIRE_JS_REFERENCE=1` (as CI does) to turn that skip into a failure,
+so the suite can never silently stop running.
 
 Note: plain `python somescript.py` resolves `iztro_py` from site-packages, which
 may shadow the working tree with an older release. Use `pip install -e .` or
@@ -51,11 +57,11 @@ may shadow the working tree with an older release. Use `pip install -e .` or
 # Format code
 black src tests
 
-# Type checking
-mypy src
+# Type checking (gates CI; keep it clean)
+mypy src/iztro_py --ignore-missing-imports
 
-# Linting (if ruff is configured)
-ruff check src tests
+# Linting (gates CI; rules are selected explicitly in pyproject.toml)
+ruff check src tests scripts
 ```
 
 ## Architecture
@@ -120,6 +126,7 @@ ruff check src tests
    - Day pillar rolls to the next day for 晚子时 (`dayDivide='forward'`)
    - Nominal age (虚岁) = target lunar year − birth lunar year + 1
    - Star brightness tables mirror iztro `STARS_INFO` (indexed from 寅=0), including minor stars 昌曲火铃羊陀
+   - Out-of-range horoscope lookups return `index == -1` ("no palace"), never a fallback palace
 
 ### Type System
 
@@ -181,10 +188,11 @@ All tests use pytest framework.
 
 ## Known Limitations
 
-1. **i18n**: Six locales ship (zh-CN, zh-TW, en-US, ja-JP, ko-KR, vi-VN); zh-CN is the most complete and untranslated keys fall back to zh-CN. The language setting is process-global (`i18n.set_language`), so charts created with different languages share translation state.
-2. **PyPI**: Published as `iztro-py` (latest 0.4.0). Install released builds with `pip install -U iztro-py`; for development use `pip install -e .` so imports resolve to the working tree.
+1. **i18n**: Six locales ship (zh-CN, zh-TW, en-US, ja-JP, ko-KR, vi-VN), all with full key coverage. Translations resolve **per chart** (from `Astrolabe.language`), so charts in different languages no longer interfere; `i18n.set_language()` only moves the default for charts that do not specify one. Non-zh-CN values are generated from the iztro reference — regenerate with `scripts/generate_locales.py` rather than hand-editing. `palace.changsheng12` and the other three 12-god fields store *translated strings* (as iztro does), so they are fixed at the language the chart was built with.
+2. **PyPI**: Published as `iztro-py` (latest 0.5.0). Install released builds with `pip install -U iztro-py`; for development use `pip install -e .` so imports resolve to the working tree.
 3. **Documentation site**: Planned but not yet implemented
-4. **Horoscope feature gaps vs iztro**: no 流曜 (`stars` is always `None` on horoscope items), no 流年将前/岁前十二神 (`yearlyDecStar`), and no config system (`yearDivide`/`ageDivide` etc. are fixed to iztro defaults). `horoscope()` returns a plain data model, not a chainable FunctionalHoroscope.
+4. **Horoscope feature gaps vs iztro**: no 流曜 (`stars` is always `None` on horoscope items), no 流年将前/岁前十二神 (`yearlyDecStar`), and no config system (`yearDivide`/`ageDivide` etc. are fixed to iztro defaults — `data.types.Config` and `AstrolabeOptions` are declared but wired to nothing). `horoscope()` returns a plain data model, not a chainable FunctionalHoroscope.
+5. **Exported-but-unused helpers**: `utils.get_decadal_range` and `utils.get_decadal_palace_index` are public but nothing calls them; the live decadal logic is `astro.palace.populate_decadal_and_ages`. Removing them is a pending API decision.
 
 ## Releasing
 

@@ -5,6 +5,107 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2026-07-25
+
+Follow-up audit to the 0.4.0 alignment work. The core birth-chart and horoscope
+algorithms were re-verified by differential fuzzing against `iztro@2.5.8` — 500
+random charts and 500 random horoscope queries (1930–2035, all 13 时辰, both
+genders, horoscope targets spanning pre-birth to far-future) match on every
+compared field. The defects fixed here were all in the surrounding surface:
+exported helpers nothing called internally, i18n, out-of-range handling, and
+the test/CI infrastructure meant to catch exactly this.
+
+### 💥 Breaking Changes
+
+- **en-US star and palace names now use iztro's semantic English.**
+  `ziweiMaj` renders as `"emperor"` (was `"Ziwei"`), `lucunMin` as `"money"`,
+  `soulPalace` as `"soul"` (was `"Soul"`). en-US output is now identical to
+  iztro's. `brightness` is the deliberate exception — it keeps this project's
+  words (`"Temple"`, `"Prosperous"`) rather than iztro's `[+3]` score notation,
+  since it was already fully translated in all six languages
+- **`astrolabe.time`, `.zodiac`, `.sign` and `.five_elements_class` are now
+  localized** instead of always Simplified Chinese. Charts built with the
+  default `language='zh-CN'` are unaffected except for `time` (below)
+- **`astrolabe.time` now distinguishes 早子时 from 晚子时.** Both `time_index=0`
+  and `time_index=12` previously returned `"子时"`, erasing a distinction that
+  matters — the late rat hour rolls the day pillar to the next day
+- **`horoscope.decadal.index` / `.age.index` return `-1`** when the nominal age
+  falls outside every decadal/age range, matching iztro. They previously
+  returned `0` — 命宫 — so an out-of-range query was indistinguishable from a
+  real result. Reachable from a date before birth, from a date in the birth
+  lunar year before 春节 (nominal age 0), and from any age past ~125.
+  `HoroscopeItem.index` accepts `-1` now; it was constrained to `ge=0`, so the
+  sentinel was not even representable
+- Removed unreferenced internals: `calculate_palace_ages`,
+  `get_body_palace_index`, `get_palace_earthly_branch`,
+  `FIVE_ELEMENTS_CLASS_LOOKUP`, `ZIWEI_START_POSITIONS`, `BRIGHTNESS_ORDER`,
+  `BRIGHTNESS_MAPPING`
+
+### 🐛 Correctness Fixes
+
+- **`get_day_stem_branch()` returned the wrong day pillar for every date.**
+  The "公元元年1月1日是甲子日后的第37天" anchor is wrong, putting results 51 days
+  off in the 60-ganzhi cycle; a 567-date sweep over 1900–2050 mismatched the
+  production four-pillar path 567 times. It now delegates to `lunar_python`.
+  Chart building never used it, which is why the alignment suite never caught it
+- **Building a chart in another language silently rewrote earlier charts.**
+  `translate_name()` read a process-global language, so a second
+  `by_solar(..., language=...)` changed what an existing chart rendered — while
+  `chart.language` still reported the original. Translations now resolve per
+  chart. `Astrolabe.set_language()` is scoped to its own chart and no longer
+  moves the global default
+- **`horoscope()` silently mis-computed the five elements class for non-Chinese
+  charts.** It recovered the class by reverse-parsing the localized display
+  string, defaulting to 水二局 on a miss. The enum is now carried on the model as
+  `raw_five_elements_class`
+- **Deep copies of a chart pointed at a stale astrolabe.** `copy.deepcopy`,
+  `model_copy(deep=True)` and `pickle` all produced charts whose palaces
+  referenced a third object, so `star.surrounded_palaces()` and
+  `opposite_palace()` queried the wrong chart
+- `get_year_stem_branch()` and `get_time_stem_branch()` are correct but have
+  non-obvious contracts (lunar year; next-day stem for the late rat hour). Both
+  are now documented with worked examples, and pinned by tests
+
+### 🌍 i18n
+
+- **All six locales are now complete.** zh-TW, en-US, ja-JP, ko-KR and vi-VN
+  each carried only 5 of zh-CN's 89 sections, so all 42 adjective stars and all
+  48 長生/博士/將前/歲前十二神 fell back to Simplified Chinese in every non-zh-CN
+  language — including Traditional Chinese. Locales are now generated from the
+  iztro reference locales via `scripts/generate_locales.py`
+- Added `time`, `zodiac`, `sign`, `fiveElementsClass` and `gender` sections
+- `get_zodiac_by_solar_date()` and `get_sign_by_solar_date()` honour their
+  `language` argument, which they previously accepted and ignored
+
+### 🏗️ Infrastructure
+
+- **The alignment suite was failing, not running, on a fresh clone.** The
+  `.gitignore` pattern `lib/`, meant for Python build artifacts, also matched
+  `node_modules/iztro/lib/` and excluded the reference package's compiled JS.
+  Patterns are anchored to the repo root now, `node_modules/` is ignored
+  outright (untracking 730 vendored JS files), and `npm install` reproduces the
+  reference. A missing reference skips locally and fails CI via
+  `IZTRO_REQUIRE_JS_REFERENCE=1`
+- The alignment script no longer raises `CalledProcessError` out of its node
+  subprocess, which stringified the entire inlined JS program and buried node's
+  actual error
+- **mypy and ruff actually gate CI now.** mypy ran as `|| true` *and*
+  `continue-on-error`; ruff was `continue-on-error` with no rule selection, so
+  an unpinned ruff changed what CI checked from run to run. Rules are selected
+  explicitly, ruff is version-pinned, and the tree is clean under both
+- Removed 13 of 15 files in `scripts/`; six crashed on APIs that no longer
+  exist and three required an undeclared `py_iztro` dependency
+
+### ✅ Tests
+
+- `tests/test_horoscope.py` had four tests and **zero assertions** — they only
+  printed, then unconditionally printed "测试通过". Replaced with 24
+  parametrized tests covering nominal age, all six scope indices, ganzhi,
+  mutagen, palace rotation and decadal direction
+- Gave real assertions to the other four assertion-free tests; removed the
+  `__main__` blind-except script runners from five files
+- 85 → 136 tests; assertion-free tests 8 → 0
+
 ## [0.4.0] - 2026-07-18
 
 Full-field alignment with `iztro@2.5.8` defaults. A 36-case random/edge sweep
