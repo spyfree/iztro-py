@@ -404,3 +404,63 @@ class TestTopLevelFieldsHonourLanguage:
             horoscope = chart.horoscope("2024-1-15", 6)
             results.add((horoscope.decadal.index, horoscope.age.index, horoscope.nominal_age))
         assert results == {(1, 7, 24)}
+
+
+class TestCopyPreservesBackReferences:
+    """深拷贝后的星盘，其宫位/星曜必须指向副本自己，而不是原盘或第三个对象。
+
+    `_palace` / `_astrolabe` 是普通属性（非 pydantic 字段），构成
+    星曜→宫位→星盘→星曜 的引用环。pydantic 的 `__deepcopy__` 在复制
+    `__dict__` 前没有把新对象登记进 memo，环不收敛，于是副本的宫位指向了
+    另一个陈旧星盘——`star.surrounded_palaces()` 会静默查错盘。
+    """
+
+    def _charts(self):
+        import copy
+        import pickle
+
+        chart = astro.by_solar("2000-8-16", 6, "男")
+        return chart, [
+            ("deepcopy", copy.deepcopy(chart)),
+            ("model_copy", chart.model_copy(deep=True)),
+            ("pickle", pickle.loads(pickle.dumps(chart))),
+        ]
+
+    def test_palace_points_at_the_copy(self):
+        _, copies = self._charts()
+        for label, copied in copies:
+            assert copied.get_soul_palace().astrolabe() is copied, label
+
+    def test_star_points_at_the_copied_palace(self):
+        _, copies = self._charts()
+        for label, copied in copies:
+            palace = copied.get_soul_palace()
+            assert copied.star("紫微").palace() is palace, label
+
+    def test_navigation_from_a_copy_stays_inside_the_copy(self):
+        _, copies = self._charts()
+        for label, copied in copies:
+            star = copied.star("紫微")
+            surrounded = star.surrounded_palaces()
+            assert surrounded is not None, label
+            for palace in surrounded.all_palaces():
+                assert palace.astrolabe() is copied, label
+            assert star.opposite_palace() is copied.palace(6), label
+
+    def test_copy_is_independent_of_the_original(self):
+        import copy
+
+        original = astro.by_solar("2000-8-16", 6, "男")
+        copied = copy.deepcopy(original)
+        copied.set_language("en-US")
+        assert copied.get_soul_palace().translate_name() == "soul"
+        assert original.get_soul_palace().translate_name() == "命宫"
+
+    def test_standalone_palace_copy_rewires_its_stars(self):
+        import copy
+
+        palace = copy.deepcopy(astro.by_solar("2000-8-16", 6, "男").get_soul_palace())
+        for star in palace.major_stars:
+            assert star.palace() is palace
+        # 未挂到任何星盘上，反向引用应为 None 而不是指向原盘
+        assert palace.astrolabe() is None

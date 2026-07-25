@@ -4,7 +4,8 @@ FunctionalPalace class - Palace with functional methods
 Provides a rich API for querying palace properties and stars.
 """
 
-from typing import Optional, List, TYPE_CHECKING, cast
+from typing import ClassVar, Optional, List, TYPE_CHECKING, cast
+from iztro_py.astro._backref import BackRefDeepCopyMixin
 from iztro_py.data.types import Palace, StarName, Mutagen, Star
 from iztro_py.astro.functional_star import FunctionalStar
 from iztro_py.i18n import normalize_star_name
@@ -18,12 +19,14 @@ def _to_star_key(name: str) -> str:
     return normalize_star_name(name) or name
 
 
-class FunctionalPalace(Palace):
+class FunctionalPalace(BackRefDeepCopyMixin, Palace):
     """
     功能增强的宫位类
 
     继承自Palace，添加了星曜查询方法和关联星盘的能力
     """
+
+    _BACKREF_ATTR: ClassVar[str] = "_astrolabe"
 
     # Override parent class attributes with more specific types
     major_stars: List[FunctionalStar]  # type: ignore[assignment]
@@ -62,9 +65,18 @@ class FunctionalPalace(Palace):
 
         self._astrolabe: Optional["FunctionalAstrolabe"] = None
 
-        # 设置星曜的宫位引用
+        self._wire_back_references()
+
+    def _wire_back_references(self) -> None:
+        """把每颗星曜的 palace 反向引用指向 self（构造与深拷贝后都需要）。"""
         for star in self.major_stars + self.minor_stars + self.adjective_stars:
             cast(FunctionalStar, star).set_palace(self)
+
+    def __deepcopy__(self, memo: Optional[dict] = None) -> "FunctionalPalace":
+        copied = super().__deepcopy__(memo)
+        # 星曜的 _palace 已被 mixin 置空，这里重新指向副本自己
+        copied._wire_back_references()
+        return copied
 
     def set_astrolabe(self, astrolabe: "FunctionalAstrolabe") -> None:
         """

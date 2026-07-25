@@ -55,9 +55,22 @@ class FunctionalAstrolabe(Astrolabe):
             raw_five_elements_class=astrolabe.raw_five_elements_class,
         )
 
-        # 设置宫位的星盘引用
+        self._wire_back_references()
+
+    def _wire_back_references(self) -> None:
+        """把每个宫位的 astrolabe 反向引用指向 self。
+
+        必须在构造和深拷贝后都执行：`_astrolabe` 是普通属性而非 pydantic 字段，
+        深拷贝会为它单独复制一份，导致副本的宫位指向另一个（陈旧的）星盘，
+        于是 `star.surrounded_palaces()` / `opposite_palace()` 会查错盘。
+        """
         for palace in self.palaces:
             cast(FunctionalPalace, palace).set_astrolabe(self)
+
+    def __deepcopy__(self, memo: Optional[dict] = None) -> "FunctionalAstrolabe":
+        copied = super().__deepcopy__(memo)
+        copied._wire_back_references()
+        return copied
 
     def palace(self, index_or_name: Union[int, PalaceName]) -> Optional[FunctionalPalace]:
         """
