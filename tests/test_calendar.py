@@ -2,24 +2,20 @@
 Test calendar conversion functions
 """
 
-import sys
 import os
+import sys
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../src")))
 
-from datetime import date
 from iztro_py.utils.calendar import (
-    solar_to_lunar,
-    lunar_to_solar,
-    get_year_stem_branch,
-    get_month_stem_branch,
-    get_day_stem_branch,
-    get_time_stem_branch,
-    get_heavenly_stem_and_earthly_branch_date,
-    get_zodiac,
-    get_sign,
-    format_lunar_date,
     format_chinese_date,
+    format_lunar_date,
+    get_heavenly_stem_and_earthly_branch_date,
+    get_sign,
+    get_year_stem_branch,
+    get_zodiac,
+    lunar_to_solar,
+    solar_to_lunar,
 )
 
 

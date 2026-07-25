@@ -2,23 +2,21 @@
 Test star positioning algorithms
 """
 
-import sys
 import os
+import sys
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../src")))
 
+from iztro_py.astro.palace import get_soul_and_body, initialize_palaces
+from iztro_py.data.brightness import apply_brightness_to_palaces
+from iztro_py.data.types import FiveElementsClass
 from iztro_py.star.location import (
-    get_ziwei_index,
     get_tianfu_index,
-    get_star_indices,
-    get_major_star_positions,
+    get_ziwei_index,
 )
 from iztro_py.star.major_star import place_major_stars
 from iztro_py.star.minor_star import place_minor_stars
 from iztro_py.star.mutagen import apply_mutagen_to_palaces, get_mutagen_stars
-from iztro_py.data.brightness import apply_brightness_to_palaces
-from iztro_py.data.types import FiveElementsClass
-from iztro_py.astro.palace import get_soul_and_body, initialize_palaces
 from iztro_py.utils.helpers import get_five_elements_class
 
 
@@ -67,7 +65,7 @@ def test_major_stars_placement():
     total_major_stars = sum(len(p["major_stars"]) for p in palaces)
 
     print(f"五行局: {five_class}")
-    print(f"农历日: 17")
+    print("农历日: 17")
     print(f"安置的主星总数: {total_major_stars}")
 
     # 14主星应该都被安置

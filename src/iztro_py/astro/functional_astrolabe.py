@@ -6,11 +6,12 @@ Provides rich API for querying palaces, stars, and their relationships.
 """
 
 from typing import List, Optional, Union, cast
-from iztro_py.data.types import Astrolabe, PalaceName, StarName, Palace, Star
+
 from iztro_py.astro.functional_palace import FunctionalPalace
 from iztro_py.astro.functional_star import FunctionalStar
 from iztro_py.astro.functional_surpalaces import FunctionalSurpalaces
 from iztro_py.data.constants import get_surrounded_indices
+from iztro_py.data.types import Astrolabe, Palace, PalaceName, Star, StarName
 from iztro_py.i18n import t
 
 
@@ -96,9 +97,9 @@ class FunctionalAstrolabe(Astrolabe):
             # 按名称查询：先归一化为内部 key（支持各语言译名和别名），
             # 再按宫位实际名称匹配。注意 palaces 列表以寅宫为索引 0，
             # 不能把宫名序号当作列表下标使用。
+            from iztro_py.data.constants import PALACES
             from iztro_py.i18n import normalize_palace_name
             from iztro_py.utils.helpers import get_palace_index_by_name
-            from iztro_py.data.constants import PALACES
 
             palace_key = normalize_palace_name(index_or_name)
             if palace_key is None:
@@ -133,7 +134,7 @@ class FunctionalAstrolabe(Astrolabe):
         star_key = normalize_star_name(star_name) or star_name
         for palace in self.palaces:
             fp = cast(FunctionalPalace, palace)
-            star = fp.get_star(star_key)
+            star = fp.get_star(cast(StarName, star_key))
             if star:
                 return star
 
@@ -281,8 +282,7 @@ class FunctionalAstrolabe(Astrolabe):
             "十二宫:",
         ]
 
-        for palace in self.palaces:
-            lines.append(f"  {palace}")
+        lines.extend(f"  {palace}" for palace in self.palaces)
 
         return "\n".join(lines)
 

@@ -5,7 +5,8 @@ Functions for placing the 14 major stars (主星) into palaces.
 """
 
 from typing import Any, Dict, List, cast
-from iztro_py.data.types import Star, FiveElementsClass, StarName
+
+from iztro_py.data.types import FiveElementsClass, Star, StarName
 from iztro_py.star.location import get_major_star_positions
 
 
@@ -29,7 +30,7 @@ def place_major_stars(
     """
     # 兼容旧API：如果第一个参数是 FiveElementsClass，则按旧算法计算索引
     if isinstance(arg1, FiveElementsClass):
-        from iztro_py.star.location import get_ziwei_index, get_tianfu_index
+        from iztro_py.star.location import get_tianfu_index, get_ziwei_index
 
         five_class: FiveElementsClass = arg1
         lunar_day: int = arg2

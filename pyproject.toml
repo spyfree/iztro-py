@@ -37,7 +37,7 @@ dev = [
     "pytest-cov>=4.0.0",
     "black==24.4.2",
     "mypy>=1.0.0",
-    "ruff>=0.1.0",
+    "ruff>=0.16.0,<0.17",
 ]
 docs = [
     "sphinx>=7.0.0",
@@ -60,7 +60,9 @@ line-length = 100
 target-version = ["py38", "py39", "py310", "py311"]
 
 [tool.mypy]
-python_version = "3.9"
+# No python_version pin: current mypy refuses anything below 3.10, while the
+# package still supports 3.8+. Python-version-specific syntax compatibility is
+# enforced by ruff's target-version = "py38" instead.
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = false
@@ -68,6 +70,28 @@ disallow_untyped_defs = false
 [tool.ruff]
 line-length = 100
 target-version = "py38"
+
+# Select rules explicitly. Without this ruff applies whatever its current
+# default set happens to be, so an unpinned ruff silently changes what CI
+# enforces from run to run — which is why the lint step was previously marked
+# continue-on-error and its findings went unread.
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "F",    # pyflakes
+    "W",    # pycodestyle warnings
+    "I",    # import sorting
+    "B",    # bugbear
+    "SIM",  # simplifications
+    "PERF", # obvious performance traps
+]
+ignore = [
+    "E501",  # line length is black's job
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Locale modules are generated data tables, not hand-written code.
+"src/iztro_py/i18n/locales/*.py" = ["E501"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -3,19 +3,25 @@ Integration test - Complete astrolabe generation
 完整的星盘生成集成测试
 """
 
-import sys
 import os
+import sys
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../src")))
 
+from iztro_py.astro.palace import get_soul_and_body, initialize_palaces
+from iztro_py.data.brightness import apply_brightness_to_palaces
+from iztro_py.data.earthly_branches import get_body_star, get_soul_star
+from iztro_py.star.major_star import place_major_stars
+from iztro_py.star.minor_star import place_minor_stars
+from iztro_py.star.mutagen import apply_mutagen_to_palaces
 from iztro_py.utils.calendar import (
+    format_chinese_date,
+    format_lunar_date,
+    get_heavenly_stem_and_earthly_branch_date,
+    get_sign,
+    get_zodiac,
     parse_solar_date,
     solar_to_lunar,
-    get_heavenly_stem_and_earthly_branch_date,
-    get_zodiac,
-    get_sign,
-    format_lunar_date,
-    format_chinese_date,
 )
 from iztro_py.utils.helpers import (
     get_five_elements_class,
@@ -23,12 +29,6 @@ from iztro_py.utils.helpers import (
     get_time_name,
     get_time_range,
 )
-from iztro_py.astro.palace import get_soul_and_body, initialize_palaces
-from iztro_py.star.major_star import place_major_stars
-from iztro_py.star.minor_star import place_minor_stars
-from iztro_py.star.mutagen import apply_mutagen_to_palaces
-from iztro_py.data.brightness import apply_brightness_to_palaces
-from iztro_py.data.earthly_branches import get_soul_star, get_body_star
 
 
 def generate_astrolabe(solar_date_str: str, time_index: int, gender: str):
@@ -52,7 +52,7 @@ def generate_astrolabe(solar_date_str: str, time_index: int, gender: str):
 
     # 2. 阳历转农历
     lunar_date = solar_to_lunar(year, month, day)
-    print(f"\n📅 日期信息:")
+    print("\n📅 日期信息:")
     print(f"  阳历: {year}年{month}月{day}日")
     print(f"  农历: {format_lunar_date(lunar_date)}")
 
@@ -72,7 +72,7 @@ def generate_astrolabe(solar_date_str: str, time_index: int, gender: str):
     # 5. 计算命宫身宫
     soul_and_body = get_soul_and_body(lunar_date.month, time_index, chinese_date.year_stem)
 
-    print(f"\n🏠 命身宫信息:")
+    print("\n🏠 命身宫信息:")
     print(f"  命宫: 索引 {soul_and_body.soul_index}")
     print(
         f"  命宫干支: {soul_and_body.heavenly_stem_of_soul} {soul_and_body.earthly_branch_of_soul}"
@@ -109,7 +109,7 @@ def generate_astrolabe(solar_date_str: str, time_index: int, gender: str):
     apply_brightness_to_palaces(palaces)
 
     # 13. 打印十二宫信息
-    print(f"\n⭐ 十二宫星曜配置:")
+    print("\n⭐ 十二宫星曜配置:")
     print("=" * 80)
 
     for palace in palaces:
@@ -126,7 +126,7 @@ def generate_astrolabe(solar_date_str: str, time_index: int, gender: str):
 
         # 主星
         if palace["major_stars"]:
-            print(f"  主星:", end="")
+            print("  主星:", end="")
             for star in palace["major_stars"]:
                 star_info = f" {star.name}"
                 if star.brightness:
@@ -138,7 +138,7 @@ def generate_astrolabe(solar_date_str: str, time_index: int, gender: str):
 
         # 辅星
         if palace["minor_stars"]:
-            print(f"  辅星:", end="")
+            print("  辅星:", end="")
             for star in palace["minor_stars"]:
                 star_info = f" {star.name}"
                 if star.mutagen:
@@ -154,7 +154,7 @@ def generate_astrolabe(solar_date_str: str, time_index: int, gender: str):
     )
 
     print("\n" + "=" * 80)
-    print(f"✓ 星盘生成完成！")
+    print("✓ 星盘生成完成！")
     print(f"  主星: {total_major}颗")
     print(f"  辅星: {total_minor}颗")
     print(f"  四化: {total_mutagen}颗")

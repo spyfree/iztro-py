@@ -2,14 +2,14 @@
 Test palace positioning algorithms
 """
 
-import sys
 import os
+import sys
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../src")))
 
 from iztro_py.astro.palace import get_soul_and_body, initialize_palaces
-from iztro_py.data.types import FiveElementsClass
 from iztro_py.data.constants import EARTHLY_BRANCHES, fix_index
+from iztro_py.data.types import FiveElementsClass
 from iztro_py.utils.helpers import get_five_elements_class
 
 

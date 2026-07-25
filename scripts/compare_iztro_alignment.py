@@ -25,14 +25,12 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, List, Sequence
 
-
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SRC_ROOT = REPO_ROOT / "src"
 if str(SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(SRC_ROOT))
 
 from iztro_py import astro  # noqa: E402
-
 
 EXPECTED_JS_VERSION = "2.5.8"
 

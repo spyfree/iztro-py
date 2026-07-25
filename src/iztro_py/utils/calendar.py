@@ -6,24 +6,24 @@ and calculating heavenly stems and earthly branches (天干地支).
 """
 
 from datetime import date
-from typing import Tuple, Optional
-from lunar_python import Solar as LunarSolar
-from lunar_python import Lunar as LunarDateValue
+from typing import Optional, Tuple, cast
 
-from iztro_py.data.types import (
-    LunarDate,
-    HeavenlyStemAndEarthlyBranchDate,
-    HeavenlyStemName,
-    EarthlyBranchName,
-)
+from lunar_python import Lunar as LunarDateValue
+from lunar_python import Solar as LunarSolar
+
 from iztro_py.data.constants import (
-    HEAVENLY_STEMS,
     EARTHLY_BRANCHES,
-    TIGER_RULE,
+    HEAVENLY_STEMS,
     RAT_RULE,
+    TIGER_RULE,
     fix_index,
 )
-
+from iztro_py.data.types import (
+    EarthlyBranchName,
+    HeavenlyStemAndEarthlyBranchDate,
+    HeavenlyStemName,
+    LunarDate,
+)
 
 # ============================================================================
 # Solar to Lunar Conversion
@@ -60,7 +60,7 @@ def solar_to_lunar(year: int, month: int, day: int) -> LunarDate:
             is_leap_month=lunar_month < 0,
         )
     except Exception as e:
-        raise ValueError(f"Error converting solar to lunar: {e}")
+        raise ValueError(f"Error converting solar to lunar: {e}") from e
 
 
 def parse_solar_date(date_str: str) -> Tuple[int, int, int]:
@@ -87,8 +87,8 @@ def parse_solar_date(date_str: str) -> Tuple[int, int, int]:
 
         return year, month, day
 
-    except (ValueError, IndexError):
-        raise ValueError(f"Invalid date string: {date_str}. Expected format: YYYY-M-D")
+    except (ValueError, IndexError) as exc:
+        raise ValueError(f"Invalid date string: {date_str}. Expected format: YYYY-M-D") from exc
 
 
 # ============================================================================
@@ -120,7 +120,7 @@ def lunar_to_solar(
         solar = lunar.getSolar()
         return solar.getYear(), solar.getMonth(), solar.getDay()
     except Exception as e:
-        raise ValueError(f"Error converting lunar to solar: {e}")
+        raise ValueError(f"Error converting lunar to solar: {e}") from e
 
 
 def parse_lunar_date(date_str: str) -> Tuple[int, int, int]:
@@ -268,12 +268,7 @@ def get_time_stem_branch(
     """
     # 时支：子=0, 丑=1, ..., 亥=11
     # 特殊处理：早子时(0)和晚子时(12)都是子时
-    if time_index == 12:
-        time_branch_index = 0  # 子时
-    elif time_index == 0:
-        time_branch_index = 0  # 子时
-    else:
-        time_branch_index = time_index
+    time_branch_index = 0 if time_index in (0, 12) else time_index
 
     time_branch = EARTHLY_BRANCHES[time_branch_index]
 
@@ -455,10 +450,7 @@ def format_lunar_date(lunar_date: LunarDate) -> str:
     months = ["", "正", "二", "三", "四", "五", "六", "七", "八", "九", "十", "冬", "腊"]
 
     # 月份
-    if lunar_date.month <= 12:
-        month_str = months[lunar_date.month]
-    else:
-        month_str = str(lunar_date.month)
+    month_str = months[lunar_date.month] if lunar_date.month <= 12 else str(lunar_date.month)
 
     if lunar_date.is_leap_month:
         month_str = f"闰{month_str}"
@@ -566,4 +558,7 @@ def _parse_ganzhi(value: str) -> Tuple[HeavenlyStemName, EarthlyBranchName]:
     }
     if len(value) != 2:
         raise ValueError(f"Invalid ganzhi value: {value}")
-    return stem_map[value[0]], branch_map[value[1]]
+    return (
+        cast(HeavenlyStemName, stem_map[value[0]]),
+        cast(EarthlyBranchName, branch_map[value[1]]),
+    )

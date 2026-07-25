@@ -5,21 +5,23 @@ The placement order follows iztro@2.5.8 `getAdjectiveStar()` exactly for the
 default algorithm, and all generated stars are attached to `adjective_stars`.
 """
 
-from typing import Any, Dict, List
+from typing import Any, Dict, List, cast
 
-from iztro_py.data.types import GenderName, Star
-from iztro_py.utils.calendar import get_heavenly_stem_and_earthly_branch_date, parse_solar_date
+from iztro_py.data.types import GenderName, Star, StarName, StarType
 from iztro_py.star.location import (
     get_daily_star_indices,
-    get_timely_star_indices,
     get_luan_xi_indices,
     get_monthly_star_indices,
+    get_timely_star_indices,
     get_yearly_star_indices,
 )
+from iztro_py.utils.calendar import get_heavenly_stem_and_earthly_branch_date, parse_solar_date
 
 
 def _append(palaces: List[Dict[str, Any]], index: int, name: str, star_type: str) -> None:
-    palaces[index]["adjective_stars"].append(Star(name=name, type=star_type, scope="origin"))
+    palaces[index]["adjective_stars"].append(
+        Star(name=cast(StarName, name), type=cast(StarType, star_type), scope="origin")
+    )
 
 
 def place_adjective_stars(

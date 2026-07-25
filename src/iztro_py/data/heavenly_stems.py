@@ -6,7 +6,8 @@ yin-yang, five elements, clashes, and mutagen (四化) configurations.
 """
 
 from typing import Dict, List, Optional
-from iztro_py.data.types import HeavenlyStemName, YinYang, FiveElements, StarName, Mutagen
+
+from iztro_py.data.types import FiveElements, HeavenlyStemName, Mutagen, StarName, YinYang
 
 
 class HeavenlyStem:

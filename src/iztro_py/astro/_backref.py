@@ -14,7 +14,7 @@ These back-references are derived state, so the fix is to keep them out of the
 copy entirely and let the owner re-wire them afterwards.
 """
 
-from typing import Any, ClassVar, Dict, Optional, TypeVar
+from typing import Any, ClassVar, Dict, Optional, TypeVar, cast
 
 T = TypeVar("T", bound="BackRefDeepCopyMixin")
 
@@ -37,7 +37,7 @@ class BackRefDeepCopyMixin:
         detached = attr in state
         saved = state.pop(attr, None) if detached else None
         try:
-            copied = super().__deepcopy__(memo)  # type: ignore[misc]
+            copied = cast(T, super().__deepcopy__(memo))  # type: ignore[misc]
         finally:
             if detached:
                 state[attr] = saved

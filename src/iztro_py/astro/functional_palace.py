@@ -4,10 +4,11 @@ FunctionalPalace class - Palace with functional methods
 Provides a rich API for querying palace properties and stars.
 """
 
-from typing import ClassVar, Optional, List, TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, ClassVar, List, Optional, cast
+
 from iztro_py.astro._backref import BackRefDeepCopyMixin
-from iztro_py.data.types import Palace, StarName, Mutagen, Star
 from iztro_py.astro.functional_star import FunctionalStar
+from iztro_py.data.types import Mutagen, Palace, Star, StarName
 from iztro_py.i18n import normalize_star_name
 
 if TYPE_CHECKING:

@@ -11,7 +11,6 @@ import pytest
 
 from iztro_py import astro
 
-
 # (出生日, 时辰, 性别, 查询日, 查询时辰) -> 期望值
 CASES = [
     (

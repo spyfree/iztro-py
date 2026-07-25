@@ -7,13 +7,13 @@ chart output for the default algorithm.
 
 from typing import Any, Dict, List
 
+from iztro_py.data.constants import EARTHLY_BRANCHES, HEAVENLY_STEMS, fix_index
 from iztro_py.data.types import EarthlyBranchName, FiveElementsClass, GenderName, HeavenlyStemName
 from iztro_py.i18n import t
 from iztro_py.star.location import (
     get_minor_star_positions_lucun_yangtuo_tianma,
 )
 from iztro_py.utils.helpers import fix_earthly_branch_index
-from iztro_py.data.constants import EARTHLY_BRANCHES, HEAVENLY_STEMS, fix_index
 
 
 def _same_yinyang(gender: GenderName, year_branch: EarthlyBranchName) -> bool:

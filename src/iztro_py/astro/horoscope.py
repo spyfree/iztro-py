@@ -8,24 +8,25 @@ daily (流日), and hourly (流时) horoscope calculations.
 from typing import List, Optional
 
 from iztro_py.data.types import (
-    Horoscope,
-    HoroscopeItem,
-    StarName,
-    HeavenlyStemName,
     EarthlyBranchName,
     FiveElementsClass,
-    Palace,
+    HeavenlyStemName,
+    Horoscope,
+    HoroscopeItem,
     LunarDate,
+    Palace,
+    PalaceName,
+    StarName,
 )
 from iztro_py.utils.calendar import (
-    solar_to_lunar,
-    get_heavenly_stem_and_earthly_branch_date,
     format_lunar_date,
+    get_heavenly_stem_and_earthly_branch_date,
+    solar_to_lunar,
 )
 from iztro_py.utils.helpers import (
     calculate_nominal_age,
-    fix_index,
     fix_earthly_branch_index,
+    fix_index,
 )
 
 
@@ -400,7 +401,7 @@ def _get_branch_index(branch: EarthlyBranchName) -> int:
         return 0
 
 
-def _get_palace_names(from_index: int) -> List[str]:
+def _get_palace_names(from_index: int) -> List[PalaceName]:
     from iztro_py.data.constants import PALACES
 
     return [PALACES[fix_index(i - from_index)] for i in range(12)]

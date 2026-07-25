@@ -5,39 +5,40 @@ Provides high-level functions for creating astrolabes.
 """
 
 from typing import List
-from iztro_py.data.types import (
-    GenderName,
-    Language,
-    Astrolabe,
-    Palace,
-)
+
 from iztro_py.astro.functional_astrolabe import FunctionalAstrolabe
 from iztro_py.astro.palace import get_soul_and_body, initialize_palaces, populate_decadal_and_ages
-from iztro_py.star.major_star import place_major_stars
-from iztro_py.star.minor_star import place_minor_stars
+from iztro_py.data.brightness import apply_brightness_to_palaces
+from iztro_py.data.earthly_branches import get_body_star, get_soul_star
+from iztro_py.data.types import (
+    Astrolabe,
+    GenderName,
+    Language,
+    Palace,
+)
 from iztro_py.star.adjective_star import place_adjective_stars
 from iztro_py.star.decorative_star import apply_decorative_stars
-from iztro_py.star.mutagen import apply_mutagen_to_palaces
-from iztro_py.data.brightness import apply_brightness_to_palaces
-from iztro_py.data.earthly_branches import get_soul_star, get_body_star
 from iztro_py.star.location import get_start_indices
+from iztro_py.star.major_star import place_major_stars
+from iztro_py.star.minor_star import place_minor_stars
+from iztro_py.star.mutagen import apply_mutagen_to_palaces
 from iztro_py.utils.calendar import (
+    format_chinese_date,
+    format_lunar_date,
+    get_heavenly_stem_and_earthly_branch_date,
+    get_sign,
+    get_zodiac,
+    lunar_to_solar,
     parse_solar_date,
     solar_to_lunar,
-    lunar_to_solar,
-    get_heavenly_stem_and_earthly_branch_date,
-    get_zodiac,
-    get_sign,
-    format_lunar_date,
-    format_chinese_date,
 )
 from iztro_py.utils.helpers import (
+    fix_lunar_month_index,
     get_five_elements_class,
     get_five_elements_class_name,
     get_time_name,
     get_time_range,
     hour_to_time_index,
-    fix_lunar_month_index,
 )
 
 

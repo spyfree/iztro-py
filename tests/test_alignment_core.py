@@ -15,7 +15,6 @@ if str(SRC_ROOT) not in sys.path:
 
 from iztro_py import astro  # noqa: E402
 
-
 EXPECTED_JS_VERSION = "2.5.8"
 
 # The JS reference is an optional local dev dependency (`npm install`), so a

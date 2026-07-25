@@ -6,16 +6,17 @@ the soul palace (命宫) and body palace (身宫).
 """
 
 from typing import Any, Dict, List, Union
+
+from iztro_py.data.constants import EARTHLY_BRANCHES, HEAVENLY_STEMS, TIGER_RULE, fix_index
+from iztro_py.data.earthly_branches import get_yin_yang as get_branch_yin_yang
 from iztro_py.data.types import (
-    SoulAndBody,
-    HeavenlyStemName,
+    Decadal,
     EarthlyBranchName,
     FiveElementsClass,
     GenderName,
-    Decadal,
+    HeavenlyStemName,
+    SoulAndBody,
 )
-from iztro_py.data.constants import HEAVENLY_STEMS, EARTHLY_BRANCHES, TIGER_RULE, fix_index
-from iztro_py.data.earthly_branches import get_yin_yang as get_branch_yin_yang
 from iztro_py.utils.calendar import (
     get_heavenly_stem_and_earthly_branch_date,
 )
@@ -47,10 +48,8 @@ def get_soul_and_body(
     if isinstance(lunar_month, str):
         solar_date = lunar_month
         month_index = fix_lunar_month_index(solar_date, time_index, fix_leap)
-        stems_and_branches = get_heavenly_stem_and_earthly_branch_date(
-            *[int(part) for part in solar_date.split("-")],
-            time_index,
-        )
+        year, month, day = (int(part) for part in solar_date.split("-"))
+        stems_and_branches = get_heavenly_stem_and_earthly_branch_date(year, month, day, time_index)
         heavenly_stem_of_year = stems_and_branches.year_stem
         earthly_branch_of_time = stems_and_branches.time_branch
     else:
@@ -94,80 +93,6 @@ def get_palace_heavenly_stem(
     soul_stem_index = HEAVENLY_STEMS.index(soul_palace_stem)
     target_stem_index = fix_index(soul_stem_index - soul_palace_index + palace_index, 10)
     return HEAVENLY_STEMS[target_stem_index]
-
-
-def get_palace_earthly_branch(palace_index: int) -> EarthlyBranchName:
-    """
-    根据宫位索引获取地支
-
-    宫位地支固定：
-    0(命宫) - 根据命宫定位算法确定
-    其他宫位按地支顺序排列
-
-    Args:
-        palace_index: 宫位索引 (0-11)
-
-    Returns:
-        地支名称
-    """
-    return EARTHLY_BRANCHES[fix_index(EARTHLY_BRANCHES.index("yinEarthly") + palace_index)]
-
-
-def get_body_palace_index(soul_index: int, body_index: int) -> int:
-    """
-    确定身宫所在的宫位
-
-    身宫会落在某个宫位上，该宫位标记为身宫
-
-    Args:
-        soul_index: 命宫索引
-        body_index: 身宫索引（通过算法计算出的地支位置）
-
-    Returns:
-        身宫所在的宫位索引
-    """
-    return body_index
-
-
-def calculate_palace_ages(
-    palace_index: int, soul_palace_index: int, five_elements_class_value: int, is_forward: bool
-) -> List[int]:
-    """
-    计算宫位的小限年龄数组
-
-    小限从命宫开始，每年走一宫
-    顺逆根据性别和年支阴阳决定
-
-    Args:
-        palace_index: 宫位索引
-        soul_palace_index: 命宫索引
-        five_elements_class_value: 五行局数值 (2-6)
-        is_forward: 是否顺行
-
-    Returns:
-        该宫位对应的年龄列表
-    """
-    ages = []
-
-    # 小限从命宫开始，起始年龄 = 五行局数值
-    start_age = five_elements_class_value
-
-    # 计算当前宫位是从命宫数起的第几个宫位
-    if is_forward:
-        # 顺行
-        offset = (palace_index - soul_palace_index) % 12
-    else:
-        # 逆行
-        offset = (soul_palace_index - palace_index) % 12
-
-    # 该宫位对应的年龄：起始年龄 + 偏移，然后每隔12年一次
-    first_age = start_age + offset
-
-    # 生成年龄列表（通常到120岁）
-    for age in range(first_age, 121, 12):
-        ages.append(age)
-
-    return ages
 
 
 def initialize_palaces(

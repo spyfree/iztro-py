@@ -6,8 +6,9 @@ Based on the original TypeScript definitions from iztro.
 """
 
 from enum import Enum
-from typing import Any, Dict, Literal, Optional, List, Tuple, Union
-from pydantic import BaseModel, Field, ConfigDict
+from typing import Any, Dict, List, Literal, Optional, Tuple, Union
+
+from pydantic import BaseModel, ConfigDict, Field
 
 
 def _translate_name(key: str, lang: Optional[str] = None) -> str:

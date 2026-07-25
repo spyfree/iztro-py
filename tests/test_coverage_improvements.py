@@ -3,8 +3,9 @@ Tests to improve code coverage for low-coverage modules.
 """
 
 import pytest
+
 from iztro_py import astro
-from iztro_py.i18n import set_language, get_language, t, translate_dict
+from iztro_py.i18n import get_language, set_language, t, translate_dict
 
 
 class TestI18n:

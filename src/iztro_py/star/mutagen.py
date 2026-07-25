@@ -5,8 +5,9 @@ Functions for calculating and applying mutagen transformations to stars.
 """
 
 from typing import Any, Dict, List, Optional, Tuple
-from iztro_py.data.types import HeavenlyStemName, StarName, Mutagen
+
 from iztro_py.data.heavenly_stems import get_mutagen, get_mutagen_type
+from iztro_py.data.types import HeavenlyStemName, Mutagen, StarName
 
 
 def apply_mutagen_to_palaces(palaces: List[Dict[str, Any]], year_stem: HeavenlyStemName) -> None:
@@ -77,17 +78,12 @@ def get_palace_mutagens(palace: Dict[str, Any]) -> List[Tuple[StarName, Mutagen]
     Returns:
         [(星曜名称, 四化类型), ...] 列表
     """
-    mutagen_stars = []
+    mutagen_stars: List[Tuple[StarName, Mutagen]] = []
 
-    # 检查主星
-    for star in palace.get("major_stars", []):
-        if star.mutagen:
-            mutagen_stars.append((star.name, star.mutagen))
-
-    # 检查辅星
-    for star in palace.get("minor_stars", []):
-        if star.mutagen:
-            mutagen_stars.append((star.name, star.mutagen))
+    for key in ("major_stars", "minor_stars"):
+        mutagen_stars.extend(
+            (star.name, star.mutagen) for star in palace.get(key, []) if star.mutagen
+        )
 
     return mutagen_stars
 

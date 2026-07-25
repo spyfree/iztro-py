@@ -4,9 +4,10 @@ FunctionalStar class - Star with functional methods
 Provides a rich API for querying star properties and relationships.
 """
 
-from typing import ClassVar, Optional, TYPE_CHECKING, List, Union
+from typing import TYPE_CHECKING, ClassVar, List, Optional, Union
+
 from iztro_py.astro._backref import BackRefDeepCopyMixin
-from iztro_py.data.types import Star, Brightness, Mutagen
+from iztro_py.data.types import Brightness, Mutagen, Star
 
 if TYPE_CHECKING:
     from iztro_py.astro.functional_palace import FunctionalPalace

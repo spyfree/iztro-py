@@ -6,7 +6,8 @@ yin-yang, five elements, clashes, soul/body stars, and health associations.
 """
 
 from typing import Dict
-from iztro_py.data.types import EarthlyBranchName, YinYang, FiveElements, StarName
+
+from iztro_py.data.types import EarthlyBranchName, FiveElements, StarName, YinYang
 
 
 class EarthlyBranch:

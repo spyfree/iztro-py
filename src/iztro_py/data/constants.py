@@ -5,15 +5,15 @@ This module contains all constant values, lookup tables, and reference data
 used for Zi Wei Dou Shu calculations.
 """
 
-from typing import List, Dict
+from typing import Dict, List
+
 from iztro_py.data.types import (
-    HeavenlyStemName,
-    EarthlyBranchName,
-    PalaceName,
     ChineseTime,
+    EarthlyBranchName,
+    HeavenlyStemName,
+    PalaceName,
     StarName,
 )
-
 
 # ============================================================================
 # Time Constants
@@ -231,54 +231,6 @@ RAT_RULE: Dict[HeavenlyStemName, HeavenlyStemName] = {
     "renHeavenly": "gengHeavenly",
     "wuHeavenly": "renHeavenly",  # 戊癸何方发？壬子是真途
     "guiHeavenly": "renHeavenly",
-}
-
-
-# ============================================================================
-# Five Elements Class Lookup Table (五行局)
-# ============================================================================
-# 根据命宫纳音五行确定五行局
-# 索引：[命宫天干索引][命宫地支索引]
-
-FIVE_ELEMENTS_CLASS_LOOKUP: List[List[int]] = [
-    # 地支：子   丑   寅   卯   辰   巳   午   未   申   酉   戌   亥
-    [4, 5, 3, 3, 4, 5, 3, 3, 5, 2, 6, 6],  # 甲
-    [5, 5, 6, 6, 5, 5, 6, 6, 2, 2, 3, 3],  # 乙
-    [6, 6, 4, 4, 2, 2, 5, 5, 4, 4, 2, 2],  # 丙
-    [2, 2, 4, 4, 2, 2, 5, 5, 3, 3, 5, 5],  # 丁
-    [6, 6, 4, 4, 3, 3, 6, 6, 4, 4, 3, 3],  # 戊
-    [3, 3, 5, 5, 3, 3, 6, 6, 2, 2, 6, 6],  # 己
-    [2, 2, 3, 3, 5, 5, 2, 2, 3, 3, 5, 5],  # 庚
-    [3, 3, 3, 3, 5, 5, 2, 2, 4, 4, 2, 2],  # 辛
-    [3, 3, 4, 4, 2, 2, 3, 3, 4, 4, 2, 2],  # 壬
-    [4, 4, 2, 2, 6, 6, 4, 4, 2, 2, 6, 6],  # 癸
-]
-
-
-# ============================================================================
-# Ziwei Star Position Algorithm Constants (紫微星定位算法常量)
-# ============================================================================
-
-# 紫微星定位口诀：六五四三二，酉午亥辰丑
-ZIWEI_START_POSITIONS = [9, 6, 11, 4, 1]  # 对应五行局 2,3,4,5,6 的起始宫位
-
-
-# ============================================================================
-# Star Brightness (星耀亮度)
-# ============================================================================
-# 按地支顺序：寅卯辰巳午未申酉戌亥子丑
-
-BRIGHTNESS_ORDER = ["寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥", "子", "丑"]
-
-# Mapping brightness keywords
-BRIGHTNESS_MAPPING = {
-    "庙": "miao",
-    "旺": "wang",
-    "得": "de",
-    "利": "li",
-    "平": "ping",
-    "不": "bu",
-    "陷": "xian",
 }
 
 

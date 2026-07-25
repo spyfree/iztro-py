@@ -5,12 +5,13 @@ Common utility functions used throughout the library.
 """
 
 from typing import Optional, Tuple
-from iztro_py.data.types import HeavenlyStemName, EarthlyBranchName, FiveElementsClass
+
 from iztro_py.data.constants import (
-    HEAVENLY_STEMS,
     EARTHLY_BRANCHES,
+    HEAVENLY_STEMS,
     fix_index,
 )
+from iztro_py.data.types import EarthlyBranchName, FiveElementsClass, HeavenlyStemName
 
 
 def get_five_elements_class(

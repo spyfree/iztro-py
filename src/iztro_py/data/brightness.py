@@ -5,9 +5,9 @@ Contains brightness information for stars based on their palace positions.
 """
 
 from typing import Any, Dict, List, Optional
-from iztro_py.data.types import StarName, Brightness, EarthlyBranchName
-from iztro_py.data.constants import EARTHLY_BRANCHES
 
+from iztro_py.data.constants import EARTHLY_BRANCHES
+from iztro_py.data.types import Brightness, EarthlyBranchName, StarName
 
 # ============================================================================
 # Brightness Data (与 iztro lib/data/stars.js 的 STARS_INFO.brightness 逐行对齐)

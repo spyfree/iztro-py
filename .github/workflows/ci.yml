@@ -67,10 +67,11 @@ jobs:
         python -m pip install --upgrade pip
         pip install -e ".[dev]"
 
+    # Previously `|| true` *and* continue-on-error, so 30+ type errors
+    # accumulated unnoticed. Both removed: the tree is clean, keep it that way.
     - name: Run mypy
       run: |
-        mypy src/iztro_py --ignore-missing-imports || true
-      continue-on-error: true
+        mypy src/iztro_py --ignore-missing-imports
 
   code-quality:
     name: Code quality checks
@@ -94,7 +95,8 @@ jobs:
         python -m black --version
         python -m black --check src tests
 
+    # Rules are now selected explicitly in pyproject.toml, so this is stable
+    # against ruff changing its defaults and no longer needs continue-on-error.
     - name: Lint with Ruff
       run: |
-        ruff check src tests
-      continue-on-error: true
+        ruff check src tests scripts

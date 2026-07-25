@@ -11,7 +11,7 @@
 - vi-VN: Tiếng Việt
 """
 
-from typing import Dict, Any, Optional
+from typing import Any, Dict, Optional
 
 # 当前语言设置
 _current_language = "zh-CN"
@@ -99,6 +99,7 @@ def set_language(lang: str) -> None:
             f"Language '{lang}' is not fully supported yet. Falling back to 'zh-CN'. "
             f"Supported: {SUPPORTED_LANGUAGES}",
             UserWarning,
+            stacklevel=2,
         )
         lang = "zh-CN"
 
@@ -151,8 +152,8 @@ def _load_locale(lang: str) -> None:
             from .locales import vi_VN
 
             _locales[lang] = vi_VN.translations
-    except ImportError:
-        raise ValueError(f"Language resource not found: {lang}")
+    except ImportError as exc:
+        raise ValueError(f"Language resource not found: {lang}") from exc
 
 
 def t(key: str, lang: Optional[str] = None) -> str:

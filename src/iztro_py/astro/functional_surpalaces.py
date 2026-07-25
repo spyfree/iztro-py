@@ -5,8 +5,9 @@ Represents the four related palaces in Zi Wei Dou Shu astrology.
 """
 
 from typing import List, cast
-from iztro_py.data.types import SurroundedPalaces, StarName, Mutagen, Palace
+
 from iztro_py.astro.functional_palace import FunctionalPalace
+from iztro_py.data.types import Mutagen, Palace, StarName, SurroundedPalaces
 
 
 class FunctionalSurpalaces(SurroundedPalaces):
@@ -87,11 +88,7 @@ class FunctionalSurpalaces(SurroundedPalaces):
         """
         palaces = [self.target, self.opposite, self.wealth, self.career]
 
-        for star in stars:
-            if any(palace.has([star]) for palace in palaces):
-                return True
-
-        return False
+        return any(any(palace.has([star]) for palace in palaces) for star in stars)
 
     def not_have(self, stars: List[StarName]) -> bool:
         """
@@ -108,11 +105,7 @@ class FunctionalSurpalaces(SurroundedPalaces):
         """
         palaces = [self.target, self.opposite, self.wealth, self.career]
 
-        for star in stars:
-            if any(palace.has([star]) for palace in palaces):
-                return False
-
-        return True
+        return not any(any(palace.has([star]) for palace in palaces) for star in stars)
 
     def have_mutagen(self, mutagen: Mutagen) -> bool:
         """

@@ -5,20 +5,31 @@ Contains core algorithms for calculating positions of major stars,
 especially Ziwei (紫微) and Tianfu (天府).
 """
 
-from typing import Dict, Tuple
 from datetime import date, timedelta
-from iztro_py.data.types import FiveElementsClass, HeavenlyStemName, EarthlyBranchName, GenderName
-from iztro_py.data.constants import HEAVENLY_STEMS, EARTHLY_BRANCHES, PALACES, fix_index
+from typing import Dict, Tuple, cast
+
+from iztro_py.data.constants import EARTHLY_BRANCHES, HEAVENLY_STEMS, PALACES, fix_index
+from iztro_py.data.types import EarthlyBranchName, FiveElementsClass, GenderName, HeavenlyStemName
 from iztro_py.utils.calendar import (
+    get_heavenly_stem_and_earthly_branch_date,
     parse_solar_date,
     solar_to_lunar,
-    get_heavenly_stem_and_earthly_branch_date,
 )
 from iztro_py.utils.helpers import (
     fix_earthly_branch_index,
-    fix_lunar_month_index,
     fix_lunar_day_index,
+    fix_lunar_month_index,
 )
+
+
+def _branch_index(branch: str) -> int:
+    """`fix_earthly_branch_index` 的 str 入口。
+
+    本模块大量使用「按年干/年支查表得到地支名」的写法，查表结果在类型上是
+    `str` 而非 `EarthlyBranchName` 字面量类型。集中在这里收敛一次，好过在
+    十几个调用点各写一遍 cast。
+    """
+    return fix_earthly_branch_index(cast(EarthlyBranchName, branch))
 
 
 def get_ziwei_index(five_elements_class: FiveElementsClass, lunar_day: int) -> int:
@@ -52,11 +63,11 @@ def get_ziwei_index(five_elements_class: FiveElementsClass, lunar_day: int) -> i
 
     # 起始宫位索引（以寅宫为 0）
     start_positions = {
-        2: fix_earthly_branch_index("youEarthly"),  # 水二局：酉宫
-        3: fix_earthly_branch_index("wuEarthly"),  # 木三局：午宫
-        4: fix_earthly_branch_index("haiEarthly"),  # 金四局：亥宫
-        5: fix_earthly_branch_index("chenEarthly"),  # 土五局：辰宫
-        6: fix_earthly_branch_index("chouEarthly"),  # 火六局：丑宫
+        2: _branch_index("youEarthly"),  # 水二局：酉宫
+        3: _branch_index("wuEarthly"),  # 木三局：午宫
+        4: _branch_index("haiEarthly"),  # 金四局：亥宫
+        5: _branch_index("chenEarthly"),  # 土五局：辰宫
+        6: _branch_index("chouEarthly"),  # 火六局：丑宫
     }
 
     start_pos = start_positions[class_value]
@@ -195,7 +206,7 @@ def get_major_star_positions(ziwei_index: int, tianfu_index: int) -> Dict[str, i
     Returns:
         星曜名称到宫位索引的映射字典
     """
-    from iztro_py.data.constants import ZIWEI_GROUP, TIANFU_GROUP
+    from iztro_py.data.constants import TIANFU_GROUP, ZIWEI_GROUP
 
     positions = {}
 
@@ -230,7 +241,7 @@ def get_minor_star_position_zuofu(lunar_month: int) -> int:
     Returns:
         左辅星宫位索引
     """
-    return fix_index(fix_earthly_branch_index("chenEarthly") + lunar_month - 1)
+    return fix_index(_branch_index("chenEarthly") + lunar_month - 1)
 
 
 def get_minor_star_position_youbi(lunar_month: int) -> int:
@@ -245,7 +256,7 @@ def get_minor_star_position_youbi(lunar_month: int) -> int:
     Returns:
         右弼星宫位索引
     """
-    return fix_index(fix_earthly_branch_index("xuEarthly") - (lunar_month - 1))
+    return fix_index(_branch_index("xuEarthly") - (lunar_month - 1))
 
 
 def get_minor_star_position_wenchang(time_index: int) -> int:
@@ -260,7 +271,7 @@ def get_minor_star_position_wenchang(time_index: int) -> int:
     Returns:
         文昌星宫位索引
     """
-    return fix_index(fix_earthly_branch_index("xuEarthly") - fix_index(time_index))
+    return fix_index(_branch_index("xuEarthly") - fix_index(time_index))
 
 
 def get_minor_star_position_wenqu(time_index: int) -> int:
@@ -275,7 +286,7 @@ def get_minor_star_position_wenqu(time_index: int) -> int:
     Returns:
         文曲星宫位索引
     """
-    return fix_index(fix_earthly_branch_index("chenEarthly") + fix_index(time_index))
+    return fix_index(_branch_index("chenEarthly") + fix_index(time_index))
 
 
 def get_minor_star_positions_kuiyue(year_stem_index: int) -> Tuple[int, int]:
@@ -289,28 +300,28 @@ def get_minor_star_positions_kuiyue(year_stem_index: int) -> Tuple[int, int]:
         (天魁星索引, 天钺星索引) 元组
     """
     kuai_positions = [
-        fix_earthly_branch_index("chouEarthly"),
-        fix_earthly_branch_index("ziEarthly"),
-        fix_earthly_branch_index("haiEarthly"),
-        fix_earthly_branch_index("haiEarthly"),
-        fix_earthly_branch_index("chouEarthly"),
-        fix_earthly_branch_index("ziEarthly"),
-        fix_earthly_branch_index("chouEarthly"),
-        fix_earthly_branch_index("wuEarthly"),
-        fix_earthly_branch_index("maoEarthly"),
-        fix_earthly_branch_index("maoEarthly"),
+        _branch_index("chouEarthly"),
+        _branch_index("ziEarthly"),
+        _branch_index("haiEarthly"),
+        _branch_index("haiEarthly"),
+        _branch_index("chouEarthly"),
+        _branch_index("ziEarthly"),
+        _branch_index("chouEarthly"),
+        _branch_index("wuEarthly"),
+        _branch_index("maoEarthly"),
+        _branch_index("maoEarthly"),
     ]
     yue_positions = [
-        fix_earthly_branch_index("weiEarthly"),
-        fix_earthly_branch_index("shenEarthly"),
-        fix_earthly_branch_index("youEarthly"),
-        fix_earthly_branch_index("youEarthly"),
-        fix_earthly_branch_index("weiEarthly"),
-        fix_earthly_branch_index("shenEarthly"),
-        fix_earthly_branch_index("weiEarthly"),
-        fix_earthly_branch_index("yinEarthly"),
-        fix_earthly_branch_index("siEarthly"),
-        fix_earthly_branch_index("siEarthly"),
+        _branch_index("weiEarthly"),
+        _branch_index("shenEarthly"),
+        _branch_index("youEarthly"),
+        _branch_index("youEarthly"),
+        _branch_index("weiEarthly"),
+        _branch_index("shenEarthly"),
+        _branch_index("weiEarthly"),
+        _branch_index("yinEarthly"),
+        _branch_index("siEarthly"),
+        _branch_index("siEarthly"),
     ]
 
     return kuai_positions[year_stem_index], yue_positions[year_stem_index]
@@ -330,17 +341,17 @@ def get_minor_star_positions_huoling(year_branch_index: int, time_index: int) ->
     fixed_time_index = fix_index(time_index)
 
     if year_branch_index in [2, 6, 10]:  # 寅午戌
-        huo_base = fix_earthly_branch_index("chouEarthly")
-        ling_base = fix_earthly_branch_index("maoEarthly")
+        huo_base = _branch_index("chouEarthly")
+        ling_base = _branch_index("maoEarthly")
     elif year_branch_index in [8, 0, 4]:  # 申子辰
-        huo_base = fix_earthly_branch_index("yinEarthly")
-        ling_base = fix_earthly_branch_index("xuEarthly")
+        huo_base = _branch_index("yinEarthly")
+        ling_base = _branch_index("xuEarthly")
     elif year_branch_index in [5, 9, 1]:  # 巳酉丑
-        huo_base = fix_earthly_branch_index("maoEarthly")
-        ling_base = fix_earthly_branch_index("xuEarthly")
+        huo_base = _branch_index("maoEarthly")
+        ling_base = _branch_index("xuEarthly")
     else:  # 亥卯未 [11, 3, 7]
-        huo_base = fix_earthly_branch_index("youEarthly")
-        ling_base = fix_earthly_branch_index("xuEarthly")
+        huo_base = _branch_index("youEarthly")
+        ling_base = _branch_index("xuEarthly")
 
     return fix_index(huo_base + fixed_time_index), fix_index(ling_base + fixed_time_index)
 
@@ -356,7 +367,7 @@ def get_minor_star_positions_kongjie(time_index: int) -> Tuple[int, int]:
         (地空索引, 地劫索引) 元组
     """
     fixed_time_index = fix_index(time_index)
-    hai_index = fix_earthly_branch_index("haiEarthly")
+    hai_index = _branch_index("haiEarthly")
     return fix_index(hai_index - fixed_time_index), fix_index(hai_index + fixed_time_index)
 
 
@@ -374,16 +385,16 @@ def get_minor_star_positions_lucun_yangtuo_tianma(
         (禄存索引, 擎羊索引, 陀罗索引, 天马索引) 元组
     """
     lucun_positions = [
-        fix_earthly_branch_index("yinEarthly"),
-        fix_earthly_branch_index("maoEarthly"),
-        fix_earthly_branch_index("siEarthly"),
-        fix_earthly_branch_index("wuEarthly"),
-        fix_earthly_branch_index("siEarthly"),
-        fix_earthly_branch_index("wuEarthly"),
-        fix_earthly_branch_index("shenEarthly"),
-        fix_earthly_branch_index("youEarthly"),
-        fix_earthly_branch_index("haiEarthly"),
-        fix_earthly_branch_index("ziEarthly"),
+        _branch_index("yinEarthly"),
+        _branch_index("maoEarthly"),
+        _branch_index("siEarthly"),
+        _branch_index("wuEarthly"),
+        _branch_index("siEarthly"),
+        _branch_index("wuEarthly"),
+        _branch_index("shenEarthly"),
+        _branch_index("youEarthly"),
+        _branch_index("haiEarthly"),
+        _branch_index("ziEarthly"),
     ]
 
     lucun_index = lucun_positions[year_stem_index]
@@ -397,13 +408,13 @@ def get_minor_star_positions_lucun_yangtuo_tianma(
     # 天马位置（按年支）
     # 寅午戌年在申、申子辰年在寅、巳酉丑年在亥、亥卯未年在巳
     if year_branch_index in [2, 6, 10]:  # 寅午戌
-        tianma_index = fix_earthly_branch_index("shenEarthly")
+        tianma_index = _branch_index("shenEarthly")
     elif year_branch_index in [8, 0, 4]:  # 申子辰
-        tianma_index = fix_earthly_branch_index("yinEarthly")
+        tianma_index = _branch_index("yinEarthly")
     elif year_branch_index in [5, 9, 1]:  # 巳酉丑
-        tianma_index = fix_earthly_branch_index("haiEarthly")
+        tianma_index = _branch_index("haiEarthly")
     else:  # 亥卯未
-        tianma_index = fix_earthly_branch_index("siEarthly")
+        tianma_index = _branch_index("siEarthly")
 
     return lucun_index, yang_index, tuo_index, tianma_index
 
@@ -429,15 +440,15 @@ def get_timely_star_indices(time_index: int) -> Dict[str, int]:
     """获取时系杂曜索引。"""
     fixed_time_index = fix_index(time_index)
     return {
-        "taifu_index": fix_index(fix_earthly_branch_index("wuEarthly") + fixed_time_index),
-        "fenggao_index": fix_index(fix_earthly_branch_index("yinEarthly") + fixed_time_index),
+        "taifu_index": fix_index(_branch_index("wuEarthly") + fixed_time_index),
+        "fenggao_index": fix_index(_branch_index("yinEarthly") + fixed_time_index),
     }
 
 
 def get_luan_xi_indices(year_branch: EarthlyBranchName) -> Dict[str, int]:
     """获取红鸾、天喜索引。"""
     year_branch_index = EARTHLY_BRANCHES.index(year_branch)
-    hongluan_index = fix_index(fix_earthly_branch_index("maoEarthly") - year_branch_index)
+    hongluan_index = fix_index(_branch_index("maoEarthly") - year_branch_index)
     return {
         "hongluan_index": hongluan_index,
         "tianxi_index": fix_index(hongluan_index + 6),
@@ -455,8 +466,8 @@ def get_huagai_xianchi_indices(year_branch: EarthlyBranchName) -> Dict[str, int]
     else:
         huagai_branch, xianchi_branch = "weiEarthly", "ziEarthly"
     return {
-        "huagai_index": fix_earthly_branch_index(huagai_branch),
-        "xianchi_index": fix_earthly_branch_index(xianchi_branch),
+        "huagai_index": _branch_index(huagai_branch),
+        "xianchi_index": _branch_index(xianchi_branch),
     }
 
 
@@ -471,8 +482,8 @@ def get_guchen_guasu_indices(year_branch: EarthlyBranchName) -> Dict[str, int]:
     else:
         guchen_branch, guasu_branch = "yinEarthly", "xuEarthly"
     return {
-        "guchen_index": fix_earthly_branch_index(guchen_branch),
-        "guasu_index": fix_earthly_branch_index(guasu_branch),
+        "guchen_index": _branch_index(guchen_branch),
+        "guasu_index": _branch_index(guasu_branch),
     }
 
 
@@ -503,7 +514,10 @@ def get_dahao_index(year_branch: EarthlyBranchName) -> int:
         "siEarthly",
         "chenEarthly",
     ][EARTHLY_BRANCHES.index(year_branch)]
-    return fix_index(EARTHLY_BRANCHES.index(matched) - EARTHLY_BRANCHES.index("yinEarthly"))
+    return fix_index(
+        EARTHLY_BRANCHES.index(cast(EarthlyBranchName, matched))
+        - EARTHLY_BRANCHES.index("yinEarthly")
+    )
 
 
 def get_tianshi_tianshang_indices(
@@ -521,7 +535,7 @@ def get_tianshi_tianshang_indices(
 
 def get_nianjie_index(year_branch: EarthlyBranchName) -> int:
     """获取年解索引。"""
-    return fix_earthly_branch_index(
+    return _branch_index(
         [
             "xuEarthly",
             "youEarthly",
@@ -543,14 +557,14 @@ def get_monthly_star_indices(solar_date: str, time_index: int, fix_leap: bool) -
     """获取月系杂曜索引。"""
     month_index = fix_lunar_month_index(solar_date, time_index, fix_leap)
     return {
-        "yuejie_index": fix_earthly_branch_index(
+        "yuejie_index": _branch_index(
             ["shenEarthly", "xuEarthly", "ziEarthly", "yinEarthly", "chenEarthly", "wuEarthly"][
                 month_index // 2
             ]
         ),
-        "tianyao_index": fix_index(fix_earthly_branch_index("chouEarthly") + month_index),
-        "tianxing_index": fix_index(fix_earthly_branch_index("youEarthly") + month_index),
-        "yinsha_index": fix_earthly_branch_index(
+        "tianyao_index": fix_index(_branch_index("chouEarthly") + month_index),
+        "tianxing_index": fix_index(_branch_index("youEarthly") + month_index),
+        "yinsha_index": _branch_index(
             [
                 "yinEarthly",
                 "ziEarthly",
@@ -560,7 +574,7 @@ def get_monthly_star_indices(solar_date: str, time_index: int, fix_leap: bool) -
                 "chenEarthly",
             ][month_index % 6]
         ),
-        "tianyue_index": fix_earthly_branch_index(
+        "tianyue_index": _branch_index(
             [
                 "xuEarthly",
                 "siEarthly",
@@ -576,7 +590,7 @@ def get_monthly_star_indices(solar_date: str, time_index: int, fix_leap: bool) -
                 "yinEarthly",
             ][month_index]
         ),
-        "tianwu_index": fix_earthly_branch_index(
+        "tianwu_index": _branch_index(
             ["siEarthly", "shenEarthly", "yinEarthly", "haiEarthly"][month_index % 4]
         ),
     }
@@ -605,10 +619,7 @@ def get_yearly_star_indices(
     tianshi_tianshang = get_tianshi_tianshang_indices(gender, year_branch, soul_index)
 
     xunkong_index = fix_index(
-        fix_earthly_branch_index(year_branch)
-        + HEAVENLY_STEMS.index("guiHeavenly")
-        - year_stem_index
-        + 1
+        _branch_index(year_branch) + HEAVENLY_STEMS.index("guiHeavenly") - year_stem_index + 1
     )
     if (year_branch_index % 2) != (xunkong_index % 2):
         xunkong_index = fix_index(xunkong_index + 1)
@@ -620,7 +631,7 @@ def get_yearly_star_indices(
         "guasu_index": guchen_guasu["guasu_index"],
         "tiancai_index": fix_index(soul_index + year_branch_index),
         "tianshou_index": fix_index(body_index + year_branch_index),
-        "tianchu_index": fix_earthly_branch_index(
+        "tianchu_index": _branch_index(
             [
                 "siEarthly",
                 "wuEarthly",
@@ -634,10 +645,10 @@ def get_yearly_star_indices(
                 "haiEarthly",
             ][year_stem_index]
         ),
-        "posui_index": fix_earthly_branch_index(
+        "posui_index": _branch_index(
             ["siEarthly", "chouEarthly", "youEarthly"][year_branch_index % 3]
         ),
-        "feilian_index": fix_earthly_branch_index(
+        "feilian_index": _branch_index(
             [
                 "shenEarthly",
                 "youEarthly",
@@ -653,11 +664,11 @@ def get_yearly_star_indices(
                 "chouEarthly",
             ][year_branch_index]
         ),
-        "longchi_index": fix_index(fix_earthly_branch_index("chenEarthly") + year_branch_index),
-        "fengge_index": fix_index(fix_earthly_branch_index("xuEarthly") - year_branch_index),
-        "tianku_index": fix_index(fix_earthly_branch_index("wuEarthly") - year_branch_index),
-        "tianxu_index": fix_index(fix_earthly_branch_index("wuEarthly") + year_branch_index),
-        "tianguan_index": fix_earthly_branch_index(
+        "longchi_index": fix_index(_branch_index("chenEarthly") + year_branch_index),
+        "fengge_index": fix_index(_branch_index("xuEarthly") - year_branch_index),
+        "tianku_index": fix_index(_branch_index("wuEarthly") - year_branch_index),
+        "tianxu_index": fix_index(_branch_index("wuEarthly") + year_branch_index),
+        "tianguan_index": _branch_index(
             [
                 "weiEarthly",
                 "chenEarthly",
@@ -671,7 +682,7 @@ def get_yearly_star_indices(
                 "wuEarthly",
             ][year_stem_index]
         ),
-        "tianfu_index": fix_earthly_branch_index(
+        "tianfu_index": _branch_index(
             [
                 "youEarthly",
                 "shenEarthly",
@@ -685,15 +696,15 @@ def get_yearly_star_indices(
                 "siEarthly",
             ][year_stem_index]
         ),
-        "tiande_index": fix_index(fix_earthly_branch_index("youEarthly") + year_branch_index),
-        "yuede_index": fix_index(fix_earthly_branch_index("siEarthly") + year_branch_index),
-        "tiankong_index": fix_index(fix_earthly_branch_index(year_branch) + 1),
-        "jielu_index": fix_earthly_branch_index(
+        "tiande_index": fix_index(_branch_index("youEarthly") + year_branch_index),
+        "yuede_index": fix_index(_branch_index("siEarthly") + year_branch_index),
+        "tiankong_index": fix_index(_branch_index(year_branch) + 1),
+        "jielu_index": _branch_index(
             ["shenEarthly", "wuEarthly", "chenEarthly", "yinEarthly", "ziEarthly"][
                 year_stem_index % 5
             ]
         ),
-        "kongwang_index": fix_earthly_branch_index(
+        "kongwang_index": _branch_index(
             ["youEarthly", "weiEarthly", "siEarthly", "maoEarthly", "chouEarthly"][
                 year_stem_index % 5
             ]

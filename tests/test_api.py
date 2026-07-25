@@ -2,13 +2,12 @@
 Test the main API interface
 """
 
-import sys
 import os
+import sys
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../src")))
 
 from iztro_py import astro
-from iztro_py import by_solar, by_lunar
 
 
 def test_by_solar_api():
@@ -56,7 +55,7 @@ def test_functional_palace():
         # 测试has方法
         has_first = soul_palace.has([major_stars[0]])
         print(f"命宫包含 {major_stars[0]}: {has_first}")
-        assert has_first == True
+        assert has_first is True
 
     # 测试is_empty
     is_empty = soul_palace.is_empty()

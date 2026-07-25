@@ -5,7 +5,6 @@ Tests to ensure iztro-py API is compatible with the original JavaScript iztro li
 Uses known test cases and expected outputs from the original library.
 """
 
-import pytest
 from iztro_py import astro
 
 
@@ -40,8 +39,8 @@ class TestAPICompatibility:
         # Basic properties
         assert chart.gender == "男"
         assert chart.solar_date == "2000-8-16"
-        assert "龙" == chart.zodiac  # 龙年
-        assert "狮子座" == chart.sign
+        assert chart.zodiac == "龙"  # 龙年
+        assert chart.sign == "狮子座"
 
         # Chinese date properties
         assert chart.chinese_date is not None

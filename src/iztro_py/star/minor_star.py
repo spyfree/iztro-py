@@ -4,17 +4,18 @@ Minor stars placement for iztro-py
 Functions for placing the 14 minor stars (辅星) into palaces.
 """
 
-from typing import Any, Dict, List
-from iztro_py.data.types import Star, HeavenlyStemName, EarthlyBranchName
-from iztro_py.data.constants import HEAVENLY_STEMS, EARTHLY_BRANCHES
+from typing import Any, Dict, List, cast
+
+from iztro_py.data.constants import EARTHLY_BRANCHES, HEAVENLY_STEMS
+from iztro_py.data.types import EarthlyBranchName, HeavenlyStemName, Star, StarName, StarType
 from iztro_py.star.location import (
-    get_minor_star_position_zuofu,
-    get_minor_star_position_youbi,
     get_minor_star_position_wenchang,
     get_minor_star_position_wenqu,
-    get_minor_star_positions_kuiyue,
+    get_minor_star_position_youbi,
+    get_minor_star_position_zuofu,
     get_minor_star_positions_huoling,
     get_minor_star_positions_kongjie,
+    get_minor_star_positions_kuiyue,
     get_minor_star_positions_lucun_yangtuo_tianma,
 )
 
@@ -73,7 +74,7 @@ def place_minor_stars(
     ]
     for palace_index, star_name, star_type in placements:
         palaces[palace_index]["minor_stars"].append(
-            Star(name=star_name, type=star_type, scope="origin")
+            Star(name=cast(StarName, star_name), type=cast(StarType, star_type), scope="origin")
         )
 
 
