@@ -96,20 +96,3 @@ def test_initialize_palaces():
         print(f"  是否身宫: {palace['is_body_palace']}")
 
     print("\n✓ 宫位初始化测试通过\n")
-
-
-if __name__ == "__main__":
-    try:
-        test_soul_and_body_palace()
-        test_five_elements_class()
-        test_initialize_palaces()
-
-        print("=" * 60)
-        print("✓✓✓ 所有宫位定位测试通过！")
-        print("=" * 60)
-    except Exception as e:
-        print(f"\n✗✗✗ 测试失败: {e}")
-        import traceback
-
-        traceback.print_exc()
-        sys.exit(1)

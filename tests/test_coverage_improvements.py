@@ -103,12 +103,17 @@ class TestFunctionalStar:
             assert zuofu.is_minor() is True
 
     def test_is_bright_weak(self):
-        """Test is_bright and is_weak methods"""
+        """is_bright/is_weak 必须与 brightness 一致，且互斥。"""
         ziwei = self.chart.star("ziweiMaj")
-        if ziwei:
-            # Just test that methods work
-            _ = ziwei.is_bright()
-            _ = ziwei.is_weak()
+        assert ziwei is not None
+        assert ziwei.brightness == "旺"
+        assert ziwei.is_bright() is True
+        assert ziwei.is_weak() is False
+
+        for star in (s for p in self.chart.palaces for s in p.major_stars):
+            assert star.is_bright() == (star.brightness in ("庙", "旺"))
+            assert star.is_weak() == (star.brightness == "陷")
+            assert not (star.is_bright() and star.is_weak())
 
     def test_has_mutagen(self):
         """Test has_mutagen method"""

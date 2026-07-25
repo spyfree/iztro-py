@@ -96,21 +96,3 @@ def test_zodiac_and_sign():
     assert zodiac == "龙"
     assert sign == "狮子座"
     print("✓ 生肖星座测试通过\n")
-
-
-if __name__ == "__main__":
-    try:
-        test_solar_to_lunar()
-        test_lunar_to_solar()
-        test_stem_branch_calculation()
-        test_zodiac_and_sign()
-
-        print("=" * 60)
-        print("✓✓✓ 所有日历转换测试通过！")
-        print("=" * 60)
-    except Exception as e:
-        print(f"\n✗✗✗ 测试失败: {e}")
-        import traceback
-
-        traceback.print_exc()
-        sys.exit(1)

@@ -174,32 +174,3 @@ def generate_astrolabe(solar_date_str: str, time_index: int, gender: str):
         "body_star": body_star,
         "palaces": palaces,
     }
-
-
-if __name__ == "__main__":
-    try:
-        # 测试案例1：2000年8月16日午时男命
-        astrolabe1 = generate_astrolabe("2000-8-16", 6, "男")
-
-        # 验证结果
-        assert len(astrolabe1["palaces"]) == 12
-        assert astrolabe1["zodiac"] == "龙"
-        assert astrolabe1["sign"] == "狮子座"
-
-        print("\n\n")
-
-        # 测试案例2：1990年1月1日子时女命
-        astrolabe2 = generate_astrolabe("1990-1-1", 0, "女")
-
-        assert len(astrolabe2["palaces"]) == 12
-
-        print("\n" + "=" * 80)
-        print("✓✓✓ 所有集成测试通过！星盘生成功能正常！")
-        print("=" * 80)
-
-    except Exception as e:
-        print(f"\n✗✗✗ 测试失败: {e}")
-        import traceback
-
-        traceback.print_exc()
-        sys.exit(1)

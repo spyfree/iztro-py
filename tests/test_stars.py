@@ -188,22 +188,3 @@ def test_brightness_application():
     # 14主星都应该有亮度
     assert brightness_count == 14
     print("✓ 亮度应用测试通过\n")
-
-
-if __name__ == "__main__":
-    try:
-        test_ziwei_tianfu_position()
-        test_major_stars_placement()
-        test_minor_stars_placement()
-        test_mutagen_application()
-        test_brightness_application()
-
-        print("=" * 60)
-        print("✓✓✓ 所有星曜定位测试通过！")
-        print("=" * 60)
-    except Exception as e:
-        print(f"\n✗✗✗ 测试失败: {e}")
-        import traceback
-
-        traceback.print_exc()
-        sys.exit(1)

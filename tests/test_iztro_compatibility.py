@@ -384,7 +384,3 @@ class TestEdgeCases:
             horoscope = chart.horoscope(year_date, 6)
             assert horoscope is not None
             assert horoscope.nominal_age > 0
-
-
-if __name__ == "__main__":
-    pytest.main([__file__, "-v"])
